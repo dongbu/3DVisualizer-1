@@ -9,8 +9,6 @@ void DatasetManager::AddDataset(std::string key, Dataset* data)
   }
 
   m_datasetMap[key] = new Dataset(*data);
-  std::cout << m_datasetMap[key]->width << ", " << m_datasetMap[key]->height << ", " << m_datasetMap[key]->slices << ", " << m_datasetMap[key]->bytes_elem << std::endl;
-  delete data;
 }
 
 void DatasetManager::FreeResources()
