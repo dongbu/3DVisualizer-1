@@ -1,6 +1,4 @@
 #include "dataset.h"
-#include "datahandler.h"
-#include "datatransfer.h"
 
 #include <iostream>
 #include <sstream>

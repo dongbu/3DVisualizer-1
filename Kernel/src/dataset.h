@@ -2,6 +2,8 @@
 #define DATASET_H
 
 #include "datahandler.h"
+#include "datatransfer.h"
+
 
 class Dataset
 {
