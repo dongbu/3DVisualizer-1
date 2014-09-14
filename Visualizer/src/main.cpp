@@ -74,14 +74,8 @@ void initResources()
   g_simple->setUniformMatrix("modelMatrix", glm::mat4(1));
   g_simple->setUniform4fv("inColor", glm::vec4(1.0, 0.0, 1.0, 1.0));
 
-
-  Dataset* data = Dataset::Load("C:/Users/Guilherme/Pictures/datasets/neghip.64x64x64.uint8");
-  bool data_loaded = data->UploadToGPU();
-  DatasetManager::getInstance()->AddDataset("neghip", data);
-
-  if(!data_loaded) {
-    printf("Error while loading the data!\n");
-  }
+  DatasetManager::getInstance()->Init("C:/Users/Guilherme/Pictures/datasets/");
+  DatasetManager::getInstance()->SetActiveDataset("stent");
   DatasetManager::getInstance()->FreeResources();
 }
 

@@ -3,12 +3,13 @@
 
 #include "datahandler.h"
 #include "datatransfer.h"
-
+#include <GL/glew.h>
 
 class Dataset
 {
 public:
 
+  GLuint tex_id;
   void* data;
   size_t width;
   size_t height;
@@ -19,10 +20,21 @@ public:
   Dataset(Dataset& rhs);
   ~Dataset();
 
+
+
+  bool IsLoaded() { return is_loaded; }
+  bool IsUploaded() { return is_uploaded; }
+
+  void Loaded(bool l) { is_loaded = l; }
+  void Uploaded(bool u) { is_uploaded = u; }
+
+  bool Load(std::string path);
   bool UploadToGPU();
 
-  static Dataset* Load(std::string path);
-  static bool Save(std::string path, Dataset* data);
+private:
+  bool is_uploaded;
+  bool is_loaded;
+
 };
 
 #endif // DATASET_H
