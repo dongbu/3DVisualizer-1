@@ -1,4 +1,4 @@
-#include "tfuncion.h"
+#include "tfunction.h"
 
 #include <iostream>
 #include <sstream>
@@ -10,12 +10,12 @@
 
 TFunction* TFunction::Load(std::string path)
 {
-return NULL;
+  return NULL;
 }
 
 bool TFunction::Save(std::string path, TFunction* tf)
 {
-return false;
+  return false;
 }
 
 TFunction::TFunction()
