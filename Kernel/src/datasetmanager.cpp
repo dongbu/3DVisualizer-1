@@ -5,62 +5,6 @@
 
 #include <tinyxml.h>
 
-const char * getIndent( unsigned int numIndents )
-{
-  static const char * pINDENT = "                                      + ";
-  static const unsigned int LENGTH = strlen( pINDENT );
-
-  if ( numIndents > LENGTH ) numIndents = LENGTH;
-
-  return &pINDENT[ LENGTH-numIndents ];
-}
-
-void dump_to_stdout( TiXmlNode * pParent, unsigned int indent = 0 )
-{
-  if ( !pParent ) return;
-
-  TiXmlText *pText;
-  int t = pParent->Type();
-  printf( "%s", getIndent( indent));
-
-  switch ( t ) {
-  case TiXmlNode::TINYXML_DOCUMENT:
-    printf( "Document" );
-    break;
-
-  case TiXmlNode::TINYXML_ELEMENT:
-    printf( "Element \"%s\"", pParent->Value() );
-    break;
-
-  case TiXmlNode::TINYXML_COMMENT:
-    printf( "Comment: \"%s\"", pParent->Value());
-    break;
-
-  case TiXmlNode::TINYXML_UNKNOWN:
-    printf( "Unknown" );
-    break;
-
-  case TiXmlNode::TINYXML_TEXT:
-    pText = pParent->ToText();
-    printf( "Text: [%s]", pText->Value() );
-    break;
-
-  case TiXmlNode::TINYXML_DECLARATION:
-    printf( "Declaration" );
-    break;
-  default:
-    break;
-  }
-  printf( "\n" );
-
-  TiXmlNode * pChild;
-
-  for ( pChild = pParent->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
-    dump_to_stdout( pChild, indent+2 );
-  }
-}
-
-
 bool DatasetManager::Init(std::string path)
 {
   m_dataPath = path;
@@ -110,13 +54,16 @@ void DatasetManager::SetActiveDataset(std::string key)
 
   Dataset* data = it->second;
   if(!data->IsLoaded()) {
-    data->Load(m_dataPath + it->first);
+    if(!data->Load(m_dataPath + it->first + ".raw")) {
+      Logger::getInstance()->error("Failed to load dataset " + key);
+    }
   }
   if(!data->IsUploaded()) {
-    data->UploadToGPU();
-    glBindTexture(GL_TEXTURE_3D, data->tex_id);
+    if(!data->UploadToGPU()) {
+      Logger::getInstance()->error("Failed to upload dataset " + key);
+    }
   }
-
+  glBindTexture(GL_TEXTURE_3D, data->tex_id);
   m_activeKey = key;
 }
 

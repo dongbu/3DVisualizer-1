@@ -16,6 +16,7 @@
     <ClInclude Include="src\datasetmanager.h" />
     <ClInclude Include="src\datatransfer.h" />
     <ClInclude Include="src\logger.h" />
+    <ClInclude Include="src\perlin.h" />
     <ClInclude Include="src\singleton.h" />
     <ClInclude Include="src\tfunction.h" />
   </ItemGroup>
@@ -25,6 +26,7 @@
     <ClCompile Include="src\datatransfer.cpp" />
     <ClCompile Include="src\dataset.cpp" />
     <ClCompile Include="src\logger.cpp" />
+    <ClCompile Include="src\perlin.c" />
     <ClCompile Include="src\tfunction.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

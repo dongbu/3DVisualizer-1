@@ -14,7 +14,7 @@ namespace data
   {
     GLuint Alloc3DTex(size_t w, size_t h, size_t slices, size_t bytes_elem);
 
-    bool Upload3DData(size_t w, size_t h, size_t slices, size_t bytes_elem, bool size_changed, void* data, GLuint tex_id);
+    bool Upload3DData(size_t w, size_t h, size_t slices, size_t bytes_elem, void* data, GLuint tex_id);
   }
 }
 

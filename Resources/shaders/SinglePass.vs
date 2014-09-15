@@ -8,7 +8,7 @@ uniform mat4 projMat;
 
 out vec4 vPosition;
 
-int main()
+void main()
 {
   mat4 MVP = projMat * viewMat * modelMat;
   vPosition = vec4(in_vPosition, 1);

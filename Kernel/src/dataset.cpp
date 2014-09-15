@@ -40,6 +40,7 @@ Dataset::Dataset()
   width = height = slices = bytes_elem = 0;
   data = NULL;
   is_loaded = is_uploaded = false;
+  tex_id = 0;
 }
 
 Dataset::Dataset(Dataset& rhs)
@@ -48,6 +49,7 @@ Dataset::Dataset(Dataset& rhs)
   height = rhs.height;
   slices = rhs.slices;
   bytes_elem = rhs.bytes_elem;
+  tex_id = rhs.tex_id;
   is_loaded = rhs.IsLoaded();
   is_uploaded = rhs.IsUploaded();
 
@@ -71,6 +73,7 @@ Dataset::~Dataset()
   Uploaded(false);
 
   glDeleteTextures(1, &tex_id);
+  tex_id = 0;
 }
 
 bool Dataset::Load(std::string path)
@@ -83,10 +86,12 @@ bool Dataset::Load(std::string path)
     Loaded(false);
   }
   if(IsUploaded()) {
-    glDeleteTextures(1, &tex_id);
+    //    glDeleteTextures(1, &tex_id);
+    //    tex_id = 0;
     Uploaded(false);
   }
 
+  std::cout << path << " " << width << " " << height << " " << slices << " " << bytes_elem << std::endl;
   data = calloc(width * height * slices, bytes_elem);
   Loaded(data::LoadBinary(path, width * height * slices, bytes_elem, data));
   return IsLoaded();
@@ -95,10 +100,11 @@ bool Dataset::Load(std::string path)
 bool Dataset::UploadToGPU()
 {
   assert(width != 0 && height != 0 && slices != 0 && bytes_elem != 0 && data != NULL);
+  if(tex_id == 0)
+    tex_id = data::transfer::Alloc3DTex(width, height, slices, bytes_elem);
 
-  tex_id = data::transfer::Alloc3DTex(width, height, slices, bytes_elem);
   assert(tex_id != 0);
+  Uploaded(data::transfer::Upload3DData(width, height, slices, bytes_elem, data, tex_id));
 
-  Uploaded(data::transfer::Upload3DData(width, height, slices, bytes_elem, false, data, tex_id));
   return IsUploaded();
 }
