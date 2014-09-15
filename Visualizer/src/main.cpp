@@ -169,9 +169,6 @@ void initResources()
   DatasetManager::getInstance()->Init("C:/Users/schardong/Pictures/datasets/");
   glActiveTexture(GL_TEXTURE0);
   DatasetManager::getInstance()->SetActiveDataset("neghip");
-  //  DatasetManager::getInstance()->SetActiveDataset("foot");
-  //  DatasetManager::getInstance()->SetActiveDataset("bonsai");
-  //  DatasetManager::getInstance()->SetActiveDataset("nucleon");
 }
 
 int main()
