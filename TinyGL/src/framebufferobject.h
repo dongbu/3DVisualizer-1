@@ -10,7 +10,7 @@ public:
   FramebufferObject();
   ~FramebufferObject();
 
-  void attachTexBuffer(GLenum target, GLenum attach, GLenum textarg, GLuint texid, GLint level);
+  void attachTexBuffer(GLenum target, GLenum attach, GLuint texid, GLint level);
   void attachRenderBuffer(GLenum target, GLenum attach, GLenum rbtarg, GLuint rbid); 
 
   void bind(GLenum target)
@@ -34,8 +34,6 @@ public:
 
 private:
   GLuint m_id;
-  GLuint m_width;
-  GLuint m_height;
 
   std::map<GLenum, GLuint> m_attMap;
 };
