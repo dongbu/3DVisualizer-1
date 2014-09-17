@@ -15,6 +15,7 @@ public:
   void AddDataset(std::string key, Dataset* data);
   void SetActiveDataset(std::string key);
   Dataset* GetDataset(std::string key);
+  Dataset* GetCurrentDataset();
   void FreeResources();
 
 private:

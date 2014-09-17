@@ -74,6 +74,13 @@ Dataset* DatasetManager::GetDataset(std::string key)
   return m_datasetMap[key];
 }
 
+Dataset* DatasetManager::GetCurrentDataset()
+{
+  assert(!m_activeKey.empty());
+  assert(m_datasetMap.find(m_activeKey) != m_datasetMap.end());
+  return m_datasetMap[m_activeKey];
+}
+
 void DatasetManager::FreeResources()
 {
   for(auto it = m_datasetMap.begin(); it != m_datasetMap.end(); it++) {
