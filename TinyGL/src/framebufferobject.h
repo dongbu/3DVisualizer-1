@@ -23,6 +23,13 @@ public:
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
   }
 
+  GLuint getAttachmentId(GLenum attachment_point)
+  {
+    if(m_attMap.find(attachment_point) != m_attMap.end())
+      return m_attMap[attachment_point];
+    return 0;
+  }
+
   void checkStatus();
 
 private:
