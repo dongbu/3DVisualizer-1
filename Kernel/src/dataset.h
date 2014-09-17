@@ -20,8 +20,6 @@ public:
   Dataset(Dataset& rhs);
   ~Dataset();
 
-
-
   bool IsLoaded() { return is_loaded; }
   bool IsUploaded() { return is_uploaded; }
 
@@ -30,6 +28,8 @@ public:
 
   bool Load(std::string path);
   bool UploadToGPU();
+
+  void bind();
 
 private:
   bool is_uploaded;

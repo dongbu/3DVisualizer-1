@@ -108,3 +108,8 @@ bool Dataset::UploadToGPU()
 
   return IsUploaded();
 }
+
+void Dataset::bind()
+{
+  glBindTexture(GL_TEXTURE_2D, tex_id);
+}
