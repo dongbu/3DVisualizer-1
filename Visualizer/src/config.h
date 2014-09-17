@@ -25,6 +25,67 @@ extern "C"
 #include "perlin.h"
 }
 
+static GLuint createCubeVAO()
+{
+  GLfloat cube_vertex[24] = {
+    0.0, 0.0, 0.0,
+    0.0, 0.0, 1.0,
+    0.0, 1.0, 0.0,
+    0.0, 1.0, 1.0,
+    1.0, 0.0, 0.0,
+    1.0, 0.0, 1.0,
+    1.0, 1.0, 0.0,
+    1.0, 1.0, 1.0
+  };
+
+  GLuint cube_index[36] = {
+    1,5,7,
+    7,3,1,
+    0,2,6,
+    6,4,0,
+    0,1,3,
+    3,2,0,
+    7,5,4,
+    4,6,7,
+    2,3,7,
+    7,6,2,
+    1,0,4,
+    4,5,1
+  };
+
+  GLuint vao, vbo, ibo;
+
+  glGenVertexArrays(1, &vao);
+  glBindVertexArray(vao);
+
+  glGenBuffers(1, &vbo);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+  glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 24, cube_vertex, GL_STATIC_DRAW);
+
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+  glEnableVertexAttribArray(0);
+
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+  glEnableVertexAttribArray(1);
+
+  glGenBuffers(1, &ibo);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * 36, cube_index, GL_STATIC_DRAW);
+
+  glBindVertexArray(0);
+
+  return vao;
+}
+
+void renderCubeVAO(GLuint cube_id)
+{
+  glBindVertexArray(cube_id);
+  glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
+  glBindVertexArray(0);
+}
+
 static GLuint CreatePyroclasticVolume(int n, float r)
 {
   GLuint handle;

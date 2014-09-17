@@ -32,6 +32,7 @@ static void initMesh();
 static void initFBO();
 static void initShaders();
 static void cb_drawpoint(size_t num_points);
+static void cb_drawcube_idx(size_t num_points);
 static void cb_drawcube(size_t num_points);
 static void cb_keyboard(GLFWwindow*, int, int, int, int);
 static void cb_mousebutton(GLFWwindow*, int, int, int);
@@ -79,11 +80,10 @@ void initResources()
 {
   g_eye = glm::vec3(0, 0, 4.5);
   g_viewMatrix = glm::lookAt(g_eye, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-  g_projMatrix = glm::ortho(-2.f, 2.f, -2.f, 2.f, 1.f, 20.f);//glm::perspective(0.7f, static_cast<float>(WINDOW_W) / static_cast<float>(WINDOW_H), 1.f, 10.f);
+  g_projMatrix = glm::ortho(-1.f, 1.f, -1.f, 1.f, 1.f, 20.f);
 
   DatasetManager::getInstance()->Init("C:/Users/schardong/Pictures/datasets/");
-  glActiveTexture(GL_TEXTURE0);
-  DatasetManager::getInstance()->SetActiveDataset("neghip");
+  DatasetManager::getInstance()->SetActiveDataset("stent8");
 }
 
 int main()
@@ -97,66 +97,93 @@ int main()
   errCode = initGLEW();
   initResources();
   initMesh();
-  //initFBO();
+  
+  initFBO();
   initShaders();
   
   glClearColor(0.3f, 0.3f, 0.3f, 1.f);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
   glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LESS);
   glClearDepth(1.0f);
+
   glEnable(GL_CULL_FACE);
-  glCullFace(GL_BACK);
+
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     
   g_mouse = new Arcball(WINDOW_W, WINDOW_H, 1.5f, true, true);
   
   while(!glfwWindowShouldClose(g_window)) {
 
     TinyGL* gl_ptr = TinyGL::getInstance();
-
     Mesh* m = gl_ptr->getMesh("proxy_cube");
     Shader* fpass = gl_ptr->getShader(FPASS_KEY);
-    fpass->bind();
+    Shader* spass = gl_ptr->getShader(SPASS_KEY);
+    FramebufferObject* fbo = gl_ptr->getFBO(FBO_KEY);
 
+    fpass->bind();
     glm::mat4 rot = g_viewMatrix * g_mouse->createViewRotationMatrix();
     fpass->setUniformMatrix("u_mView", rot);
 
     //glm::mat4 rot = m->m_modelMatrix * g_mouse->createModelRotationMatrix(g_viewMatrix);
     //fpass->setUniformMatrix("u_mModel", rot);
 
-    glm::mat3 invMV = glm::transpose(glm::mat3(rot)*glm::mat3(m->m_modelMatrix));
-    glm::vec3 ray_origin = invMV * g_eye;
-    fpass->setUniform4fv("u_vRayOrigin", glm::vec4(ray_origin, 1));
+    //glm::mat3 invMV = glm::transpose(glm::mat3(rot)*glm::mat3(m->m_modelMatrix));
+    //glm::vec3 ray_origin = invMV * g_eye;
+    //fpass->setUniform4fv("u_vRayOrigin", glm::vec4(ray_origin, 1));
 
-    //if(g_mouse->curr_x != g_mouse->last_x || g_mouse->curr_y != g_mouse->last_y) {
+    /*if(g_mouse->curr_x != g_mouse->last_x || g_mouse->curr_y != g_mouse->last_y) {
 
-    //  glm::vec3 va = glm::normalize(get_arcball_vector(g_mouse->last_x, g_mouse->last_y));
-    //  glm::vec3 vb = glm::normalize(get_arcball_vector(g_mouse->curr_x, g_mouse->curr_y));
-    //  float angle = std::acos(std::min(1.f, glm::dot(va, vb))) / 50;
-    //  glm::vec3 axis_camera = glm::cross(va, vb);
+      glm::vec3 va = glm::normalize(get_arcball_vector(g_mouse->last_x, g_mouse->last_y));
+      glm::vec3 vb = glm::normalize(get_arcball_vector(g_mouse->curr_x, g_mouse->curr_y));
+      float angle = std::acos(std::min(1.f, glm::dot(va, vb))) / 50;
+      glm::vec3 axis_camera = glm::cross(va, vb);
 
-    //  g_viewMatrix = glm::rotate(g_viewMatrix, glm::degrees(angle), axis_camera);
-    //  glm::mat3 invMV = glm::transpose(glm::mat3(g_viewMatrix) * glm::mat3(m->m_modelMatrix));
-    //  glm::vec3 axis_obj = invMV * axis_camera;
+      g_viewMatrix = glm::rotate(g_viewMatrix, glm::degrees(angle), axis_camera);
+      glm::mat3 invMV = glm::transpose(glm::mat3(g_viewMatrix) * glm::mat3(m->m_modelMatrix));
+      glm::vec3 axis_obj = invMV * axis_camera;
 
-    //  //m->m_modelMatrix = glm::rotate(m->m_modelMatrix, glm::degrees(angle), axis_obj);
-    //  
-    //  glm::vec3 ray_origin = invMV * g_eye;
+      //m->m_modelMatrix = glm::rotate(m->m_modelMatrix, glm::degrees(angle), axis_obj);
+      
+      glm::vec3 ray_origin = invMV * g_eye;
 
-    //  fpass->bind();
-    //  fpass->setUniformMatrix("u_mProj", g_projMatrix);
-    //  fpass->setUniformMatrix("u_mView", g_viewMatrix);
-    //  fpass->setUniformMatrix("u_mModel", m->m_modelMatrix);
-    //  fpass->setUniform4fv("u_vRayOrigin", glm::vec4(ray_origin, 1));
+      fpass->bind();
+      fpass->setUniformMatrix("u_mProj", g_projMatrix);
+      fpass->setUniformMatrix("u_mView", g_viewMatrix);
+      fpass->setUniformMatrix("u_mModel", m->m_modelMatrix);
+      fpass->setUniform4fv("u_vRayOrigin", glm::vec4(ray_origin, 1));
 
-    //  g_mouse->last_x = g_mouse->curr_x;
-    //  g_mouse->last_y = g_mouse->curr_y;
-    //}
+      g_mouse->last_x = g_mouse->curr_x;
+      g_mouse->last_y = g_mouse->curr_y;
+    }*/
 
+    //First pass
+    fbo->bind(GL_FRAMEBUFFER);
+    glViewport(0, 0, WINDOW_W, WINDOW_H);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glCullFace(GL_FRONT);
     m->draw();
+
+    FramebufferObject::unbind();
+    glViewport(0, 0, WINDOW_W, WINDOW_H);
+
+    //Second pass
+    spass->bind();
+    spass->setUniformMatrix("u_mView", rot);
+
+    glActiveTexture(GL_TEXTURE0);
+    DatasetManager::getInstance()->GetCurrentDataset()->bind();
+    
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, fbo->getAttachmentId(GL_COLOR_ATTACHMENT0));
+    
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glCullFace(GL_BACK);
+    m->draw();
+
+    Shader::unbind();
 
     glfwSwapBuffers(g_window);
     glfwPollEvents();
@@ -172,7 +199,7 @@ int main()
 
 static void initMesh()
 {
-  GLfloat vertex[] = {
+  /*GLfloat vertex[] = {
     0, 0, 0
   };
 
@@ -189,11 +216,11 @@ static void initMesh()
 
   glBindVertexArray(0);
   cube->setNumPoints(1);
-  cube->setDrawCb(cb_drawpoint);
+  cube->setDrawCb(cb_drawpoint);*/
 
-  /*Cube* cube = new Cube();
+  Cube* cube = new Cube();
   cube->m_modelMatrix = glm::mat4(1);
-  cube->setDrawCb(cb_drawcube);*/
+  cube->setDrawCb(cb_drawcube_idx);
 
   TinyGL::getInstance()->addResource(MESH, "proxy_cube", cube);
 }
@@ -203,12 +230,11 @@ static void initFBO()
   FramebufferObject* fbo = new FramebufferObject;
   fbo->bind(GL_FRAMEBUFFER);
 
-  GLuint back_faces_id;
-  GLuint depth_buff_id;
+  GLuint ids[2];
 
-  glGenTextures(1, &back_faces_id);
+  glGenTextures(1, &ids[0]);
 
-  glBindTexture(GL_TEXTURE_2D, back_faces_id);
+  glBindTexture(GL_TEXTURE_2D, ids[0]);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, WINDOW_W, WINDOW_H, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
@@ -217,13 +243,23 @@ static void initFBO()
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  fbo->attachTexBuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, back_faces_id, 0);
-  glBindTexture(GL_TEXTURE_2D, 0);
+  fbo->attachTexBuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, ids[0], 0);
 
-  glGenRenderbuffers(1, &depth_buff_id);
-  glBindRenderbuffer(GL_RENDERBUFFER, depth_buff_id);
+  /*glBindTexture(GL_TEXTURE_2D, tex_ids[1]);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, WINDOW_W, WINDOW_H, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_NONE);
+  fbo->attachTexBuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, tex_ids[1], 0);
+  glBindTexture(GL_TEXTURE_2D, 0);*/
+
+  glGenRenderbuffers(1, &ids[1]);
+  glBindRenderbuffer(GL_RENDERBUFFER, ids[1]);
   glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32, WINDOW_W, WINDOW_H);
-  fbo->attachRenderBuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depth_buff_id);
+  fbo->attachRenderBuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, ids[1]);
   glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
   fbo->checkStatus();
@@ -239,10 +275,28 @@ static void initShaders()
 {
   float screen_sz[2] = {WINDOW_W, WINDOW_H};
   glm::mat4 modelMatrix = TinyGL::getInstance()->getMesh("proxy_cube")->m_modelMatrix;
-  glm::mat4 MV = g_viewMatrix * modelMatrix;
-  glm::vec4 ray_origin = glm::transpose(MV) * glm::vec4(g_eye, 1);
+  //glm::mat4 MV = g_viewMatrix * modelMatrix;
+  //glm::vec4 ray_origin = glm::transpose(MV) * glm::vec4(g_eye, 1);
 
-  Shader* fpass = new Shader(RESOURCE_PATH + "/shaders/SinglePass.vs", RESOURCE_PATH + "/shaders/SinglePass.fs", RESOURCE_PATH + "/shaders/SinglePass.gs");
+  Shader* fpass = new Shader(RESOURCE_PATH + "/shaders/FPass.vs", RESOURCE_PATH + "/shaders/FPass.fs");
+  fpass->bind();
+  fpass->bindFragDataLoc("fColor", 0);
+  fpass->setUniformMatrix("u_mView", g_viewMatrix);
+  fpass->setUniformMatrix("u_mProj", g_projMatrix);
+  fpass->setUniformMatrix("u_mModel", modelMatrix);
+
+  Shader* spass = new Shader(RESOURCE_PATH + "/shaders/SPass.vs", RESOURCE_PATH + "/shaders/SPass.fs");
+  spass->bind();
+  spass->bindFragDataLoc("fColor", 0);
+  spass->setUniformMatrix("u_mView", g_viewMatrix);
+  spass->setUniformMatrix("u_mProj", g_projMatrix);
+  spass->setUniformMatrix("u_mModel", modelMatrix);
+  spass->setUniformfv("u_vScreenSize", screen_sz, 2);
+  spass->setUniform1i("u_sDensityMap", 0);
+  spass->setUniform1i("u_sBackFaces", 2);
+  spass->setUniform1f("u_fNumSamples", 256);
+
+  /*Shader* fpass = new Shader(RESOURCE_PATH + "/shaders/SinglePass.vs", RESOURCE_PATH + "/shaders/SinglePass.fs", RESOURCE_PATH + "/shaders/SinglePass.gs");
   fpass->bind();
   fpass->bindFragDataLoc("fColor", 0);
   fpass->setUniformMatrix("u_mView", g_viewMatrix);
@@ -251,16 +305,17 @@ static void initShaders()
   fpass->setUniformfv("u_vScreenSize", screen_sz, 2);
   fpass->setUniform1i("u_sDensityMap", 0);
   fpass->setUniform4fv("u_vRayOrigin", ray_origin);
-  fpass->setUniform1f("u_fFocalLength", 1.0f / tan(0.7f / 2.f));
+  fpass->setUniform1f("u_fFocalLength", 1.0f / tan(0.7f / 2.f));*/
 
   Shader::unbind();
 
   TinyGL::getInstance()->addResource(SHADER, FPASS_KEY, fpass);
+  TinyGL::getInstance()->addResource(SHADER, SPASS_KEY, spass);
 }
 
 static void cb_keyboard(GLFWwindow* win, int key, int scancode, int action, int mods)
 {
-  bool cam_changed = false;
+  glActiveTexture(GL_TEXTURE0);
   if(action == GLFW_PRESS) {
     switch(key) {
     case GLFW_KEY_ESCAPE:
@@ -278,26 +333,7 @@ static void cb_keyboard(GLFWwindow* win, int key, int scancode, int action, int 
     case GLFW_KEY_4:
       DatasetManager::getInstance()->SetActiveDataset("silicium");
       break;
-    case GLFW_KEY_LEFT:
-      g_eye -= glm::vec3(1, 0, 0);
-      cam_changed = true;
-      break;
-    case GLFW_KEY_RIGHT:
-      g_eye += glm::vec3(1, 0, 0);
-      cam_changed = true;
-      break;
     }
-  }
-
-  if(cam_changed) {
-    g_viewMatrix = glm::lookAt(g_eye, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-    Shader* s = TinyGL::getInstance()->getShader(FPASS_KEY);
-    s->bind();
-    s->setUniformMatrix("viewMat", g_viewMatrix);
-    s = TinyGL::getInstance()->getShader(SPASS_KEY);
-    s->bind();
-    s->setUniformMatrix("viewMat", g_viewMatrix);
-    Shader::unbind();
   }
 }
 
@@ -332,6 +368,11 @@ static void cb_mousemotion(GLFWwindow* win, double xpos, double ypos)
 static void cb_drawcube(size_t num_points)
 {
   glDrawArrays(GL_TRIANGLES, 0, num_points);
+}
+
+static void cb_drawcube_idx(size_t num_points)
+{
+  glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
 }
 
 static void cb_drawpoint(size_t num_points)
