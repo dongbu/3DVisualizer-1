@@ -5,9 +5,9 @@ layout(triangle_strip, max_vertices = 24) out;
 
 in vec4 vPosition[1];
 
-uniform mat4 modelMat;
-uniform mat4 viewMat;
-uniform mat4 projMat;
+uniform mat4 u_mModel;
+uniform mat4 u_mView;
+uniform mat4 u_mProj;
 
 vec4 g_objSpaceVtx[8];
 vec4 g_ndcSpaceVtx[8];
@@ -51,7 +51,7 @@ void main()
   g_objSpaceVtx[6] = P-I-J-K;
   g_objSpaceVtx[7] = P-I+J-K;
 
-  mat4 MVP = projMat * viewMat * modelMat;
+  mat4 MVP = u_mProj * u_mView * u_mModel;
 
   for(int v = 0; v < 8; v++)
     g_ndcSpaceVtx[v] = MVP * g_objSpaceVtx[v];

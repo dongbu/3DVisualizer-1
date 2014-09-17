@@ -8,8 +8,8 @@ uniform float u_fFocalLength;
 uniform vec2 u_vScreenSize;
 uniform vec4 u_vRayOrigin;
 
-uniform mat4 modelMat;
-uniform mat4 viewMat;
+uniform mat4 u_mModel;
+uniform mat4 u_mView;
 
 const float g_maxDist = sqrt(2.0);
 const int g_numSamples = 128;
@@ -44,7 +44,7 @@ bool Intersect(Ray ray, AABB aabb, out float t0, out float t1)
 
 void main()
 {
-  mat4 MV = viewMat * modelMat;
+  mat4 MV = u_mView * u_mModel;
   vec3 ray_dir;
   ray_dir.xy = 2.0 * gl_FragCoord.xy / u_vScreenSize - 1.0;
   ray_dir.z = -u_fFocalLength;
@@ -80,5 +80,5 @@ void main()
     color += alpha * intensity * g_stepSize;
   }
   
-  fColor = vec4(color, 1-alpha);
+  fColor = vec4(vec3(alpha), 1);
 }
