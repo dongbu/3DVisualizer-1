@@ -53,7 +53,7 @@ bool TFManager::Add(std::string key, TFunction* tf)
   return true;
 }
 
-void TFManager::SetActive(std::string key)
+void TFManager::SetActive(std::string key, GLenum tex_unit)
 {
   if(m_activeKey == key) return;
 
@@ -73,7 +73,7 @@ void TFManager::SetActive(std::string key)
     }
   }
 
-  tf->bind();
+  tf->bind(tex_unit);
   m_activeKey = key;
 }
 

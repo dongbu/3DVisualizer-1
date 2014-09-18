@@ -28,7 +28,7 @@ public:
   bool Load(std::string path);
   bool UploadToGPU();
 
-  void bind();
+  void bind(GLenum tex_unit = GL_TEXTURE0);
 
 private:
   bool is_uploaded;

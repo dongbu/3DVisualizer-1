@@ -33,7 +33,7 @@ public:
     return bytes_elem == sizeof(GLubyte) ? 256 : 4096;
   }
 
-  void bind();
+  void bind(GLenum tex_unit = GL_TEXTURE0);
 
 private:
   bool is_loaded;

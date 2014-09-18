@@ -13,7 +13,7 @@ class DatasetManager : public Singleton<DatasetManager>
 public:
   bool Init(std::string path);
   bool Add(std::string key, Dataset* data);
-  void SetActive(std::string key);
+  void SetActive(std::string key, GLenum tex_unit = GL_TEXTURE0);
   Dataset* Get(std::string key);
   Dataset* GetCurrent();
   void FreeResources();

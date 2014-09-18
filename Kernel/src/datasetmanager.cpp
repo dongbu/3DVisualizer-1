@@ -45,7 +45,7 @@ bool DatasetManager::Add(std::string key, Dataset* data)
   return true;
 }
 
-void DatasetManager::SetActive(std::string key)
+void DatasetManager::SetActive(std::string key, GLenum tex_unit)
 {
   if(m_activeKey == key) return;
 
@@ -65,7 +65,7 @@ void DatasetManager::SetActive(std::string key)
     }
   }
 
-  data->bind();
+  data->bind(tex_unit);
   m_activeKey = key;
 }
 

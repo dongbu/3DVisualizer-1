@@ -108,7 +108,8 @@ bool Dataset::UploadToGPU()
   return IsUploaded();
 }
 
-void Dataset::bind()
+void Dataset::bind(GLenum tex_unit)
 {
+  glActiveTexture(tex_unit);
   glBindTexture(GL_TEXTURE_3D, tex_id);
 }

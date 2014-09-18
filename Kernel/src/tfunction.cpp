@@ -91,8 +91,9 @@ bool TFunction::UploadToGPU()
   return IsUploaded();
 }
 
-void TFunction::bind()
+void TFunction::bind(GLenum tex_unit)
 {
+
   GLenum target;
   
   if(Is1D())
@@ -100,5 +101,6 @@ void TFunction::bind()
   else
     target = GL_TEXTURE_2D;
 
+  glActiveTexture(tex_unit);
   glBindTexture(target, tex_id);
 }
