@@ -83,10 +83,10 @@ void initResources()
   g_projMatrix = glm::ortho(-0.8f, 0.8f, -0.8f, 0.8f, 1.f, 5.f);
 
   DatasetManager::getInstance()->Init("C:/Users/schardong/Pictures/datasets/");
-  DatasetManager::getInstance()->SetActive("stent8");
+  DatasetManager::getInstance()->SetActive("stent8", GL_TEXTURE0);
 
   TFManager::getInstance()->Init("C:/Users/schardong/Pictures/datasets/transfer-functions/");
-  TFManager::getInstance()->SetActive("tff1");
+  TFManager::getInstance()->SetActive("tff1", GL_TEXTURE1);
 }
 
 int main()
@@ -250,22 +250,22 @@ static void cb_keyboard(GLFWwindow* win, int key, int scancode, int action, int 
       glfwSetWindowShouldClose(win, GL_TRUE);
       break;
     case GLFW_KEY_1:
-      TFManager::getInstance()->SetActive("tff1");
+      TFManager::getInstance()->SetActive("tff1", GL_TEXTURE1);
       break;
     case GLFW_KEY_2:
-      TFManager::getInstance()->SetActive("tff2");
+      TFManager::getInstance()->SetActive("tff2", GL_TEXTURE1);
       break;
     case GLFW_KEY_F1:
-      DatasetManager::getInstance()->SetActive("neghip");
+      DatasetManager::getInstance()->SetActive("neghip", GL_TEXTURE0);
       break;
     case GLFW_KEY_F2:
-      DatasetManager::getInstance()->SetActive("bonsai");
+      DatasetManager::getInstance()->SetActive("bonsai", GL_TEXTURE0);
       break;
     case GLFW_KEY_F3:
-      DatasetManager::getInstance()->SetActive("nucleon");
+      DatasetManager::getInstance()->SetActive("nucleon", GL_TEXTURE0);
       break;
     case GLFW_KEY_F4:
-      DatasetManager::getInstance()->SetActive("silicium");
+      DatasetManager::getInstance()->SetActive("silicium", GL_TEXTURE0);
       break;
     }
   }
