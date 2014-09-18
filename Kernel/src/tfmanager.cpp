@@ -72,7 +72,7 @@ void TFManager::SetActive(std::string key)
       Logger::getInstance()->error("Failed to upload transfer function " + key);
     }
   }
-  
+
   tf->bind();
   m_activeKey = key;
 }

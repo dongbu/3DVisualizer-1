@@ -28,24 +28,15 @@ TFunction::TFunction(TFunction& rhs)
   if(rhs.data == NULL) {
     data = NULL;
   } else {
-    size_t sz = 0;
-    if(bytes_elem == 1) sz = 256;
-    else if(bytes_elem == 2) sz = 4096;
-    sz *= rows;
-    data = calloc(sz, bytes_elem);
-    memcpy(data, rhs.data, sz);
+    data = calloc(GetWidth() * rows, bytes_elem);
+    memcpy(data, rhs.data, GetWidth() * rows);
   }
 }
 
 TFunction::~TFunction()
 {
   if(data != NULL) {
-    size_t sz = 0;
-    
-    if(bytes_elem == 1) sz = 256;
-    else if(bytes_elem == 2) sz = 4096;
-    sz *= rows;
-    memset(data, 0, sz);
+    memset(data, 0, GetWidth() * rows);
     free(data);
     data = NULL;
   }
@@ -73,9 +64,9 @@ bool TFunction::Load(std::string path)
     Uploaded(false);
   }
 
-  std::cout << path << " " << GetWidth() << " " << rows << " " << num_channels << " " << bytes_elem << std::endl;
   data = calloc(GetWidth() * rows, sizeof(GLubyte));
   Loaded(data::LoadBinary(path, GetWidth() * rows, sizeof(GLubyte), data));
+
   return IsLoaded();
 }
 
@@ -86,7 +77,6 @@ bool TFunction::UploadToGPU()
     if(Is1D()) {
       tex_id = data::transfer::Alloc1DTex(GetWidth(), num_channels);
     } else {
-      size_t w = bytes_elem == sizeof(GLubyte) ? 256 : 4096;
       tex_id = data::transfer::Alloc2DTex(GetWidth(), rows, num_channels);
     }
   }
