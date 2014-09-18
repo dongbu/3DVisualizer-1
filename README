@@ -4,3 +4,4 @@ TODOs:
   -Use a 2D transfer function + vertex-branch map or a preaaplied alpha dataset?
 FIXMEs:
   -Name replication of the transfer functions.
+  -For some reason, functions corresponding to ushort datatypes do not get uploaded
