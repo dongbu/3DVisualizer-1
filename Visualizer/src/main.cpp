@@ -27,6 +27,7 @@ static Arcball* g_mouse;
 glm::vec3 g_eye;
 glm::mat4 g_viewMatrix;
 glm::mat4 g_projMatrix;
+static GLuint g_numSamples = 64;
 
 static void initMesh();
 static void initFBO();
@@ -144,8 +145,8 @@ int main()
     spass->bind();
     spass->setUniformMatrix("u_mView", rot);
 
-    glActiveTexture(GL_TEXTURE0);
-    DatasetManager::getInstance()->GetCurrent()->bind();
+    DatasetManager::getInstance()->GetCurrent()->bind(GL_TEXTURE0);
+    TFManager::getInstance()->GetCurrent()->bind(GL_TEXTURE1);
     
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, fbo->getAttachmentId(GL_COLOR_ATTACHMENT0));
@@ -232,8 +233,9 @@ static void initShaders()
   spass->setUniformMatrix("u_mModel", modelMatrix);
   spass->setUniformfv("u_vScreenSize", screen_sz, 2);
   spass->setUniform1i("u_sDensityMap", 0);
+  spass->setUniform1i("u_sTransferFunction", 1);
   spass->setUniform1i("u_sBackFaces", 2);
-  spass->setUniform1f("u_fNumSamples", 256);
+  spass->setUniform1f("u_fNumSamples", g_numSamples);
 
   Shader::unbind();
 
