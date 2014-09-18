@@ -88,12 +88,9 @@ bool Dataset::Load(std::string path)
     Loaded(false);
   }
   if(IsUploaded()) {
-    //    glDeleteTextures(1, &tex_id);
-    //    tex_id = 0;
     Uploaded(false);
   }
 
-  std::cout << path << " " << width << " " << height << " " << slices << " " << bytes_elem << std::endl;
   data = calloc(width * height * slices, bytes_elem);
   Loaded(data::LoadBinary(path, width * height * slices, bytes_elem, data));
   return IsLoaded();
@@ -113,5 +110,5 @@ bool Dataset::UploadToGPU()
 
 void Dataset::bind()
 {
-  glBindTexture(GL_TEXTURE_2D, tex_id);
+  glBindTexture(GL_TEXTURE_3D, tex_id);
 }

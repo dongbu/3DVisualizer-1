@@ -11,6 +11,7 @@ public:
   void* data;
   size_t bytes_elem;
   size_t rows;
+  size_t num_channels;
 
   TFunction();
   TFunction(TFunction& rhs);
@@ -24,6 +25,13 @@ public:
 
   bool Load(std::string path);
   bool UploadToGPU();
+
+  bool Is1D() { return rows == 1; }
+
+  size_t GetWidth()
+  {
+    return bytes_elem == sizeof(GLubyte) ? 256 : 4096;
+  }
 
   void bind();
 

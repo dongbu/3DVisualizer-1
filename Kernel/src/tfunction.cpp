@@ -10,7 +10,7 @@
 
 TFunction::TFunction()
 {
-  rows = bytes_elem = tex_id = 0;
+  rows = bytes_elem = tex_id = num_channels = 0;
   is_loaded = is_uploaded = false;
   data = NULL;
 }
@@ -21,6 +21,7 @@ TFunction::TFunction(TFunction& rhs)
   rows = rhs.rows;
   bytes_elem = rhs.bytes_elem;
   tex_id = rhs.tex_id;
+  num_channels = rhs.num_channels;
   is_loaded = rhs.IsLoaded();
   is_uploaded = rhs.IsUploaded();
 
@@ -40,6 +41,7 @@ TFunction::~TFunction()
 {
   if(data != NULL) {
     size_t sz = 0;
+    
     if(bytes_elem == 1) sz = 256;
     else if(bytes_elem == 2) sz = 4096;
     sz *= rows;
@@ -48,7 +50,7 @@ TFunction::~TFunction()
     data = NULL;
   }
 
-  rows = bytes_elem = 0;
+  num_channels = rows = bytes_elem = 0;
   Loaded(false);
   Uploaded(false);
 
@@ -60,22 +62,53 @@ TFunction::~TFunction()
 
 bool TFunction::Load(std::string path)
 {
-  return false;
+  assert(!path.empty());
+  if(IsLoaded()) {
+    memset(data, 0, GetWidth() * rows * sizeof(GLubyte));
+    free(data);
+    data = NULL;
+    Loaded(false);
+  }
+  if(IsUploaded()) {
+    Uploaded(false);
+  }
+
+  std::cout << path << " " << GetWidth() << " " << rows << " " << num_channels << " " << bytes_elem << std::endl;
+  data = calloc(GetWidth() * rows, sizeof(GLubyte));
+  Loaded(data::LoadBinary(path, GetWidth() * rows, sizeof(GLubyte), data));
+  return IsLoaded();
 }
 
 bool TFunction::UploadToGPU()
 {
-  /*assert(width != 0 && height != 0 && slices != 0 && bytes_elem != 0 && data != NULL);
-  if(tex_id == 0)
-  tex_id = data::transfer::Alloc3DTex(width, height, slices, bytes_elem);
+  assert(rows != 0 && num_channels != 0 && bytes_elem != 0 && data != NULL);
+  if(tex_id == 0) {
+    if(Is1D()) {
+      tex_id = data::transfer::Alloc1DTex(GetWidth(), num_channels);
+    } else {
+      size_t w = bytes_elem == sizeof(GLubyte) ? 256 : 4096;
+      tex_id = data::transfer::Alloc2DTex(GetWidth(), rows, num_channels);
+    }
+  }
 
   assert(tex_id != 0);
-  Uploaded(data::transfer::Upload3DData(width, height, slices, bytes_elem, data, tex_id));*/
+  if(Is1D()) {
+    Uploaded(data::transfer::Upload1DData(GetWidth(), num_channels, data, tex_id));
+  } else {
+    Uploaded(data::transfer::Upload2DData(GetWidth(), rows, num_channels, data, tex_id));
+  }
 
   return IsUploaded();
 }
 
 void TFunction::bind()
 {
-  //glBindTexture(GL_TEXTURE_2D, tex_id);
+  GLenum target;
+  
+  if(Is1D())
+    target = GL_TEXTURE_1D;
+  else
+    target = GL_TEXTURE_2D;
+
+  glBindTexture(target, tex_id);
 }

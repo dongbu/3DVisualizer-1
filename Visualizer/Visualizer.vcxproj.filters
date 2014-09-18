@@ -31,15 +31,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Resources\shaders\SinglePass.fs">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\Resources\shaders\SinglePass.gs">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\Resources\shaders\SinglePass.vs">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="..\Resources\shaders\SPass.fs">
       <Filter>Shaders</Filter>
     </None>

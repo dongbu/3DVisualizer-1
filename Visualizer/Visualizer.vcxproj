@@ -22,9 +22,6 @@
   <ItemGroup>
     <None Include="..\Resources\shaders\FPass.fs" />
     <None Include="..\Resources\shaders\FPass.vs" />
-    <None Include="..\Resources\shaders\SinglePass.fs" />
-    <None Include="..\Resources\shaders\SinglePass.gs" />
-    <None Include="..\Resources\shaders\SinglePass.vs" />
     <None Include="..\Resources\shaders\SPass.fs" />
     <None Include="..\Resources\shaders\SPass.vs" />
   </ItemGroup>

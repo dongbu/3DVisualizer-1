@@ -34,14 +34,15 @@ bool DatasetManager::Init(std::string path)
   return true;
 }
 
-void DatasetManager::Add(std::string key, Dataset* data)
+bool DatasetManager::Add(std::string key, Dataset* data)
 {
   if(key.empty() || data == NULL) {
     Logger::getInstance()->error("Dataset::Add invalid parameters.");
-    return;
+    return false;
   }
 
   m_datasetMap[key] = new Dataset(*data);
+  return true;
 }
 
 void DatasetManager::SetActive(std::string key)
@@ -63,7 +64,8 @@ void DatasetManager::SetActive(std::string key)
       Logger::getInstance()->error("Failed to upload dataset " + key);
     }
   }
-  glBindTexture(GL_TEXTURE_3D, data->tex_id);
+
+  data->bind();
   m_activeKey = key;
 }
 

@@ -82,10 +82,11 @@ void initResources()
   g_viewMatrix = glm::lookAt(g_eye, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
   g_projMatrix = glm::ortho(-0.8f, 0.8f, -0.8f, 0.8f, 1.f, 5.f);
 
-  DatasetManager::getInstance()->Init("C:/Users/Guilherme/Pictures/datasets/");
+  DatasetManager::getInstance()->Init("C:/Users/schardong/Pictures/datasets/");
   DatasetManager::getInstance()->SetActive("stent8");
 
-  TFManager::getInstance()->Init("C:/Users/Guilherme/Pictures/datasets/transfer-functions/");
+  TFManager::getInstance()->Init("C:/Users/schardong/Pictures/datasets/transfer-functions/");
+  TFManager::getInstance()->SetActive("tff1");
 }
 
 int main()
@@ -249,15 +250,21 @@ static void cb_keyboard(GLFWwindow* win, int key, int scancode, int action, int 
       glfwSetWindowShouldClose(win, GL_TRUE);
       break;
     case GLFW_KEY_1:
-      DatasetManager::getInstance()->SetActive("neghip");
+      TFManager::getInstance()->SetActive("tff1");
       break;
     case GLFW_KEY_2:
+      TFManager::getInstance()->SetActive("tff2");
+      break;
+    case GLFW_KEY_F1:
+      DatasetManager::getInstance()->SetActive("neghip");
+      break;
+    case GLFW_KEY_F2:
       DatasetManager::getInstance()->SetActive("bonsai");
       break;
-    case GLFW_KEY_3:
+    case GLFW_KEY_F3:
       DatasetManager::getInstance()->SetActive("nucleon");
       break;
-    case GLFW_KEY_4:
+    case GLFW_KEY_F4:
       DatasetManager::getInstance()->SetActive("silicium");
       break;
     }
