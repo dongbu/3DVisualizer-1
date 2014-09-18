@@ -72,8 +72,10 @@ Dataset::~Dataset()
   Loaded(false);
   Uploaded(false);
 
-  glDeleteTextures(1, &tex_id);
-  tex_id = 0;
+  if(!tex_id) {
+    glDeleteTextures(1, &tex_id);
+    tex_id = 0;
+  }
 }
 
 bool Dataset::Load(std::string path)

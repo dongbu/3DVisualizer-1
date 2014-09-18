@@ -1,2 +1,3 @@
 TODO: Use a XML metafile for the transfer functions
 Pass the type of vertex attributes to each mesh of the TinyGL lib. Or Manually create the buffers and attach them to the mesh later.
+FIXME: Name replication of the transfer functions.

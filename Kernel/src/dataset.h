@@ -8,7 +8,6 @@
 class Dataset
 {
 public:
-
   GLuint tex_id;
   void* data;
   size_t width;

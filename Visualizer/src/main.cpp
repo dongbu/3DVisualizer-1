@@ -6,6 +6,7 @@
 #include "logger.h"
 #include "tinygl.h"
 #include "datasetmanager.h"
+#include "tfmanager.h"
 #include "arcball.h"
 #include "cube.h"
 
@@ -83,6 +84,8 @@ void initResources()
 
   DatasetManager::getInstance()->Init("C:/Users/Guilherme/Pictures/datasets/");
   DatasetManager::getInstance()->SetActive("stent8");
+
+  TFManager::getInstance()->Init("C:/Users/Guilherme/Pictures/datasets/transfer-functions/");
 }
 
 int main()

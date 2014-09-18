@@ -7,7 +7,7 @@
 
 bool TFManager::Init(std::string path)
 {
-  m_dataPath = path;
+  m_tfPath = path;
 
   TiXmlDocument metafile(path + std::string("metafile.xml"));
   bool load_ok = metafile.LoadFile();
@@ -25,8 +25,6 @@ bool TFManager::Init(std::string path)
     TFunction* tf = new TFunction;
     std::istringstream(data_child->FirstChild("rows")->FirstChild()->Value()) >> tf->rows;
     std::istringstream(data_child->FirstChild("bytes_elem")->FirstChild()->Value()) >> tf->bytes_elem;
-    std::istringstream(data_child->FirstChild("slices")->FirstChild()->Value()) >> d->slices;
-    std::istringstream(data_child->FirstChild("bytes_elem")->FirstChild()->Value()) >> d->bytes_elem;*/
 
     Add(data_child->FirstChild("name")->FirstChild()->Value(), tf);
   }
