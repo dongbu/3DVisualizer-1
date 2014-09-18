@@ -26,7 +26,7 @@ vec4 composite(Ray ray, vec3 step)
   float lenAcc = 0.f;
 
   for(int i = 0; i < u_fNumSamples; i++, currPos += step, lenAcc += length(step)) {
-    vec4 colorSample = texture(u_sTransferFunction, texture(u_sDensityMap, currPos).r);
+    vec4 colorSample = vec4(texture(u_sDensityMap, currPos).r);
 
     colorSample = abs(colorSample);
     colorSample.a = clamp(colorSample.a, 0.f, 1.f);

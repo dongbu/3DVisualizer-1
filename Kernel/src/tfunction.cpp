@@ -67,6 +67,11 @@ bool TFunction::Load(std::string path)
   data = calloc(GetWidth() * rows, sizeof(GLubyte));
   Loaded(data::LoadBinary(path, GetWidth() * rows, sizeof(GLubyte), data));
 
+  unsigned char* tmp_data = (unsigned char*)data;
+  for(int i = 0; i < GetWidth() * rows - 4; i+=4) {
+    printf("i = %d = {%d, %d, %d, %d}\n", i, tmp_data[i], tmp_data[i+1], tmp_data[i+2], tmp_data[i+3]);
+  }
+
   return IsLoaded();
 }
 
@@ -93,7 +98,6 @@ bool TFunction::UploadToGPU()
 
 void TFunction::bind(GLenum tex_unit)
 {
-
   GLenum target;
   
   if(Is1D())
