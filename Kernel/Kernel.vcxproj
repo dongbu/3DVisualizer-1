@@ -18,6 +18,7 @@
     <ClInclude Include="src\logger.h" />
     <ClInclude Include="src\perlin.h" />
     <ClInclude Include="src\singleton.h" />
+    <ClInclude Include="src\tfmanager.h" />
     <ClInclude Include="src\tfunction.h" />
   </ItemGroup>
   <ItemGroup>
@@ -27,6 +28,7 @@
     <ClCompile Include="src\dataset.cpp" />
     <ClCompile Include="src\logger.cpp" />
     <ClCompile Include="src\perlin.c" />
+    <ClCompile Include="src\tfmanager.cpp" />
     <ClCompile Include="src\tfunction.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
