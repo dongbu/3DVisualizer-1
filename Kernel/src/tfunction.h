@@ -9,6 +9,7 @@ class TFunction
 public:
   void* data;
   size_t bytes_elem;
+  size_t rows;
 
   TFunction();
   TFunction(TFunction& rhs);

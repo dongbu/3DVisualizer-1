@@ -12,10 +12,10 @@ class DatasetManager : public Singleton<DatasetManager>
 
 public:
   bool Init(std::string path);
-  void AddDataset(std::string key, Dataset* data);
-  void SetActiveDataset(std::string key);
-  Dataset* GetDataset(std::string key);
-  Dataset* GetCurrentDataset();
+  void Add(std::string key, Dataset* data);
+  void SetActive(std::string key);
+  Dataset* Get(std::string key);
+  Dataset* GetCurrent();
   void FreeResources();
 
 private:

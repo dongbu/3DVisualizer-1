@@ -28,23 +28,23 @@ bool DatasetManager::Init(std::string path)
     std::istringstream(data_child->FirstChild("slices")->FirstChild()->Value()) >> d->slices;
     std::istringstream(data_child->FirstChild("bytes_elem")->FirstChild()->Value()) >> d->bytes_elem;
 
-    AddDataset(data_child->FirstChild("name")->FirstChild()->Value(), d);
+    Add(data_child->FirstChild("name")->FirstChild()->Value(), d);
   }
 
   return true;
 }
 
-void DatasetManager::AddDataset(std::string key, Dataset* data)
+void DatasetManager::Add(std::string key, Dataset* data)
 {
   if(key.empty() || data == NULL) {
-    Logger::getInstance()->error("Dataset::AddDataset invalid parameter.");
+    Logger::getInstance()->error("Dataset::Add invalid parameters.");
     return;
   }
 
   m_datasetMap[key] = new Dataset(*data);
 }
 
-void DatasetManager::SetActiveDataset(std::string key)
+void DatasetManager::SetActive(std::string key)
 {
   if(m_activeKey == key) return;
 
@@ -67,18 +67,16 @@ void DatasetManager::SetActiveDataset(std::string key)
   m_activeKey = key;
 }
 
-Dataset* DatasetManager::GetDataset(std::string key)
+Dataset* DatasetManager::Get(std::string key)
 {
   assert(!key.empty());
   assert(m_datasetMap.find(key) != m_datasetMap.end());
   return m_datasetMap[key];
 }
 
-Dataset* DatasetManager::GetCurrentDataset()
+Dataset* DatasetManager::GetCurrent()
 {
-  assert(!m_activeKey.empty());
-  assert(m_datasetMap.find(m_activeKey) != m_datasetMap.end());
-  return m_datasetMap[m_activeKey];
+  return Get(m_activeKey);
 }
 
 void DatasetManager::FreeResources()
