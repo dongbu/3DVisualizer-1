@@ -27,7 +27,7 @@ static Arcball* g_mouse;
 glm::vec3 g_eye;
 glm::mat4 g_viewMatrix;
 glm::mat4 g_projMatrix;
-static GLuint g_numSamples = 512;
+static GLuint g_numSamples = 356;
 
 static void initMesh();
 static void initFBO();
@@ -281,6 +281,12 @@ static void cb_keyboard(GLFWwindow* win, int key, int scancode, int action, int 
       break;
     case GLFW_KEY_F6:
       DatasetManager::getInstance()->SetActive("pyro2", GL_TEXTURE0);
+      break;
+    case GLFW_KEY_F7:
+      DatasetManager::getInstance()->SetActive("pig", GL_TEXTURE0);
+      break;
+    case GLFW_KEY_F8:
+      DatasetManager::getInstance()->SetActive("virgo", GL_TEXTURE0);
       break;
     }
   }
