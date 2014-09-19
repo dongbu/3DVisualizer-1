@@ -28,15 +28,16 @@ TFunction::TFunction(TFunction& rhs)
   if(rhs.data == NULL) {
     data = NULL;
   } else {
-    data = calloc(GetWidth() * rows, bytes_elem);
-    memcpy(data, rhs.data, GetWidth() * rows);
+    size_t sz = GetWidth() * rows * num_channels;
+    data = calloc(sz, sizeof(GLubyte));
+    memcpy(data, rhs.data, sz * sizeof(GLubyte));
   }
 }
 
 TFunction::~TFunction()
 {
   if(data != NULL) {
-    memset(data, 0, GetWidth() * rows);
+    memset(data, 0, GetWidth() * rows * num_channels * sizeof(GLubyte));
     free(data);
     data = NULL;
   }
@@ -55,7 +56,7 @@ bool TFunction::Load(std::string path)
 {
   assert(!path.empty());
   if(IsLoaded()) {
-    memset(data, 0, GetWidth() * rows * sizeof(GLubyte));
+    memset(data, 0, GetWidth() * rows * num_channels * sizeof(GLubyte));
     free(data);
     data = NULL;
     Loaded(false);
@@ -63,14 +64,9 @@ bool TFunction::Load(std::string path)
   if(IsUploaded()) {
     Uploaded(false);
   }
-
-  data = calloc(GetWidth() * rows, sizeof(GLubyte));
-  Loaded(data::LoadBinary(path, GetWidth() * rows, sizeof(GLubyte), data));
-
-  unsigned char* tmp_data = (unsigned char*)data;
-  for(int i = 0; i < GetWidth() * rows - 4; i+=4) {
-    printf("i = %d = {%d, %d, %d, %d}\n", i, tmp_data[i], tmp_data[i+1], tmp_data[i+2], tmp_data[i+3]);
-  }
+  size_t sz = GetWidth() * rows * num_channels;
+  data = calloc(sz, sizeof(GLubyte));
+  Loaded(data::LoadBinary(path, sz, sizeof(GLubyte), data));
 
   return IsLoaded();
 }
