@@ -30,6 +30,8 @@ public:
 
   void bind(GLenum tex_unit = GL_TEXTURE0);
 
+  static Dataset* CreatePyroclasticVolume(size_t sz, float r);
+
 private:
   bool is_uploaded;
   bool is_loaded;

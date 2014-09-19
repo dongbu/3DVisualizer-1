@@ -1,12 +1,46 @@
 #include "dataset.h"
+#include "perlin.h"
 
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
 #include <cassert>
-#include <boost/algorithm/string.hpp>
 #include <GL/glew.h>
+
+Dataset* Dataset::CreatePyroclasticVolume(size_t sz, float r)
+{
+  Dataset* dataset = new Dataset;
+  dataset->width = dataset->height = dataset->slices = sz;
+  dataset->bytes_elem = sizeof(GLubyte);
+
+  dataset->data = new GLubyte[sz * sz * sz];
+  GLubyte* ptr = (GLubyte*) dataset->data;
+
+  float frequency = 3.0f / sz;
+  float center = sz / 2.0f + 0.5f;
+
+  for(size_t x = 0; x < sz; ++x) {
+    for(size_t y = 0; y < sz; ++y) {
+      for(size_t z = 0; z < sz; ++z) {
+        float dx = center - x;
+        float dy = center - y;
+        float dz = center - z;
+
+        float off = fabsf((float) PerlinNoise3D(x * frequency, y * frequency, z * frequency, 5, 6, 3));
+
+        float d = sqrtf(dx*dx + dy*dy + dz*dz) / sz;
+        bool isFilled = (d - off) < r;
+        *ptr++ = isFilled ? 255 : 0;
+      }
+    }
+  }
+
+  dataset->Loaded(true);
+  dataset->Uploaded(false);
+
+  return dataset;
+}
 
 // // Dataset* Dataset::Load(std::string path)
 // {
