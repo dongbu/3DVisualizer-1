@@ -27,7 +27,7 @@ static Arcball* g_mouse;
 glm::vec3 g_eye;
 glm::mat4 g_viewMatrix;
 glm::mat4 g_projMatrix;
-static GLuint g_numSamples = 64;
+static GLuint g_numSamples = 512;
 
 static void initMesh();
 static void initFBO();
@@ -83,10 +83,17 @@ void initResources()
   g_viewMatrix = glm::lookAt(g_eye, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
   g_projMatrix = glm::ortho(-0.8f, 0.8f, -0.8f, 0.8f, 1.f, 5.f);
 
-  DatasetManager::getInstance()->Init("C:/Users/schardong/Pictures/datasets/");
-  DatasetManager::getInstance()->SetActive("stent8", GL_TEXTURE0);
+  DatasetManager::getInstance()->Init("C:/Users/Guilherme/Pictures/datasets/");
 
-  TFManager::getInstance()->Init("C:/Users/schardong/Pictures/datasets/transfer-functions/");
+  Dataset* pyro1 = Dataset::CreatePyroclasticVolume(128, 0.05f);
+  Dataset* pyro2 = Dataset::CreatePyroclasticVolume(256, 0.1f);
+
+  DatasetManager::getInstance()->Add("pyro1", pyro1);
+  DatasetManager::getInstance()->Add("pyro2", pyro2);
+
+  DatasetManager::getInstance()->SetActive("engine", GL_TEXTURE0);
+
+  TFManager::getInstance()->Init("C:/Users/Guilherme/Pictures/datasets/transfer-functions/");
   TFManager::getInstance()->SetActive("tff1", GL_TEXTURE1);
 }
 
@@ -268,6 +275,12 @@ static void cb_keyboard(GLFWwindow* win, int key, int scancode, int action, int 
       break;
     case GLFW_KEY_F4:
       DatasetManager::getInstance()->SetActive("silicium", GL_TEXTURE0);
+      break;
+    case GLFW_KEY_F5:
+      DatasetManager::getInstance()->SetActive("pyro1", GL_TEXTURE0);
+      break;
+    case GLFW_KEY_F6:
+      DatasetManager::getInstance()->SetActive("pyro2", GL_TEXTURE0);
       break;
     }
   }
