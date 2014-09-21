@@ -10,6 +10,9 @@ static int WINDOW_H = 700;
 #include <glm/glm.hpp>
 #include <string>
 
+#include "datasetmanager.h"
+#include "tfmanager.h"
+
 static const std::string FPASS_KEY = "first_pass";
 static const std::string SPASS_KEY = "second_pass";
 static const std::string FBO_KEY = "back_faces";

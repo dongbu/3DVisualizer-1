@@ -5,15 +5,10 @@
 #include "config.h"
 #include "logger.h"
 #include "tinygl.h"
-#include "datasetmanager.h"
-#include "tfmanager.h"
 #include "arcball.h"
 #include "cube.h"
-
-extern "C"
-{
 #include "perlin.h"
-}
+#include "topanalyzer.h"
 
 #define GLM_FORCE_RADIANS
 
@@ -86,15 +81,25 @@ void initResources()
   DatasetManager::getInstance()->Init("C:/Users/Guilherme/Pictures/datasets/");
 
   Dataset* pyro1 = Dataset::CreatePyroclasticVolume(128, 0.05f);
-  Dataset* pyro2 = Dataset::CreatePyroclasticVolume(256, 0.1f);
+  Dataset* pyro2 = Dataset::CreatePyroclasticVolume(256, 0.4f);
+  Dataset* pyro3 = Dataset::CreatePyroclasticVolume(64, 0.14f);
 
   DatasetManager::getInstance()->Add("pyro1", pyro1);
   DatasetManager::getInstance()->Add("pyro2", pyro2);
+  DatasetManager::getInstance()->Add("pyro3", pyro3);
 
-  DatasetManager::getInstance()->SetActive("engine", GL_TEXTURE0);
+  DatasetManager::getInstance()->SetActive("silicium", GL_TEXTURE0);
 
   TFManager::getInstance()->Init("C:/Users/Guilherme/Pictures/datasets/transfer-functions/");
   TFManager::getInstance()->SetActive("tff1", GL_TEXTURE1);
+
+  //TopAnalyzer::getInstance()->Init();
+  //TopAnalyzer::getInstance()->BuildContourTree();
+  TopAnalyzer::getInstance()->AnalyzeCurrDataset();
+
+  delete pyro1;
+  delete pyro2;
+  delete pyro3;
 }
 
 int main()
@@ -283,9 +288,12 @@ static void cb_keyboard(GLFWwindow* win, int key, int scancode, int action, int 
       DatasetManager::getInstance()->SetActive("pyro2", GL_TEXTURE0);
       break;
     case GLFW_KEY_F7:
-      DatasetManager::getInstance()->SetActive("pig", GL_TEXTURE0);
+      DatasetManager::getInstance()->SetActive("pyro3", GL_TEXTURE0);
       break;
     case GLFW_KEY_F8:
+      DatasetManager::getInstance()->SetActive("pig", GL_TEXTURE0);
+      break;
+    case GLFW_KEY_F9:
       DatasetManager::getInstance()->SetActive("virgo", GL_TEXTURE0);
       break;
     }

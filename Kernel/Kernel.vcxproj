@@ -15,6 +15,7 @@
     <ClInclude Include="src\dataset.h" />
     <ClInclude Include="src\datasetmanager.h" />
     <ClInclude Include="src\datatransfer.h" />
+    <ClInclude Include="src\knlconfig.h" />
     <ClInclude Include="src\logger.h" />
     <ClInclude Include="src\perlin.h" />
     <ClInclude Include="src\singleton.h" />

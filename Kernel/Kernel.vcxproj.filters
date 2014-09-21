@@ -54,6 +54,9 @@
     <ClInclude Include="src\tfmanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\knlconfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
