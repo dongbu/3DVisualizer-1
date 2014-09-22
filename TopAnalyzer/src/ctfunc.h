@@ -10,6 +10,10 @@ extern "C"
 #include <tourtre.h>
 }
 
+#ifdef  __cplusplus
+extern "C" {
+#endif
+
 typedef enum
 {
     LINEAR,     // y = ax + b.
@@ -55,5 +59,8 @@ void vertex_proc(size_t, ctArc*, void*);
 void arc_merge_proc(ctArc*, ctArc*, void*);
 double arc_priority_proc(ctNode*, void*);
 
+#ifdef  __cplusplus
+}
+#endif
 
 #endif // CTFUNC_H
