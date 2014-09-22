@@ -1,4 +1,4 @@
-#include "mesh.h"
+#include "topmesh.h"
 #include "logger.h"
 
 //#include <tbb/tbb.h>
@@ -16,7 +16,8 @@ namespace top
     AscendingOrder(top::Dataset* d ) : data(d) {}
 
     bool operator()(const size_t & a, const size_t & b) const {
-      if(data->data->Get(a) == data->data->Get(b)) return a < b;
+      if(data->data->Get(a) == data->data->Get(b))
+        return a < b;
       return data->data->Get(a) < data->data->Get(b);
     }
   };

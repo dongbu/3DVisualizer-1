@@ -21,6 +21,10 @@ namespace top
     Dataset(knl::Dataset& rhs);
     ~Dataset();
 
+    size_t Get(int idx)
+    {
+      return data->Get(idx);
+    }
 
     //1 dimensional referencing
     /*DataType & operator[](size_t i)

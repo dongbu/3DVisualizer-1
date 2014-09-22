@@ -1,6 +1,28 @@
 #include "topanalyzer.h"
 #include "logger.h"
 #include "topdata.h"
+#include "topmesh.h"
+#include "ctfunc.h"
+
+extern "C"
+{
+#include <tourtre.h>
+};
+
+static ctBranch* BranchAlloc(void*)
+{
+  return (ctBranch*) calloc(1, sizeof(ctBranch));
+}
+
+static void BranchFree(ctBranch* b, void*)
+{
+  if(b->data != NULL) {
+    free(b->data);
+    b->data = NULL;
+  }
+  free(b);
+  b = NULL;
+}
 
 void TopAnalyzer::Init()
 {
@@ -18,9 +40,21 @@ void TopAnalyzer::AnalyzeDataset(knl::Dataset* data)
   assert(data != NULL);
   Logger::getInstance()->warn("TopAnalyzer::AnalyzeDataset() - Not implemented.");
   top::Dataset topd(*data);
-  //create mesh
-  //init context
-  //set callbacks
+  top::Mesh mesh(topd);
+
+  std::vector<size_t> order;
+  mesh.createGraph(order);
+
+  ctContext* ctx = ct_init(topd.size, &(order.front()), std_value, std_neighbors, &mesh);
+  ct_vertexFunc(ctx, &vertex_proc);
+  ct_arcMergeFunc(ctx, &arc_merge_proc);
+  ct_priorityFunc(ctx, &arc_priority_proc);
+
+  ct_branchAllocator(ctx, &BranchAlloc, &BranchFree);
+
+  ct_sweepAndMerge(ctx);
+  ctBranch* root_branch = ct_decompose(ctx);
+  ctBranch** branch_map = ct_branchMap(ctx);
   //do the deed
 
 
