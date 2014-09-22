@@ -5,6 +5,8 @@
 
 #include <tinyxml.h>
 
+using namespace knl;
+
 bool DatasetManager::Init(std::string path)
 {
   m_dataPath = path;
