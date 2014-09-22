@@ -12,7 +12,7 @@ public:
   bool BuildContourTree();
 
   void AnalyzeCurrDataset();
-  void AnalyzeDataset(Dataset* data);
+  void AnalyzeDataset(knl::Dataset* data);
 
 };
 

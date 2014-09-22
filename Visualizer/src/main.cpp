@@ -74,14 +74,15 @@ GLuint initGLEW()
 
 void initResources()
 {
+  using namespace knl;
   g_eye = glm::vec3(0, 0, 3.5);
   g_viewMatrix = glm::lookAt(g_eye, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
   g_projMatrix = glm::ortho(-0.8f, 0.8f, -0.8f, 0.8f, 1.f, 5.f);
 
-  DatasetManager::getInstance()->Init("C:/Users/Guilherme/Pictures/datasets/");
+  DatasetManager::getInstance()->Init("C:/Users/schardong/Pictures/datasets/");
 
   Dataset* pyro1 = Dataset::CreatePyroclasticVolume(128, 0.05f);
-  Dataset* pyro2 = Dataset::CreatePyroclasticVolume(256, 0.4f);
+  Dataset* pyro2 = Dataset::CreatePyroclasticVolume(64, 0.4f);
   Dataset* pyro3 = Dataset::CreatePyroclasticVolume(64, 0.14f);
 
   DatasetManager::getInstance()->Add("pyro1", pyro1);
@@ -90,11 +91,9 @@ void initResources()
 
   DatasetManager::getInstance()->SetActive("silicium", GL_TEXTURE0);
 
-  TFManager::getInstance()->Init("C:/Users/Guilherme/Pictures/datasets/transfer-functions/");
+  TFManager::getInstance()->Init("C:/Users/schardong/Pictures/datasets/transfer-functions/");
   TFManager::getInstance()->SetActive("tff1", GL_TEXTURE1);
 
-  //TopAnalyzer::getInstance()->Init();
-  //TopAnalyzer::getInstance()->BuildContourTree();
   TopAnalyzer::getInstance()->AnalyzeCurrDataset();
 
   delete pyro1;
@@ -227,7 +226,7 @@ static void initFBO()
 
 static void initShaders()
 {
-  float screen_sz[2] = {WINDOW_W, WINDOW_H};
+  float screen_sz[2] = {(float)WINDOW_W, (float)WINDOW_H};
   glm::mat4 modelMatrix = TinyGL::getInstance()->getMesh("proxy_cube")->m_modelMatrix;
 
   Shader* fpass = new Shader(RESOURCE_PATH + "/shaders/FPass.vs", RESOURCE_PATH + "/shaders/FPass.fs");
@@ -247,7 +246,7 @@ static void initShaders()
   spass->setUniform1i("u_sDensityMap", 0);
   spass->setUniform1i("u_sTransferFunction", 1);
   spass->setUniform1i("u_sBackFaces", 2);
-  spass->setUniform1f("u_fNumSamples", g_numSamples);
+  spass->setUniform1f("u_fNumSamples", (float)g_numSamples);
 
   Shader::unbind();
 

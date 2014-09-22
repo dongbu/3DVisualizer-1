@@ -1,5 +1,6 @@
 #include "topanalyzer.h"
 #include "logger.h"
+#include "topdata.h"
 
 void TopAnalyzer::Init()
 {
@@ -8,14 +9,15 @@ void TopAnalyzer::Init()
 
 void TopAnalyzer::AnalyzeCurrDataset()
 {
-  Dataset* data = DatasetManager::getInstance()->GetCurrent();
+  knl::Dataset* data = DatasetManager::getInstance()->GetCurrent();
   AnalyzeDataset(data);
 }
 
-void TopAnalyzer::AnalyzeDataset(Dataset* data)
+void TopAnalyzer::AnalyzeDataset(knl::Dataset* data)
 {
   assert(data != NULL);
   Logger::getInstance()->warn("TopAnalyzer::AnalyzeDataset() - Not implemented.");
+  top::Dataset topd(*data);
   //create mesh
   //init context
   //set callbacks

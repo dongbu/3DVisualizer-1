@@ -5,8 +5,9 @@
 #include <string>
 #include <vector>
 #include <cassert>
-#include <boost/algorithm/string.hpp>
 #include <GL/glew.h>
+
+using namespace knl;
 
 TFunction::TFunction()
 {

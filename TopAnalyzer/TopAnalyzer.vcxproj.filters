@@ -15,6 +15,7 @@
     <ClInclude Include="src\topdata.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\mesh.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\topanalyzer.cpp">
@@ -23,5 +24,6 @@
     <ClCompile Include="src\topdata.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\mesh.cpp" />
   </ItemGroup>
 </Project>
