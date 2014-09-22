@@ -6,12 +6,6 @@ void TopAnalyzer::Init()
   Logger::getInstance()->warn("TopAnalyzer::Init() - Not implemented.");
 }
 
-bool TopAnalyzer::BuildContourTree()
-{
-  Logger::getInstance()->warn("TopAnalyzer::BuildContourTree() - Not implemented.");
-  return false;
-}
-
 void TopAnalyzer::AnalyzeCurrDataset()
 {
   Dataset* data = DatasetManager::getInstance()->GetCurrent();
@@ -38,7 +32,7 @@ void TopAnalyzer::AnalyzeDataset(Dataset* data)
   //    std::string path = "/home/netto/datasets/hydrogenAtom.128x128x128.uint8";
   //    std::string path = "/home/netto/datasets/nucleon.41x41x41.uint8";
 
-  Logger::getInstance()->setLogStream(&std::cout);
+  Logger::getInstance()->setL ogStream(&std::cout);
 
   char prefix[1024];
   bool compressed;

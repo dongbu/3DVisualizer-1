@@ -12,9 +12,15 @@
     <ClInclude Include="src\topanalyzer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\topdata.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\topanalyzer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\topdata.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

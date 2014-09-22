@@ -12,9 +12,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\topanalyzer.cpp" />
+    <ClCompile Include="src\topdata.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\topanalyzer.h" />
+    <ClInclude Include="src\topdata.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{38D1996C-5DFF-4266-BDDB-D63AD1DFA68E}</ProjectGuid>
