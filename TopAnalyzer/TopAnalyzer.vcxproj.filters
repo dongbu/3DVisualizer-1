@@ -18,8 +18,12 @@
     <ClInclude Include="src\topmesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ctfunc.h" />
-    <ClInclude Include="src\featureset.h" />
+    <ClInclude Include="src\ctfunc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\featureset.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\topanalyzer.cpp">
@@ -31,6 +35,8 @@
     <ClCompile Include="src\topmesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ctfunc.cpp" />
+    <ClCompile Include="src\ctfunc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

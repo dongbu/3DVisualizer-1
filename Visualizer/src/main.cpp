@@ -89,7 +89,7 @@ void initResources()
   DatasetManager::getInstance()->Add("pyro2", pyro2);
   DatasetManager::getInstance()->Add("pyro3", pyro3);
 
-  DatasetManager::getInstance()->SetActive("silicium", GL_TEXTURE0);
+  DatasetManager::getInstance()->SetActive("engine", GL_TEXTURE0);
 
   TFManager::getInstance()->Init("C:/Users/schardong/Pictures/datasets/transfer-functions/");
   TFManager::getInstance()->SetActive("tff1", GL_TEXTURE1);

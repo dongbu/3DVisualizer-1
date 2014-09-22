@@ -55,41 +55,10 @@ void TopAnalyzer::AnalyzeDataset(knl::Dataset* data)
   ct_sweepAndMerge(ctx);
   ctBranch* root_branch = ct_decompose(ctx);
   ctBranch** branch_map = ct_branchMap(ctx);
-  //do the deed
 
 
 
-
-  /*std::string path = "/home/guilherme/Pictures/datasets/nucleon.41x41x41.uint8";
-  //    std::string path = "/home/guilherme/Pictures/datasets/hydrogenAtom.128x128x128.uint8";
-  //    std::string path = "/home/guilherme/Pictures/datasets/bonsai.256x256x256.uint8";
-  //    std::string path = "/home/guilherme/Pictures/datasets/stent.512x512x174.uint8";
-
-  //    std::string path = "/home/netto/datasets/hydrogenAtom.128x128x128.uint8";
-  //    std::string path = "/home/netto/datasets/nucleon.41x41x41.uint8";
-
-  Logger::getInstance()->setL ogStream(&std::cout);
-
-  char prefix[1024];
-  bool compressed;
-  Data data;
-  data.load(path.c_str(), prefix, &compressed);
-  Mesh mesh(data);
-
-  std::vector<size_t> order;
-  mesh.createGraph(order);
-
-  ctContext* ctx = ct_init(data.totalSize, &(order.front()), std_value, std_neighbors, &mesh);
-  ct_vertexFunc(ctx, &vertex_proc);
-  ct_arcMergeFunc(ctx, &arc_merge_proc);
-  ct_priorityFunc(ctx, &arc_priority_proc);
-
-  ct_branchAllocator(ctx, &myAlloc, &myFree);
-
-  ct_sweepAndMerge(ctx);
-  ctBranch* root_branch = ct_decompose(ctx);
-  ctBranch** branch_map = ct_branchMap(ctx);
-
+  /*
   zero_branches(root_branch);
   size_t max_depth = 0;
   calc_branch_depth(root_branch, &max_depth, 0);
