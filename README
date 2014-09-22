@@ -5,5 +5,9 @@ TODOs:
   -Make it possible to use a global color function with local opacity functions (change the shaders basically);
 
 FIXMEs:
+  -Performance issues when marking branches for removal (TopAnalyzer).
+    -Perhaps put all the branches in an array, ordered by level and iterate from the end to the beginning removing any branches that should be removed.
+
+
 QUESTIONS:
   -Use a 2D transfer function + vertex-branch map or a preaplied alpha dataset?
