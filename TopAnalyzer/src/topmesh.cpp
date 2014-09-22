@@ -1,8 +1,8 @@
 #include "topmesh.h"
 #include "logger.h"
 
-//#include <tbb/tbb.h>
-//#include <tbb/parallel_sort.h>
+#include <tbb/tbb.h>
+#include <tbb/parallel_sort.h>
 #include <iostream>
 #include <algorithm>
 
@@ -26,8 +26,8 @@ namespace top
   {
     order.resize(data.size);
     for(unsigned int i = 0; i < data.size; i++) order[i] = i;
-    //tbb::parallel_sort(order.begin(), order.end(), AscendingOrder(&data));
-    std::sort(order.begin(), order.end(), AscendingOrder(&data));
+    tbb::parallel_sort(order.begin(), order.end(), AscendingOrder(&data));
+    //std::sort(order.begin(), order.end(), AscendingOrder(&data));
   }
 
   void Mesh::getNeighbors(size_t i, std::vector<size_t>& n) 

@@ -1,13 +1,13 @@
 #ifndef SIMPLIFICATION_H
 #define SIMPLIFICATION_H
 
-#include "data.h"
-#include "mesh.h"
+#include "topdata.h"
+#include "topmesh.h"
+#include "featureset.h"
 
 extern "C"
 {
-#include <tourtre/tourtre.h>
-#include "featureset.h"
+#include <tourtre.h>
 }
 
 /**

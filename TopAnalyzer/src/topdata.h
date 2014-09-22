@@ -26,13 +26,6 @@ namespace top
       return data->Get(idx);
     }
 
-    //1 dimensional referencing
-    /*DataType & operator[](size_t i)
-    {
-    if (i < totalSize) return Dataset[i];
-    else return saddles[i - totalSize];
-    }*/
-
     size_t convertIndex( size_t i, size_t j, size_t k )
     {
       return (k * data->height + j) * data->width + i;

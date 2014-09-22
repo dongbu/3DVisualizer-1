@@ -3,6 +3,10 @@
 
 #include <cstdlib>
 
+#ifdef  __cplusplus
+extern "C" {
+#endif
+
 typedef struct
 {
   size_t v;
@@ -31,5 +35,9 @@ typedef struct
   double norm_p;
   double norm_hv;
 } FeatureSet;
+
+#ifdef  __cplusplus
+}
+#endif
 
 #endif // FEATURESET_H

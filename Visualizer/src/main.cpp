@@ -89,12 +89,10 @@ void initResources()
   DatasetManager::getInstance()->Add("pyro2", pyro2);
   DatasetManager::getInstance()->Add("pyro3", pyro3);
 
-  DatasetManager::getInstance()->SetActive("engine", GL_TEXTURE0);
+  DatasetManager::getInstance()->SetActive("pyro2", GL_TEXTURE0);
 
   TFManager::getInstance()->Init("C:/Users/schardong/Pictures/datasets/transfer-functions/");
   TFManager::getInstance()->SetActive("tff1", GL_TEXTURE1);
-
-  TopAnalyzer::getInstance()->AnalyzeCurrDataset();
 
   delete pyro1;
   delete pyro2;
@@ -262,6 +260,9 @@ static void cb_keyboard(GLFWwindow* win, int key, int scancode, int action, int 
     case GLFW_KEY_ESCAPE:
       glfwSetWindowShouldClose(win, GL_TRUE);
       break;
+    case GLFW_KEY_SPACE:
+      TopAnalyzer::getInstance()->AnalyzeCurrDataset();
+      break;
     case GLFW_KEY_1:
       TFManager::getInstance()->SetActive("tff1", GL_TEXTURE1);
       break;
@@ -290,7 +291,7 @@ static void cb_keyboard(GLFWwindow* win, int key, int scancode, int action, int 
       DatasetManager::getInstance()->SetActive("pyro3", GL_TEXTURE0);
       break;
     case GLFW_KEY_F8:
-      DatasetManager::getInstance()->SetActive("pig", GL_TEXTURE0);
+      DatasetManager::getInstance()->SetActive("foot", GL_TEXTURE0);
       break;
     case GLFW_KEY_F9:
       DatasetManager::getInstance()->SetActive("virgo", GL_TEXTURE0);

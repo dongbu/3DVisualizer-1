@@ -64,14 +64,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../Kernel/src;../TinyGL/src;../TopAnalyzer/src;../../glfw/include;../../glm;../../glew/include;../../tinyxml;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Kernel/src;../TinyGL/src;../TopAnalyzer/src;../../tbb/include;../../glfw/include;../../glm;../../glew/include;../../tinyxml;</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PreprocessorDefinitions>WIN32;_MBCS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../../libtourtre/Debug;../../tinyxml/DebugtinyxmlSTL;../../glew/lib;../../build/x86/glfw/src/Debug;../Debug;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>TopAnalyzer.lib;Kernel.lib;TinyGL.lib;Tourtre.lib;tinyxmlSTL.lib;glfw3.lib;glew32d.lib;opengl32.lib;kernel32.lib;user32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../tbb/lib/ia32/vc12;../../libtourtre/Debug;../../tinyxml/DebugtinyxmlSTL;../../glew/lib;../../build/x86/glfw/src/Debug;../Debug;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>TopAnalyzer.lib;Kernel.lib;TinyGL.lib;Tourtre.lib;tinyxmlSTL.lib;tbb_debug.lib;tbbmalloc_debug.lib;glfw3.lib;glew32d.lib;opengl32.lib;kernel32.lib;user32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
@@ -84,7 +84,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../Kernel/src;../TinyGL/src;../TopAnalyzer/src;../../glfw/include;../../glm;../../glew/include;../../tinyxml;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Kernel/src;../TinyGL/src;../TopAnalyzer/src;../../tbb/include;../../glfw/include;../../glm;../../glew/include;../../tinyxml;</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PreprocessorDefinitions>WIN32;_MBCS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -92,8 +92,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>../../libtourtre/Release;../../tinyxml/ReleasetinyxmlSTL;../../glew/lib;../../build/x86/glfw/src/Release;../Release;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>TopAnalyzer.lib;Kernel.lib;TinyGL.lib;Tourtre.lib;tinyxmlSTL.lib;glfw3.lib;glew32.lib;opengl32.lib;kernel32.lib;user32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../tbb/lib/ia32/vc12;../../libtourtre/Release;../../tinyxml/ReleasetinyxmlSTL;../../glew/lib;../../build/x86/glfw/src/Release;../Release;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>TopAnalyzer.lib;Kernel.lib;TinyGL.lib;Tourtre.lib;tinyxmlSTL.lib;tbb.lib;tbbmalloc.lib;glfw3.lib;glew32.lib;opengl32.lib;kernel32.lib;user32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

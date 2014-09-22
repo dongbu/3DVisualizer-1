@@ -3,8 +3,8 @@
 
 #include <queue>
 #include <cstring>
-//#include <tbb/blocked_range.h>
-//#include <tbb/parallel_reduce.h>
+#include <tbb/blocked_range.h>
+#include <tbb/parallel_reduce.h>
 
 static inline float clamp(float x, float a, float b)
 {
@@ -141,9 +141,9 @@ void normalize_features(ctBranch* root_branch)
       FeatureSet* c_data = (FeatureSet*) c->data;
       if(!c_data->remove) {
         branch_queue.push(c);
-        c_data->norm_v = (double) c_data->v / max_features->v;
-        c_data->norm_p = (double) c_data->p / max_features->p;
-        c_data->norm_hv = (double) c_data->hv / max_features->hv;
+        c_data->norm_v = max_features->v != 0? (double) c_data->v / max_features->v : 0;
+        c_data->norm_p = max_features->p != 0? (double) c_data->p / max_features->p : 0;
+        c_data->norm_hv = max_features->hv != 0? (double) c_data->hv / max_features->hv : 0;
 
         std::cout << "    " << c_data->norm_v << ", " << c_data->norm_hv << ", " << c_data->norm_p << std::endl;
       }
@@ -356,8 +356,8 @@ void calc_residue_flow(ctBranch* root_branch, double alpha_d, double rate_Q, top
         branch_data->delta_alpha_i = 0.0;
       }
       branch_data->alpha_i_j = branch_data->alpha_i*(half_std_avg_importance_normalized(curr_branch))*calc_gsd(curr_branch,data);
-      std::cout << "["<< branch_data->depth << "] Dh: " << branch_data->delta_h << " Ai: " << branch_data->alpha_i << " r: "
-        << branch_data->delta_alpha_i << " Aij: " << branch_data->alpha_i_j << std::endl;
+      //std::cout << "["<< branch_data->depth << "] Dh: " << branch_data->delta_h << " Ai: " << branch_data->alpha_i << " r: "
+      //  << branch_data->delta_alpha_i << " Aij: " << branch_data->alpha_i_j << std::endl;
       //std::cout << branch_data->depth << " - " << branch_data->num_children << ", ";
       branch_data->alpha_lo = clamp(calc_alpha_sum(curr_branch), 0.f, 1.f);
 
@@ -368,12 +368,12 @@ void calc_residue_flow(ctBranch* root_branch, double alpha_d, double rate_Q, top
       memcpy(branch_data->alpha, tf, 256 * sizeof(double));
       free(tf);
       tf = NULL;
-      std::cout << "     Alo: " << branch_data->alpha_lo << " Ahi: " << branch_data->alpha_hi << /* " Imp: " << std_avg_importance(curr_branch) << */ std::endl;
-      std::cout << "     Min scalar: " << branch_data->min_intensity << " Max scalar: " << branch_data->max_intensity << std::endl;
-      std::cout << " Opacity: ";
-      for(int i = 0; i < 256; i++)
-        std::cout << branch_data->alpha[i] << " ";
-      std::cout << "\n\n";
+      //std::cout << "     Alo: " << branch_data->alpha_lo << " Ahi: " << branch_data->alpha_hi << /* " Imp: " << std_avg_importance(curr_branch) << */ std::endl;
+      //std::cout << "     Min scalar: " << branch_data->min_intensity << " Max scalar: " << branch_data->max_intensity << std::endl;
+      //std::cout << " Opacity: ";
+      //for(int i = 0; i < 256; i++)
+      //  std::cout << branch_data->alpha[i] << " ";
+      //std::cout << "\n\n";
 
     }
 
