@@ -39,7 +39,7 @@ void TopAnalyzer::AnalyzeCurrDataset()
 void TopAnalyzer::AnalyzeDataset(knl::Dataset* data)
 {
   assert(data != NULL);
-  Logger::getInstance()->warn("TopAnalyzer::AnalyzeDataset() - Not implemented.");
+
   top::Dataset topd(*data);
   top::Mesh mesh(topd);
 
@@ -67,7 +67,8 @@ void TopAnalyzer::AnalyzeDataset(knl::Dataset* data)
   calc_branch_features(branch_map, &topd);
 
   double avg_importance = calc_avg_importance(root_branch, &std_avg_importance);
-  simplify_tree_dfs(root_branch, branch_map, topd.size, &std_avg_importance, avg_importance / 10000);
+  //simplify_tree_dfs(root_branch, branch_map, topd.size, &std_avg_importance, avg_importance / 10000);
+  simplify_from_branchmap(branch_map, topd.size, &std_avg_importance, avg_importance);
 
   calc_branch_features(branch_map, &topd);
   int last_label = label_branches(root_branch);

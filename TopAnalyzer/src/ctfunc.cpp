@@ -145,7 +145,7 @@ void normalize_features(ctBranch* root_branch)
         c_data->norm_p = max_features->p != 0? (double) c_data->p / max_features->p : 0;
         c_data->norm_hv = max_features->hv != 0? (double) c_data->hv / max_features->hv : 0;
 
-        std::cout << "    " << c_data->norm_v << ", " << c_data->norm_hv << ", " << c_data->norm_p << std::endl;
+        //std::cout << "    " << c_data->norm_v << ", " << c_data->norm_hv << ", " << c_data->norm_p << std::endl;
       }
     }
 

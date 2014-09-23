@@ -79,7 +79,7 @@ void initResources()
   g_viewMatrix = glm::lookAt(g_eye, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
   g_projMatrix = glm::ortho(-0.8f, 0.8f, -0.8f, 0.8f, 1.f, 5.f);
 
-  DatasetManager::getInstance()->Init("C:/Users/schardong/Pictures/datasets/");
+  DatasetManager::getInstance()->Init("C:/Users/Guilherme/Pictures/datasets/");
 
   Dataset* pyro1 = Dataset::CreatePyroclasticVolume(128, 0.05f);
   Dataset* pyro2 = Dataset::CreatePyroclasticVolume(64, 0.4f);
@@ -91,7 +91,7 @@ void initResources()
 
   DatasetManager::getInstance()->SetActive("pyro2", GL_TEXTURE0);
 
-  TFManager::getInstance()->Init("C:/Users/schardong/Pictures/datasets/transfer-functions/");
+  TFManager::getInstance()->Init("C:/Users/Guilherme/Pictures/datasets/transfer-functions/");
   TFManager::getInstance()->SetActive("tff1", GL_TEXTURE1);
 
   delete pyro1;
