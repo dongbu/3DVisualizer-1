@@ -43,5 +43,8 @@
     <None Include="..\Resources\shaders\FPass.fs">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="..\Resources\shaders\SPassMultiOp.fs">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

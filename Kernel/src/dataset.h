@@ -28,14 +28,14 @@ namespace knl
     void Loaded(bool l) { is_loaded = l; }
     void Uploaded(bool u) { is_uploaded = u; }
 
-    bool Load(std::string path);
-    bool UploadToGPU();
+    virtual bool Load(std::string path);
+    virtual bool UploadToGPU();
 
-    void bind(GLenum tex_unit = GL_TEXTURE0);
+    virtual void bind(GLenum tex_unit = GL_TEXTURE0);
 
     static Dataset* CreatePyroclasticVolume(size_t sz, float r);
 
-    size_t Get(int idx)
+    virtual size_t Get(int idx)
     {
       if(bytes_elem == sizeof(GLushort)) {
         unsigned short* ptr = (unsigned short*) data + idx;

@@ -26,6 +26,7 @@ namespace top
   {
     order.resize(data.size);
     for(unsigned int i = 0; i < data.size; i++) order[i] = i;
+    //bolt::cl::sort(order.begin(), order.end(), AscendingOrder(&data));
     tbb::parallel_sort(order.begin(), order.end(), AscendingOrder(&data));
     //std::sort(order.begin(), order.end(), AscendingOrder(&data));
   }

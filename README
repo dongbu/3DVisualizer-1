@@ -7,6 +7,7 @@ TODOs:
 FIXMEs:
   -Performance issues when marking branches for removal (TopAnalyzer).
     -Perhaps put all the branches in an array, ordered by level and iterate from the end to the beginning removing any branches that should be removed.
+    -Other idea is to queue all the leaves, iterate over them and remove any that is below the threshold. Then we insert any new leaves created in the queue.
 
 
 QUESTIONS:

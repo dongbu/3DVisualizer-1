@@ -79,7 +79,7 @@ void initResources()
   g_viewMatrix = glm::lookAt(g_eye, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
   g_projMatrix = glm::ortho(-0.8f, 0.8f, -0.8f, 0.8f, 1.f, 5.f);
 
-  DatasetManager::getInstance()->Init("C:/Users/Guilherme/Pictures/datasets/");
+  DatasetManager::getInstance()->Init("C:/Users/schardong/Pictures/datasets/");
 
   Dataset* pyro1 = Dataset::CreatePyroclasticVolume(128, 0.05f);
   Dataset* pyro2 = Dataset::CreatePyroclasticVolume(64, 0.4f);
@@ -89,10 +89,14 @@ void initResources()
   DatasetManager::getInstance()->Add("pyro2", pyro2);
   DatasetManager::getInstance()->Add("pyro3", pyro3);
 
-  DatasetManager::getInstance()->SetActive("pyro2", GL_TEXTURE0);
+  DatasetManager::getInstance()->SetActive("nucleon", GL_TEXTURE0);
 
-  TFManager::getInstance()->Init("C:/Users/Guilherme/Pictures/datasets/transfer-functions/");
-  TFManager::getInstance()->SetActive("tff1", GL_TEXTURE1);
+  TFManager::getInstance()->Init("C:/Users/schardong/Pictures/datasets/transfer-functions/");
+  //TFManager::getInstance()->SetActive("tff1", GL_TEXTURE1);
+
+  TopAnalyzer::getInstance()->AnalyzeCurrDataset();
+
+  TFManager::getInstance()->SetActive("tf1", GL_TEXTURE1);
 
   delete pyro1;
   delete pyro2;
@@ -234,7 +238,7 @@ static void initShaders()
   fpass->setUniformMatrix("u_mProj", g_projMatrix);
   fpass->setUniformMatrix("u_mModel", modelMatrix);
 
-  Shader* spass = new Shader(RESOURCE_PATH + "/shaders/SPass.vs", RESOURCE_PATH + "/shaders/SPass.fs");
+  /*Shader* spass = new Shader(RESOURCE_PATH + "/shaders/SPass.vs", RESOURCE_PATH + "/shaders/SPass.fs");
   spass->bind();
   spass->bindFragDataLoc("fColor", 0);
   spass->setUniformMatrix("u_mView", g_viewMatrix);
@@ -243,6 +247,18 @@ static void initShaders()
   spass->setUniformfv("u_vScreenSize", screen_sz, 2);
   spass->setUniform1i("u_sDensityMap", 0);
   spass->setUniform1i("u_sTransferFunction", 1);
+  spass->setUniform1i("u_sBackFaces", 2);
+  spass->setUniform1f("u_fNumSamples", (float)g_numSamples);*/
+
+  Shader* spass = new Shader(RESOURCE_PATH + "/shaders/SPass.vs", RESOURCE_PATH + "/shaders/SPassMultiOp.fs");
+  spass->bind();
+  spass->bindFragDataLoc("fColor", 0);
+  spass->setUniformMatrix("u_mView", g_viewMatrix);
+  spass->setUniformMatrix("u_mProj", g_projMatrix);
+  spass->setUniformMatrix("u_mModel", modelMatrix);
+  spass->setUniformfv("u_vScreenSize", screen_sz, 2);
+  spass->setUniform1i("u_sDensityMap", 0);
+  spass->setUniform1i("u_sOpacityTFunction", 1);
   spass->setUniform1i("u_sBackFaces", 2);
   spass->setUniform1f("u_fNumSamples", (float)g_numSamples);
 
