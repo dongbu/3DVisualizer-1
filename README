@@ -12,3 +12,8 @@ FIXMEs:
 
 QUESTIONS:
   -Use a 2D transfer function + vertex-branch map or a preaplied alpha dataset?
+    -Use an alpha dataset coupled with a color transfer function. Change the transfer function metadata, since I won't have more multi dimensiontal TFs anymore.
+    -Use the knl::Dataset for the alpha datasets.
+    -Parametrize the Create*DTex and Upload*DTex functions to have just one Create and one Upload function.
+  -Use OpenCL to cast the rays?
+    -Bolt? Compatibility AMD/NVIDIA?

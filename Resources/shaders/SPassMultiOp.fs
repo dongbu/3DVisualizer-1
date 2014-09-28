@@ -2,11 +2,10 @@
 
 layout (location = 0) out vec4 fColor;
 
-uniform sampler3D u_sDensityMap;
-uniform sampler3D u_sVertexBranchMap;
-uniform sampler1D u_sColorTFunction;
-uniform sampler2D u_sOpacityTFunction;
 uniform sampler2D u_sBackFaces;
+uniform sampler3D u_sDensityMap;
+uniform sampler3D u_sAlphaMap;
+uniform sampler1D u_sColorTFunction;
 
 uniform vec2 u_vScreenSize;
 uniform float u_fNumSamples;
@@ -29,10 +28,12 @@ vec4 composite(Ray ray, vec3 step)
 
   for(int i = 0; i < u_fNumSamples; i++, currPos += step, lenAcc += length(step)) {
     float density = texture(u_sDensityMap, currPos).r;
-    float alpha = texture(u_sOpacityTFunction, vec2(density, 0)).r;
+    //float branch = texture(u_sVertexBranchMap, currPos).r;
+    //float alpha = texture(u_sOpacityTFunction, vec2(density, branch)).r;
 
-    vec4 colorSample = vec4(vec3(density), alpha);
+    //vec4 colorSample = vec4(vec3(density), alpha);
     //vec4 colorSample = vec4(alpha);
+    vec4 colorSample = vec4(density);
 
     colorSample = abs(colorSample);
     colorSample.a = clamp(colorSample.a, 0.f, 1.f);
