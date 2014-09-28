@@ -86,6 +86,8 @@ Dataset* DatasetManager::GetCurrent()
 void DatasetManager::FreeResources()
 {
   for(auto it = m_datasetMap.begin(); it != m_datasetMap.end(); it++) {
+    if(it->second->tex_id != 0)
+      glDeleteTextures(1, &it->second->tex_id);
     delete it->second;
   }
 

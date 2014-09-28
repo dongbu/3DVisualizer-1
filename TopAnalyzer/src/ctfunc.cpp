@@ -6,7 +6,8 @@
 #include <tbb/blocked_range.h>
 #include <tbb/parallel_reduce.h>
 
-static inline float clamp(float x, float a, float b)
+template <typename T>
+static inline T clamp(T x, T a, T b)
 {
   return x < a ? a : (x > b ? b : x);
 }
@@ -359,9 +360,9 @@ void calc_residue_flow(ctBranch* root_branch, double alpha_d, double rate_Q, top
       //std::cout << "["<< branch_data->depth << "] Dh: " << branch_data->delta_h << " Ai: " << branch_data->alpha_i << " r: "
       //  << branch_data->delta_alpha_i << " Aij: " << branch_data->alpha_i_j << std::endl;
       //std::cout << branch_data->depth << " - " << branch_data->num_children << ", ";
-      branch_data->alpha_lo = clamp(calc_alpha_sum(curr_branch), 0.f, 1.f);
+      branch_data->alpha_lo = clamp<double>(calc_alpha_sum(curr_branch), 0.0, 1.0);
 
-      branch_data->alpha_hi = clamp(calc_alpha_sum(curr_branch) + branch_data->alpha_i_j, 0.f, 1.f);
+      branch_data->alpha_hi = clamp<double>(calc_alpha_sum(curr_branch) + branch_data->alpha_i_j, 0.0, 1.0);
 
       branch_data->alpha = (double*) calloc(256, sizeof(double));
       double* tf = calc_final_alpha(curr_branch, LINEAR);

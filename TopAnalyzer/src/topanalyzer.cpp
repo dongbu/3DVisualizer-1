@@ -4,6 +4,7 @@
 #include "topmesh.h"
 #include "ctfunc.h"
 #include "simplification.h"
+#include "alphamanager.h"
 
 #include <queue>
 
@@ -12,32 +13,37 @@ extern "C"
 #include <tourtre.h>
 };
 
+static knl::Dataset* CreateAlphaDataset(knl::Dataset& dataset, ctBranch** branch_map)
+{
+  if(branch_map == NULL) {
+    Logger::getInstance()->error("knl::Dataset* CreateAlphaDataset - branch_map is NULL. Returning now.");
+    return NULL;
+  }
 
+  size_t num_elements = dataset.width * dataset.height * dataset.slices;
 
-//size_t save_vertex_branch_volume(ctBranch** branch_map, std::string filename, size_t w, size_t h, size_t slices, int max_label)
-//{
-//  if(branch_map == NULL || filename.empty()) return 0;
-//
-//  size_t num_elements = w * h * slices;
-//
-//  unsigned short* branch_vol = (unsigned short*) calloc(num_elements, sizeof(unsigned short));
-//
-//  for(size_t i = 0; i < num_elements; i++) {
-//    FeatureSet* branch_data = (FeatureSet*) branch_map[i]->data;
-//    branch_vol[i] = static_cast<unsigned short>(branch_data->label);
-//  }
-//
-//
-//  size_t bytes_written = ggraf::ResourceManager::getInstance()->saveVertexToBranchMap(filename, w, h, slices, branch_vol);
-//
-//  memset(branch_vol, 0, sizeof(unsigned short));
-//  free(branch_vol);
-//  branch_vol = nullptr;
-//
-//  return bytes_written;
-//}
+  knl::Dataset* alpha_map = new knl::Dataset;
+  alpha_map->width = dataset.width;
+  alpha_map->height = dataset.height;
+  alpha_map->slices= dataset.slices;
+  alpha_map->bytes_elem = sizeof(GLfloat);
+  alpha_map->data = (GLfloat*) calloc(num_elements, sizeof(GLfloat));
 
-static knl::Dataset* CreateVTBMap(ctBranch** vtb_map, size_t dim[])
+  GLfloat* alpha_ptr = (GLfloat*) alpha_map->data;
+  for(size_t i = 0; i < num_elements; i++) {
+    FeatureSet* branch_data = (FeatureSet*) branch_map[i]->data;
+
+    size_t data_val = dataset.Get(i);
+
+    *alpha_ptr = (GLfloat) branch_data->alpha[data_val];
+    alpha_ptr++;
+  }
+
+  alpha_map->Loaded(true);
+  return alpha_map;
+}
+
+DEPRECATED static knl::Dataset* CreateVTBMap(ctBranch** vtb_map, size_t dim[], size_t last_label)
 {
   if(vtb_map == NULL) {
     Logger::getInstance()->error("knl::Dataset* CreateVTBMap -> invalid vertex-branch map.");
@@ -50,13 +56,13 @@ static knl::Dataset* CreateVTBMap(ctBranch** vtb_map, size_t dim[])
   vtb->width = dim[0];
   vtb->height = dim[1];
   vtb->slices = dim[2];
-  vtb->bytes_elem = 2;
-  vtb->data = calloc(num_elem, sizeof(GLushort));
+  vtb->bytes_elem = sizeof(GLfloat);
+  vtb->data = calloc(num_elem, sizeof(GLfloat));
 
-  GLushort* ptr = (GLushort*)vtb->data;
+  GLfloat* ptr = (GLfloat*)vtb->data;
   for(size_t i = 0; i < num_elem; i++, ptr++) {
     FeatureSet* branch_data = (FeatureSet*) vtb_map[i]->data;
-    *ptr = static_cast<GLushort>(branch_data->label);
+    *ptr = static_cast<GLfloat>(branch_data->label / static_cast<GLfloat>(last_label));
   }
 
   ptr = nullptr;
@@ -64,7 +70,7 @@ static knl::Dataset* CreateVTBMap(ctBranch** vtb_map, size_t dim[])
   return vtb;
 }
 
-static TFunction* CreateOpTF(ctBranch* root_branch, size_t rows)
+DEPRECATED static TFunction* CreateOpTF(ctBranch* root_branch, size_t rows)
 {
   if(root_branch == NULL || rows == 0) {
     Logger::getInstance()->error("TFunction* CreateOpTF -> invalid parameter(s).");
@@ -163,8 +169,8 @@ void TopAnalyzer::AnalyzeDataset(knl::Dataset* data)
   calc_branch_features(branch_map, &topd);
 
   double avg_importance = calc_avg_importance(root_branch, &std_avg_importance);
-  //simplify_tree_dfs(root_branch, branch_map, topd.size, &std_avg_importance, avg_importance / 10000);
-  simplify_from_branchmap(branch_map, topd.size, &std_avg_importance, avg_importance);
+  simplify_tree_dfs(root_branch, branch_map, topd.size, &std_avg_importance, avg_importance / 100);
+  //simplify_from_branchmap(branch_map, topd.size, &std_avg_importance, avg_importance);
 
   calc_branch_features(branch_map, &topd);
   int last_label = label_branches(root_branch);
@@ -178,21 +184,27 @@ void TopAnalyzer::AnalyzeDataset(knl::Dataset* data)
   normalize_features(root_branch);
 
   calc_residue_flow(root_branch, 1.f / (double) max_depth, 300.0, &topd);
+  
+  knl::Dataset* alpha_map = CreateAlphaDataset(*data, branch_map);
 
-  TFunction* tf = CreateOpTF(root_branch, last_label);
+  AlphaManager::getInstance()->Add("alpha_map1", alpha_map);
+
+  delete alpha_map;
+  /*TFunction* tf = CreateOpTF(root_branch, last_label);
   tf->Loaded(true);
-  tf->UploadToGPU();
+  tf->UploadToGPU();*/
 
-  TFManager::getInstance()->Add("tf1", tf);
+  //TFManager::getInstance()->Add("tf1", tf);
 
-  size_t dims[3] = {
-    topd.data->width,
-    topd.data->height,
-    topd.data->slices,
-  };
+  /*knl::Dataset* vtb = CreateVTBMap(branch_map, dims, last_label);
+  vtb->Loaded(true);
+  vtb->UploadToGPU();*/
 
-  knl::Dataset* vtb = CreateVTBMap(branch_map, dims);
-  //VertexBranchManager::getInstance()->Add("vtb1", vtb);
+  /*VertexBranchManager::getInstance()->Add("vtb1", vtb);
+  VertexBranchManager::getInstance()->SetActive("vtb1", GL_TEXTURE4);*/
+
+  /*delete tf;
+  delete vtb;*/
 
   ct_cleanup(ctx);
   free(root_branch);

@@ -112,6 +112,7 @@ void simplify_from_branchmap(ctBranch** branch_map, size_t map_size, double(*imp
           branch_data->remove = false;
         } else {
           branch_data->remove = true;
+          branch_map[i] = branch_map[i]->parent;
           changed = true;
         }
 

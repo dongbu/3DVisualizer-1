@@ -12,16 +12,16 @@ class AlphaManager : public Singleton<AlphaManager>
 
 public:
   bool Init(std::string path);
-  bool Add(std::string key, knl::Dataset* vtb);
+  bool Add(std::string key, knl::Dataset* alpha_map);
   void SetActive(std::string key, GLenum tex_unit = GL_TEXTURE0);
   knl::Dataset* Get(std::string key);
   knl::Dataset* GetCurrent();
   void FreeResources();
 
 private:
-  std::map<std::string, knl::Dataset*> m_vtbMap;
+  std::map<std::string, knl::Dataset*> m_alphaMap;
   std::string m_activeKey;
-  std::string m_vtbPath;
+  std::string m_alphaPath;
   
 };
 

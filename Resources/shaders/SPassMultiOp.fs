@@ -28,12 +28,12 @@ vec4 composite(Ray ray, vec3 step)
 
   for(int i = 0; i < u_fNumSamples; i++, currPos += step, lenAcc += length(step)) {
     float density = texture(u_sDensityMap, currPos).r;
-    //float branch = texture(u_sVertexBranchMap, currPos).r;
-    //float alpha = texture(u_sOpacityTFunction, vec2(density, branch)).r;
+    float alpha = texture(u_sAlphaMap, currPos).r;
+    vec3 color = texture(u_sColorTFunction, density).rgb;
 
     //vec4 colorSample = vec4(vec3(density), alpha);
-    //vec4 colorSample = vec4(alpha);
-    vec4 colorSample = vec4(density);
+    vec4 colorSample = vec4(color, alpha);
+    //vec4 colorSample = vec4(density);
 
     colorSample = abs(colorSample);
     colorSample.a = clamp(colorSample.a, 0.f, 1.f);

@@ -9,7 +9,7 @@ using namespace knl;
 
 bool AlphaManager::Init(std::string path)
 {
-  m_vtbPath = path;
+  m_alphaPath = path;
 
   TiXmlDocument metafile(path + std::string("metafile.xml"));
   bool load_ok = metafile.LoadFile();
@@ -28,7 +28,6 @@ bool AlphaManager::Init(std::string path)
     std::istringstream(data_child->FirstChild("width")->FirstChild()->Value()) >> d->width;
     std::istringstream(data_child->FirstChild("height")->FirstChild()->Value()) >> d->height;
     std::istringstream(data_child->FirstChild("slices")->FirstChild()->Value()) >> d->slices;
-    std::istringstream(data_child->FirstChild("bytes_elem")->FirstChild()->Value()) >> d->bytes_elem;
 
     Add(data_child->FirstChild("name")->FirstChild()->Value(), d);
   }
@@ -36,14 +35,14 @@ bool AlphaManager::Init(std::string path)
   return true;
 }
 
-bool AlphaManager::Add(std::string key, Dataset* data)
+bool AlphaManager::Add(std::string key, Dataset* alpha_map)
 {
-  if(key.empty() || data == NULL) {
-    Logger::getInstance()->error("Dataset::Add invalid parameters.");
+  if(key.empty() || alpha_map == NULL) {
+    Logger::getInstance()->error("AlphaManager::Add - invalid parameters. Returning now.");
     return false;
   }
 
-  m_vtbMap[key] = new Dataset(*data);
+  m_alphaMap[key] = new Dataset(*alpha_map);
   return true;
 }
 
@@ -51,19 +50,19 @@ void AlphaManager::SetActive(std::string key, GLenum tex_unit)
 {
   if(m_activeKey == key) return;
 
-  std::map<std::string, Dataset*>::iterator it = m_vtbMap.find(key);
+  std::map<std::string, Dataset*>::iterator it = m_alphaMap.find(key);
 
-  if(it == m_vtbMap.end()) return;
+  if(it == m_alphaMap.end()) return;
 
   Dataset* data = it->second;
   if(!data->IsLoaded()) {
-    if(!data->Load(m_vtbPath + it->first + ".raw")) {
-      Logger::getInstance()->error("Failed to load dataset " + key);
+    if(!data->Load(m_alphaPath + it->first + ".raw")) {
+      Logger::getInstance()->error("Failed to load alpha map " + key);
     }
   }
   if(!data->IsUploaded()) {
     if(!data->UploadToGPU()) {
-      Logger::getInstance()->error("Failed to upload dataset " + key);
+      Logger::getInstance()->error("Failed to upload alpha map " + key);
     }
   }
 
@@ -74,8 +73,8 @@ void AlphaManager::SetActive(std::string key, GLenum tex_unit)
 Dataset* AlphaManager::Get(std::string key)
 {
   assert(!key.empty());
-  assert(m_vtbMap.find(key) != m_vtbMap.end());
-  return m_vtbMap[key];
+  assert(m_alphaMap.find(key) != m_alphaMap.end());
+  return m_alphaMap[key];
 }
 
 Dataset* AlphaManager::GetCurrent()
@@ -85,9 +84,11 @@ Dataset* AlphaManager::GetCurrent()
 
 void AlphaManager::FreeResources()
 {
-  for(auto it = m_vtbMap.begin(); it != m_vtbMap.end(); it++) {
+  for(auto it = m_alphaMap.begin(); it != m_alphaMap.end(); it++) {
+    if(it->second->tex_id != 0)
+      glDeleteTextures(1, &it->second->tex_id);
     delete it->second;
   }
 
-  m_vtbMap.clear();
+  m_alphaMap.clear();
 }

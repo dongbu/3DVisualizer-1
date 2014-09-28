@@ -9,6 +9,7 @@
 #include "cube.h"
 #include "perlin.h"
 #include "topanalyzer.h"
+#include "alphamanager.h"
 
 #define GLM_FORCE_RADIANS
 
@@ -79,7 +80,7 @@ void initResources()
   g_viewMatrix = glm::lookAt(g_eye, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
   g_projMatrix = glm::ortho(-0.8f, 0.8f, -0.8f, 0.8f, 1.f, 5.f);
 
-  DatasetManager::getInstance()->Init("C:/Users/schardong/Pictures/datasets/");
+  DatasetManager::getInstance()->Init("C:/Users/Guilherme/Pictures/datasets/");
 
   Dataset* pyro1 = Dataset::CreatePyroclasticVolume(128, 0.05f);
   Dataset* pyro2 = Dataset::CreatePyroclasticVolume(64, 0.4f);
@@ -89,14 +90,15 @@ void initResources()
   DatasetManager::getInstance()->Add("pyro2", pyro2);
   DatasetManager::getInstance()->Add("pyro3", pyro3);
 
-  DatasetManager::getInstance()->SetActive("nucleon", GL_TEXTURE0);
+  DatasetManager::getInstance()->SetActive("fuel", GL_TEXTURE1);
 
-  TFManager::getInstance()->Init("C:/Users/schardong/Pictures/datasets/transfer-functions/");
-  //TFManager::getInstance()->SetActive("tff1", GL_TEXTURE1);
+  TFManager::getInstance()->Init("C:/Users/Guilherme/Pictures/datasets/transfer-functions/");
+  TFManager::getInstance()->SetActive("tff1", GL_TEXTURE3);
 
   TopAnalyzer::getInstance()->AnalyzeCurrDataset();
+  AlphaManager::getInstance()->SetActive("alpha_map1", GL_TEXTURE2);
 
-  TFManager::getInstance()->SetActive("tf1", GL_TEXTURE1);
+  //TFManager::getInstance()->SetActive("tf1", GL_TEXTURE1);
 
   delete pyro1;
   delete pyro2;
@@ -158,10 +160,11 @@ int main()
     spass->bind();
     spass->setUniformMatrix("u_mView", rot);
 
-    DatasetManager::getInstance()->GetCurrent()->bind(GL_TEXTURE0);
-    TFManager::getInstance()->GetCurrent()->bind(GL_TEXTURE1);
+    DatasetManager::getInstance()->GetCurrent()->bind(GL_TEXTURE1);
+    AlphaManager::getInstance()->GetCurrent()->bind(GL_TEXTURE2);
+    TFManager::getInstance()->GetCurrent()->bind(GL_TEXTURE3);
     
-    glActiveTexture(GL_TEXTURE2);
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, fbo->getAttachmentId(GL_COLOR_ATTACHMENT0));
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -257,10 +260,11 @@ static void initShaders()
   spass->setUniformMatrix("u_mProj", g_projMatrix);
   spass->setUniformMatrix("u_mModel", modelMatrix);
   spass->setUniformfv("u_vScreenSize", screen_sz, 2);
-  spass->setUniform1i("u_sDensityMap", 0);
-  spass->setUniform1i("u_sOpacityTFunction", 1);
-  spass->setUniform1i("u_sBackFaces", 2);
   spass->setUniform1f("u_fNumSamples", (float)g_numSamples);
+  spass->setUniform1i("u_sBackFaces", 0);
+  spass->setUniform1i("u_sDensityMap", 1);
+  spass->setUniform1i("u_sAlphaMap", 2);
+  spass->setUniform1i("u_sColorTFunction", 3);
 
   Shader::unbind();
 
@@ -278,39 +282,40 @@ static void cb_keyboard(GLFWwindow* win, int key, int scancode, int action, int 
       break;
     case GLFW_KEY_SPACE:
       TopAnalyzer::getInstance()->AnalyzeCurrDataset();
+      AlphaManager::getInstance()->SetActive("alpha_map1", GL_TEXTURE2);
       break;
     case GLFW_KEY_1:
-      TFManager::getInstance()->SetActive("tff1", GL_TEXTURE1);
+      TFManager::getInstance()->SetActive("tff1", GL_TEXTURE3);
       break;
     case GLFW_KEY_2:
-      TFManager::getInstance()->SetActive("tff2", GL_TEXTURE1);
+      TFManager::getInstance()->SetActive("tff2", GL_TEXTURE3);
       break;
     case GLFW_KEY_F1:
-      DatasetManager::getInstance()->SetActive("neghip", GL_TEXTURE0);
+      DatasetManager::getInstance()->SetActive("neghip", GL_TEXTURE1);
       break;
     case GLFW_KEY_F2:
-      DatasetManager::getInstance()->SetActive("bonsai", GL_TEXTURE0);
+      DatasetManager::getInstance()->SetActive("bonsai", GL_TEXTURE1);
       break;
     case GLFW_KEY_F3:
-      DatasetManager::getInstance()->SetActive("nucleon", GL_TEXTURE0);
+      DatasetManager::getInstance()->SetActive("nucleon", GL_TEXTURE1);
       break;
     case GLFW_KEY_F4:
-      DatasetManager::getInstance()->SetActive("silicium", GL_TEXTURE0);
+      DatasetManager::getInstance()->SetActive("silicium", GL_TEXTURE1);
       break;
     case GLFW_KEY_F5:
-      DatasetManager::getInstance()->SetActive("pyro1", GL_TEXTURE0);
+      DatasetManager::getInstance()->SetActive("pyro1", GL_TEXTURE1);
       break;
     case GLFW_KEY_F6:
-      DatasetManager::getInstance()->SetActive("pyro2", GL_TEXTURE0);
+      DatasetManager::getInstance()->SetActive("pyro2", GL_TEXTURE1);
       break;
     case GLFW_KEY_F7:
-      DatasetManager::getInstance()->SetActive("pyro3", GL_TEXTURE0);
+      DatasetManager::getInstance()->SetActive("pyro3", GL_TEXTURE1);
       break;
     case GLFW_KEY_F8:
-      DatasetManager::getInstance()->SetActive("foot", GL_TEXTURE0);
+      DatasetManager::getInstance()->SetActive("foot", GL_TEXTURE1);
       break;
     case GLFW_KEY_F9:
-      DatasetManager::getInstance()->SetActive("virgo", GL_TEXTURE0);
+      DatasetManager::getInstance()->SetActive("virgo", GL_TEXTURE1);
       break;
     }
   }

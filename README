@@ -3,6 +3,7 @@ TODOs:
   -Make the use of a transfer function optional (pass a uniform parameter to the shader). This can be used to render a dataset when no TF is selected;
   -Make a topological visualizer. Find the coordinates of the contour tree vertices and plot them;
   -Make it possible to use a global color function with local opacity functions (change the shaders basically);
+  -Create a base Manager class, since the Dataset, TFunction and Alpha managers have almost the same code.
 
 FIXMEs:
   -Performance issues when marking branches for removal (TopAnalyzer).

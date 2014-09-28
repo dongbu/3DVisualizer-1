@@ -82,10 +82,10 @@ namespace knl
     Loaded(false);
     Uploaded(false);
 
-    if(!tex_id) {
+    /*if(!tex_id) {
       glDeleteTextures(1, &tex_id);
       tex_id = 0;
-    }
+    }*/
   }
 
   bool Dataset::Load(std::string path)

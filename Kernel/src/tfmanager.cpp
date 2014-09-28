@@ -92,6 +92,8 @@ TFunction* TFManager::GetCurrent()
 void TFManager::FreeResources()
 {
   for(auto it = m_funcMap.begin(); it != m_funcMap.end(); it++) {
+    if(it->second->tex_id != 0)
+      glDeleteTextures(1, &it->second->tex_id);
     delete it->second;
   }
 
