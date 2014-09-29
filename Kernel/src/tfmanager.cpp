@@ -45,7 +45,7 @@ bool TFManager::Init(std::string path)
 bool TFManager::Add(std::string key, TFunction* tf)
 {
   if(key.empty() || tf == NULL) {
-    Logger::getInstance()->error("TFManager::Add invalid parameters.");
+    Logger::GetInstance()->error("TFManager::Add invalid parameters.");
     return false;
   }
 
@@ -64,12 +64,12 @@ void TFManager::SetActive(std::string key, GLenum tex_unit)
   TFunction* tf = it->second;
   if(!tf->IsLoaded()) {
     if(!tf->Load(m_tfPath + it->first + ".raw")) {
-      Logger::getInstance()->error("Failed to load transfer function " + key);
+      Logger::GetInstance()->error("Failed to load transfer function " + key);
     }
   }
   if(!tf->IsUploaded()) {
     if(!tf->UploadToGPU()) {
-      Logger::getInstance()->error("Failed to upload transfer function " + key);
+      Logger::GetInstance()->error("Failed to upload transfer function " + key);
     }
   }
 

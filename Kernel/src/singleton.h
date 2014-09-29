@@ -7,20 +7,20 @@
 template <class T>
 class Singleton {
 public:
-	inline static T* getInstance()
+	inline static T* GetInstance()
 	{
-		if (!m_pInstance)
-			m_pInstance = new T;
-		assert(m_pInstance != NULL);
-		return m_pInstance;
+		if (!m_instance)
+			m_instance = new T;
+		assert(m_instance != NULL);
+		return m_instance;
 	}
 
-	inline static void destroyInstance()
+	inline static void DestroyInstance()
 	{
-		if (!m_pInstance)
+		if (!m_instance)
 			return;
-		delete m_pInstance;
-		m_pInstance = NULL;
+		delete m_instance;
+		m_instance = NULL;
 	}
 
 protected:
@@ -28,11 +28,11 @@ protected:
     virtual ~Singleton(void) {}
 
 private:
-	static T* m_pInstance;
+	static T* m_instance;
 	Singleton(const Singleton& rhs) {}
 	Singleton& operator =(const Singleton& rhs) {}
 };
 
-template <class T> T* Singleton<T>::m_pInstance = NULL;
+template <class T> T* Singleton<T>::m_instance = NULL;
 
 #endif // SINGLETON_H

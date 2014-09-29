@@ -4,6 +4,7 @@ TODOs:
   -Make a topological visualizer. Find the coordinates of the contour tree vertices and plot them;
   -Make it possible to use a global color function with local opacity functions (change the shaders basically);
   -Create a base Manager class, since the Dataset, TFunction and Alpha managers have almost the same code.
+    -Too many f***** linker errors!
 
 FIXMEs:
   -Performance issues when marking branches for removal (TopAnalyzer).

@@ -16,7 +16,7 @@ extern "C"
 static knl::Dataset* CreateAlphaDataset(knl::Dataset& dataset, ctBranch** branch_map)
 {
   if(branch_map == NULL) {
-    Logger::getInstance()->error("knl::Dataset* CreateAlphaDataset - branch_map is NULL. Returning now.");
+    Logger::GetInstance()->error("knl::Dataset* CreateAlphaDataset - branch_map is NULL. Returning now.");
     return NULL;
   }
 
@@ -46,7 +46,7 @@ static knl::Dataset* CreateAlphaDataset(knl::Dataset& dataset, ctBranch** branch
 DEPRECATED static knl::Dataset* CreateVTBMap(ctBranch** vtb_map, size_t dim[], size_t last_label)
 {
   if(vtb_map == NULL) {
-    Logger::getInstance()->error("knl::Dataset* CreateVTBMap -> invalid vertex-branch map.");
+    Logger::GetInstance()->error("knl::Dataset* CreateVTBMap -> invalid vertex-branch map.");
     return NULL;
   }
 
@@ -73,7 +73,7 @@ DEPRECATED static knl::Dataset* CreateVTBMap(ctBranch** vtb_map, size_t dim[], s
 DEPRECATED static TFunction* CreateOpTF(ctBranch* root_branch, size_t rows)
 {
   if(root_branch == NULL || rows == 0) {
-    Logger::getInstance()->error("TFunction* CreateOpTF -> invalid parameter(s).");
+    Logger::GetInstance()->error("TFunction* CreateOpTF -> invalid parameter(s).");
     return NULL;
   }
 
@@ -129,12 +129,12 @@ static void BranchFree(ctBranch* b, void*)
 
 void TopAnalyzer::Init()
 {
-  Logger::getInstance()->warn("TopAnalyzer::Init() - Not implemented.");
+  Logger::GetInstance()->warn("TopAnalyzer::Init() - Not implemented.");
 }
 
 void TopAnalyzer::AnalyzeCurrDataset(double flow_rate, std::string key)
 {
-  knl::Dataset* data = DatasetManager::getInstance()->GetCurrent();
+  knl::Dataset* data = DatasetManager::GetInstance()->GetCurrent();
   AnalyzeDataset(data, flow_rate, key);
 }
 
@@ -187,7 +187,7 @@ void TopAnalyzer::AnalyzeDataset(knl::Dataset* data, double flow_rate, std::stri
   
   knl::Dataset* alpha_map = CreateAlphaDataset(*data, branch_map);
 
-  AlphaManager::getInstance()->Add(key, alpha_map);
+  AlphaManager::GetInstance()->Add(key, alpha_map);
 
   delete alpha_map;
 

@@ -7,9 +7,6 @@
     <ClCompile Include="src\dataset.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\datasetmanager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\datatransfer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -23,6 +20,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\tfmanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\datasetmanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

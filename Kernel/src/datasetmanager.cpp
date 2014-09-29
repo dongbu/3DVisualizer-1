@@ -39,7 +39,7 @@ bool DatasetManager::Init(std::string path)
 bool DatasetManager::Add(std::string key, Dataset* data)
 {
   if(key.empty() || data == NULL) {
-    Logger::getInstance()->error("Dataset::Add invalid parameters.");
+    Logger::GetInstance()->error("Dataset::Add invalid parameters.");
     return false;
   }
 
@@ -58,12 +58,12 @@ void DatasetManager::SetActive(std::string key, GLenum tex_unit)
   Dataset* data = it->second;
   if(!data->IsLoaded()) {
     if(!data->Load(m_dataPath + it->first + ".raw")) {
-      Logger::getInstance()->error("Failed to load dataset " + key);
+      Logger::GetInstance()->error("Failed to load dataset " + key);
     }
   }
   if(!data->IsUploaded()) {
     if(!data->UploadToGPU()) {
-      Logger::getInstance()->error("Failed to upload dataset " + key);
+      Logger::GetInstance()->error("Failed to upload dataset " + key);
     }
   }
 
