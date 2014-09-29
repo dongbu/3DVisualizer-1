@@ -24,6 +24,7 @@ glm::vec3 g_eye;
 glm::mat4 g_viewMatrix;
 glm::mat4 g_projMatrix;
 static GLuint g_numSamples = 356;
+static double g_flowRate = 950.0;
 
 static void initMesh();
 static void initFBO();
@@ -84,21 +85,19 @@ void initResources()
 
   Dataset* pyro1 = Dataset::CreatePyroclasticVolume(128, 0.05f);
   Dataset* pyro2 = Dataset::CreatePyroclasticVolume(64, 0.4f);
-  Dataset* pyro3 = Dataset::CreatePyroclasticVolume(64, 0.14f);
+  Dataset* pyro3 = Dataset::CreatePyroclasticVolume(200, 0.14f);
 
   DatasetManager::getInstance()->Add("pyro1", pyro1);
   DatasetManager::getInstance()->Add("pyro2", pyro2);
   DatasetManager::getInstance()->Add("pyro3", pyro3);
 
-  DatasetManager::getInstance()->SetActive("fuel", GL_TEXTURE1);
+  DatasetManager::getInstance()->SetActive("hydrogenAtom", GL_TEXTURE1);
 
   TFManager::getInstance()->Init("C:/Users/Guilherme/Pictures/datasets/transfer-functions/");
   TFManager::getInstance()->SetActive("tff1", GL_TEXTURE3);
 
-  TopAnalyzer::getInstance()->AnalyzeCurrDataset();
-  AlphaManager::getInstance()->SetActive("alpha_map1", GL_TEXTURE2);
-
-  //TFManager::getInstance()->SetActive("tf1", GL_TEXTURE1);
+  TopAnalyzer::getInstance()->AnalyzeCurrDataset(g_flowRate, DatasetManager::getInstance()->GetCurrentKey());
+  AlphaManager::getInstance()->SetActive(DatasetManager::getInstance()->GetCurrentKey(), GL_TEXTURE2);
 
   delete pyro1;
   delete pyro2;
@@ -274,15 +273,14 @@ static void initShaders()
 
 static void cb_keyboard(GLFWwindow* win, int key, int scancode, int action, int mods)
 {
-  glActiveTexture(GL_TEXTURE0);
   if(action == GLFW_PRESS) {
     switch(key) {
     case GLFW_KEY_ESCAPE:
       glfwSetWindowShouldClose(win, GL_TRUE);
       break;
     case GLFW_KEY_SPACE:
-      TopAnalyzer::getInstance()->AnalyzeCurrDataset();
-      AlphaManager::getInstance()->SetActive("alpha_map1", GL_TEXTURE2);
+      TopAnalyzer::getInstance()->AnalyzeCurrDataset(g_flowRate, DatasetManager::getInstance()->GetCurrentKey());
+      AlphaManager::getInstance()->SetActive(DatasetManager::getInstance()->GetCurrentKey(), GL_TEXTURE2);
       break;
     case GLFW_KEY_1:
       TFManager::getInstance()->SetActive("tff1", GL_TEXTURE3);

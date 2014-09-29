@@ -16,7 +16,12 @@ public:
   void SetActive(std::string key, GLenum tex_unit = GL_TEXTURE0);
   knl::Dataset* Get(std::string key);
   knl::Dataset* GetCurrent();
+  std::string GetCurrentKey()
+  {
+    return m_activeKey;
+  }
   void FreeResources();
+  
 
 private:
   std::map<std::string, knl::Dataset*> m_datasetMap;

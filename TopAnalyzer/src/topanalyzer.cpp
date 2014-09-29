@@ -132,13 +132,13 @@ void TopAnalyzer::Init()
   Logger::getInstance()->warn("TopAnalyzer::Init() - Not implemented.");
 }
 
-void TopAnalyzer::AnalyzeCurrDataset()
+void TopAnalyzer::AnalyzeCurrDataset(double flow_rate, std::string key)
 {
   knl::Dataset* data = DatasetManager::getInstance()->GetCurrent();
-  AnalyzeDataset(data);
+  AnalyzeDataset(data, flow_rate, key);
 }
 
-void TopAnalyzer::AnalyzeDataset(knl::Dataset* data)
+void TopAnalyzer::AnalyzeDataset(knl::Dataset* data, double flow_rate, std::string key)
 {
   assert(data != NULL);
 
@@ -169,7 +169,7 @@ void TopAnalyzer::AnalyzeDataset(knl::Dataset* data)
   calc_branch_features(branch_map, &topd);
 
   double avg_importance = calc_avg_importance(root_branch, &std_avg_importance);
-  simplify_tree_dfs(root_branch, branch_map, topd.size, &std_avg_importance, avg_importance / 100);
+  simplify_tree_dfs(root_branch, branch_map, topd.size, &std_avg_importance, avg_importance / 10);
   //simplify_from_branchmap(branch_map, topd.size, &std_avg_importance, avg_importance);
 
   calc_branch_features(branch_map, &topd);
@@ -183,11 +183,11 @@ void TopAnalyzer::AnalyzeDataset(knl::Dataset* data)
   std::cout << "Tree depth = " << max_depth << std::endl;
   normalize_features(root_branch);
 
-  calc_residue_flow(root_branch, 1.f / (double) max_depth, 300.0, &topd);
+  calc_residue_flow(root_branch, 1.f / (double) max_depth, flow_rate, &topd);
   
   knl::Dataset* alpha_map = CreateAlphaDataset(*data, branch_map);
 
-  AlphaManager::getInstance()->Add("alpha_map1", alpha_map);
+  AlphaManager::getInstance()->Add(key, alpha_map);
 
   delete alpha_map;
   /*TFunction* tf = CreateOpTF(root_branch, last_label);
