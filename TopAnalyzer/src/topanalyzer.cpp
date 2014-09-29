@@ -120,9 +120,19 @@ static ctBranch* BranchAlloc(void*)
 static void BranchFree(ctBranch* b, void*)
 {
   if(b->data != NULL) {
+    memset(b->data, 0, sizeof(FeatureSet));
     free(b->data);
     b->data = NULL;
   }
+
+  ctBranch* parent = b->parent;
+  if(parent != NULL) {
+    ctBranchList_remove(&parent->children, b);
+    FeatureSet* parent_data = (FeatureSet*) parent->data;
+    parent_data->num_children--;
+  }
+
+  memset(b, 0, sizeof(ctBranch));
   free(b);
   b = NULL;
 }
@@ -169,8 +179,9 @@ void TopAnalyzer::AnalyzeDataset(knl::Dataset* data, double flow_rate, std::stri
   calc_branch_features(branch_map, &topd);
 
   double avg_importance = calc_avg_importance(root_branch, &std_avg_importance);
-  simplify_tree_dfs(root_branch, branch_map, topd.size, &std_avg_importance, avg_importance / 10);
+  //simplify_tree_dfs(root_branch, branch_map, topd.size, &std_avg_importance, avg_importance / 10);
   //simplify_from_branchmap(branch_map, topd.size, &std_avg_importance, avg_importance);
+  test_simplification(ctx, root_branch, branch_map, topd.size, &std_avg_importance, avg_importance / 1000);
 
   calc_branch_features(branch_map, &topd);
   int last_label = label_branches(root_branch);

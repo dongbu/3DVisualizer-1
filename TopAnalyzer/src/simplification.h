@@ -20,6 +20,8 @@ void simplify_tree_dfs(ctBranch*, ctBranch**, size_t, double (*importance_measur
 
 void simplify_from_branchmap(ctBranch**, size_t, double(*importance_measure)(ctBranch*), double);
 
+
+void test_simplification(ctContext*, ctBranch*, ctBranch**, size_t, double(*importance_cb)(ctBranch*), double);
 //void simplify_tree_bfs(ctBranch*, double (*importance_measure)(ctBranch*), double);
 
 #endif // SIMPLIFICATION_H

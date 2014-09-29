@@ -1,4 +1,6 @@
 #include "simplification.h"
+#include "ctfunc.h"
+#include <stack>
 
 bool marked_for_removal(ctBranch* b) {
   if(b == NULL) return true;
@@ -90,6 +92,81 @@ void simplify_from_branchmap(ctBranch** branch_map, size_t map_size, double(*imp
   } while(changed == true);
 
   delete[] visited;
+}
+
+static std::vector<ctBranch*> queue_leaves(ctBranch* root_branch)
+{
+  std::vector<ctBranch*> leaves;
+  if(root_branch == NULL)
+    return leaves;
+
+  std::stack<ctBranch*> stack;
+  stack.push(root_branch);
+
+  do {
+    ctBranch* curr_branch = stack.top();
+    
+    stack.pop();
+
+    if(curr_branch->children.head == NULL)
+      leaves.push_back(curr_branch);
+
+    for(ctBranch* c = curr_branch->children.head; c != NULL; c = c->nextChild)
+      stack.push(c);
+
+  } while(!stack.empty());
+
+  return leaves;
+}
+
+static void point_to_parent(ctBranch* to_remove, ctBranch** branch_map, size_t map_size)
+{
+  FeatureSet* rem_data = (FeatureSet*) to_remove->data;
+
+  for(size_t i = 0; i < map_size; i++) {
+    FeatureSet* bmap_data = (FeatureSet*) branch_map[i]->data;
+    if(bmap_data->label == rem_data->label)
+      branch_map[i] = to_remove->parent;
+  }
+}
+
+void test_simplification(ctContext* ctx, ctBranch* root_branch, ctBranch** branch_map, size_t map_size, double(*importance_cb)(ctBranch*), double thresh)
+{
+  using namespace std;
+
+  if(count_branches(root_branch) == 1)
+    return;
+
+  bool changed = false;
+
+  do {
+    vector<ctBranch*> leaves = queue_leaves(root_branch);
+    changed = false;
+
+    for(size_t i = 0; i < leaves.size(); i++) {
+      if(leaves[i] == NULL)
+        continue;
+
+      if(importance_cb(leaves[i]) < thresh) {
+        point_to_parent(leaves[i], branch_map, map_size);
+        ctBranch_delete(leaves[i], ctx);
+        changed = true;
+        /*if(leaves[i]->data != NULL) {
+          memset(leaves[i]->data, 0, sizeof(FeatureSet));
+          free(leaves[i]->data);
+          leaves[i]->data = NULL;
+        }
+
+        memset(leaves[i], 0, sizeof(ctBranch));
+        free(leaves[i]);
+        leaves[i] = NULL;*/
+
+      }
+    }
+
+    leaves.clear();
+
+  } while(changed);
 }
 
 //void simplify_tree_bfs(ctBranch* root_branch, double (*importance_measure)(ctBranch*), double threshold)

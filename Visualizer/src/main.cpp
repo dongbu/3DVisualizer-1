@@ -301,13 +301,13 @@ static void cb_keyboard(GLFWwindow* win, int key, int scancode, int action, int 
       DatasetManager::GetInstance()->SetActive("silicium", GL_TEXTURE1);
       break;
     case GLFW_KEY_F5:
-      DatasetManager::GetInstance()->SetActive("pyro1", GL_TEXTURE1);
+      DatasetManager::GetInstance()->SetActive("fuel", GL_TEXTURE1);
       break;
     case GLFW_KEY_F6:
-      DatasetManager::GetInstance()->SetActive("pyro2", GL_TEXTURE1);
+      DatasetManager::GetInstance()->SetActive("BostonTeapot", GL_TEXTURE1);
       break;
     case GLFW_KEY_F7:
-      DatasetManager::GetInstance()->SetActive("pyro3", GL_TEXTURE1);
+      DatasetManager::GetInstance()->SetActive("lobster", GL_TEXTURE1);
       break;
     case GLFW_KEY_F8:
       DatasetManager::GetInstance()->SetActive("foot", GL_TEXTURE1);
