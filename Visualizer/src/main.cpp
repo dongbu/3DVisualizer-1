@@ -24,7 +24,7 @@ glm::vec3 g_eye;
 glm::mat4 g_viewMatrix;
 glm::mat4 g_projMatrix;
 static GLuint g_numSamples = 356;
-static double g_flowRate = 950.0;
+static double g_flowRate = 850.0;
 
 static void initMesh();
 static void initFBO();
@@ -83,15 +83,15 @@ void initResources()
 
   DatasetManager::getInstance()->Init("C:/Users/Guilherme/Pictures/datasets/");
 
-  Dataset* pyro1 = Dataset::CreatePyroclasticVolume(128, 0.05f);
+  /*Dataset* pyro1 = Dataset::CreatePyroclasticVolume(128, 0.05f);
   Dataset* pyro2 = Dataset::CreatePyroclasticVolume(64, 0.4f);
   Dataset* pyro3 = Dataset::CreatePyroclasticVolume(200, 0.14f);
 
   DatasetManager::getInstance()->Add("pyro1", pyro1);
   DatasetManager::getInstance()->Add("pyro2", pyro2);
-  DatasetManager::getInstance()->Add("pyro3", pyro3);
+  DatasetManager::getInstance()->Add("pyro3", pyro3);*/
 
-  DatasetManager::getInstance()->SetActive("hydrogenAtom", GL_TEXTURE1);
+  DatasetManager::getInstance()->SetActive("nucleon", GL_TEXTURE1);
 
   TFManager::getInstance()->Init("C:/Users/Guilherme/Pictures/datasets/transfer-functions/");
   TFManager::getInstance()->SetActive("tff1", GL_TEXTURE3);
@@ -99,9 +99,9 @@ void initResources()
   TopAnalyzer::getInstance()->AnalyzeCurrDataset(g_flowRate, DatasetManager::getInstance()->GetCurrentKey());
   AlphaManager::getInstance()->SetActive(DatasetManager::getInstance()->GetCurrentKey(), GL_TEXTURE2);
 
-  delete pyro1;
+  /*delete pyro1;
   delete pyro2;
-  delete pyro3;
+  delete pyro3;*/
 }
 
 int main()

@@ -61,6 +61,7 @@ void calc_branch_features(ctBranch** b_map, top::Dataset* data)
     branch_data->v++;
     branch_data->hv += data->data->Get(i);
     branch_data->p = calc_persistence_branch(b_map[i], data);
+    branch_data->porosity = 300.0;
 
     branch_data->c_s_min = 10000.0; //since maximum value is 255
     branch_data->c_s_max = 0;
@@ -340,7 +341,7 @@ void calc_residue_flow(ctBranch* root_branch, double alpha_d, double rate_Q, top
 
     if(!branch_data->remove) {
       if (branch_data->num_children != 0) {
-        branch_data->delta_h = (1.0*rate_Q*(((double)branch_data->p)/255.0))/(300.0*((double)branch_data->num_children));
+        branch_data->delta_h = (1.0*rate_Q*(((double)branch_data->p)/255.0))/(branch_data->porosity*((double)branch_data->num_children));
         if(branch_data->depth == 0) { //root node calcs
           branch_data->alpha_i = alpha_d*(1-branch_data->delta_h);
           branch_data->delta_alpha_i = alpha_d - branch_data->alpha_i;
@@ -479,27 +480,4 @@ void calc_saddle_min_max(ctBranch* root_branch, top::Dataset* data)
       std::cout << "nc: " << branch_data->num_children << " min: " << branch_data->c_s_min << " max: " << branch_data->c_s_max << std::endl;
     }
   } while(!branch_queue.empty());
-}
-
-size_t save_vertex_branch_volume(ctBranch** branch_map, std::string filename, size_t w, size_t h, size_t slices)
-{
-  if(branch_map == NULL || filename.empty()) return 0;
-
-  size_t num_elements = w * h * slices;
-
-  unsigned int* branch_vol = (unsigned int*) calloc(num_elements, sizeof(unsigned int));
-
-  for(size_t i = 0; i < num_elements; i++) {
-    FeatureSet* branch_data = (FeatureSet*) branch_map[i]->data;
-    branch_vol[i] = branch_data->label;
-  }
-
-  //size_t bytes_written = ggraf::ResourceManager::getInstance()->saveVertexToBranchMap(filename, w, h, slices, branch_vol);
-  size_t bytes_written = 0;
-
-  memset(branch_vol, 0, sizeof(unsigned int));
-  free(branch_vol);
-  branch_vol = nullptr;
-
-  return bytes_written;
 }

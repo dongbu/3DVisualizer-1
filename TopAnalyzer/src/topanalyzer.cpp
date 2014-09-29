@@ -190,43 +190,10 @@ void TopAnalyzer::AnalyzeDataset(knl::Dataset* data, double flow_rate, std::stri
   AlphaManager::getInstance()->Add(key, alpha_map);
 
   delete alpha_map;
-  /*TFunction* tf = CreateOpTF(root_branch, last_label);
-  tf->Loaded(true);
-  tf->UploadToGPU();*/
-
-  //TFManager::getInstance()->Add("tf1", tf);
-
-  /*knl::Dataset* vtb = CreateVTBMap(branch_map, dims, last_label);
-  vtb->Loaded(true);
-  vtb->UploadToGPU();*/
-
-  /*VertexBranchManager::getInstance()->Add("vtb1", vtb);
-  VertexBranchManager::getInstance()->SetActive("vtb1", GL_TEXTURE4);*/
-
-  /*delete tf;
-  delete vtb;*/
 
   ct_cleanup(ctx);
   free(root_branch);
   free(branch_map);
   ctx = NULL;
-  /*
-
-  ;
-
-  save_transfer_functions(root_branch,
-  "/home/guilherme/Pictures/datasets/transfer-functions/nucleon." + std::to_string(count_branches(root_branch)) + ".uint8",
-  last_label);
-
-  save_vertex_branch_volume(branch_map,
-  "/home/guilherme/Pictures/datasets/vertex-branch-maps/nucleon.41x41x41.uint8",
-  data.size[0], data.size[1], data.size[2]);
-
-  */
-
-
-
-  //TFManager::getInstance()->Add("tf1", generated_tf);
-  //TFManager::getInstance()->SetActive(generated_tf, GL_TEXTURE1);
 
 }
