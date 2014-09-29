@@ -77,9 +77,9 @@ GLuint initGLEW()
 void initResources()
 {
   using namespace knl;
-  g_eye = glm::vec3(0, 0, 3.5);
+  /*g_eye = glm::vec3(0, 0, 3.5);
   g_viewMatrix = glm::lookAt(g_eye, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-  g_projMatrix = glm::ortho(-0.8f, 0.8f, -0.8f, 0.8f, 1.f, 5.f);
+  g_projMatrix = glm::ortho(-0.8f, 0.8f, -0.8f, 0.8f, 1.f, 5.f);*/
 
   DatasetManager::GetInstance()->Init("C:/Users/Guilherme/Pictures/datasets/");
 
@@ -91,13 +91,47 @@ void initResources()
   DatasetManager::getInstance()->Add("pyro2", pyro2);
   DatasetManager::getInstance()->Add("pyro3", pyro3);*/
 
+  std::cout << "\n--------------Nucleon--------------\n";
   DatasetManager::GetInstance()->SetActive("nucleon", GL_TEXTURE1);
+  TopAnalyzer::GetInstance()->AnalyzeCurrDataset(g_flowRate, DatasetManager::GetInstance()->GetCurrentKey());
 
-  TFManager::GetInstance()->Init("C:/Users/Guilherme/Pictures/datasets/transfer-functions/");
-  TFManager::GetInstance()->SetActive("tff1", GL_TEXTURE3);
+  std::cout << "\n\n\n--------------Neghip--------------\n";
+  DatasetManager::GetInstance()->SetActive("neghip", GL_TEXTURE1);
+  TopAnalyzer::GetInstance()->AnalyzeCurrDataset(g_flowRate, DatasetManager::GetInstance()->GetCurrentKey());
+
+  std::cout << "\n\n\n--------------Hydrogen Atom--------------\n";
+  DatasetManager::GetInstance()->SetActive("hydrogenAtom", GL_TEXTURE1);
+  TopAnalyzer::GetInstance()->AnalyzeCurrDataset(g_flowRate, DatasetManager::GetInstance()->GetCurrentKey());
+
+  std::cout << "\n\n\n--------------Shockwave--------------\n";
+  DatasetManager::GetInstance()->SetActive("shockwave", GL_TEXTURE1);
+  TopAnalyzer::GetInstance()->AnalyzeCurrDataset(g_flowRate, DatasetManager::GetInstance()->GetCurrentKey());
+
+  std::cout << "\n\n\n--------------Bonsai--------------\n";
+  DatasetManager::GetInstance()->SetActive("bonsai", GL_TEXTURE1);
+  TopAnalyzer::GetInstance()->AnalyzeCurrDataset(g_flowRate, DatasetManager::GetInstance()->GetCurrentKey());
+
+  std::cout << "\n\n\n--------------Foot--------------\n";
+  DatasetManager::GetInstance()->SetActive("foot", GL_TEXTURE1);
+  TopAnalyzer::GetInstance()->AnalyzeCurrDataset(g_flowRate, DatasetManager::GetInstance()->GetCurrentKey());
+
+  std::cout << "\n\n\n--------------Boston Teapot--------------\n";
+  DatasetManager::GetInstance()->SetActive("BostonTeapot", GL_TEXTURE1);
+  TopAnalyzer::GetInstance()->AnalyzeCurrDataset(g_flowRate, DatasetManager::GetInstance()->GetCurrentKey());
+
+  std::cout << "\n\n\n--------------Carp--------------\n";
+  DatasetManager::GetInstance()->SetActive("carp", GL_TEXTURE1);
+  TopAnalyzer::GetInstance()->AnalyzeCurrDataset(g_flowRate, DatasetManager::GetInstance()->GetCurrentKey());
+
+  std::cout << "\n\n\n--------------Stent--------------\n";
+  DatasetManager::GetInstance()->SetActive("stent8", GL_TEXTURE1);
+  TopAnalyzer::GetInstance()->AnalyzeCurrDataset(g_flowRate, DatasetManager::GetInstance()->GetCurrentKey());
+
+  //TFManager::GetInstance()->Init("C:/Users/Guilherme/Pictures/datasets/transfer-functions/");
+  //TFManager::GetInstance()->SetActive("tff1", GL_TEXTURE3);
 
   TopAnalyzer::GetInstance()->AnalyzeCurrDataset(g_flowRate, DatasetManager::GetInstance()->GetCurrentKey());
-  AlphaManager::GetInstance()->SetActive(DatasetManager::GetInstance()->GetCurrentKey(), GL_TEXTURE2);
+  //AlphaManager::GetInstance()->SetActive(DatasetManager::GetInstance()->GetCurrentKey(), GL_TEXTURE2);
 
   /*delete pyro1;
   delete pyro2;
@@ -114,73 +148,74 @@ int main()
 
   errCode = initGLEW();
   initResources();
-  initMesh();
-  
-  initFBO();
-  initShaders();
-  
-  glClearColor(0.3f, 0.3f, 0.3f, 1.f);
-  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  //initMesh();
+  //
+  //initFBO();
+  //initShaders();
+  //
+  //glClearColor(0.3f, 0.3f, 0.3f, 1.f);
+  //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-  glEnable(GL_DEPTH_TEST);
-  glDepthFunc(GL_LESS);
-  glClearDepth(1.0f);
+  //glEnable(GL_DEPTH_TEST);
+  //glDepthFunc(GL_LESS);
+  //glClearDepth(1.0f);
 
-  glEnable(GL_CULL_FACE);
+  //glEnable(GL_CULL_FACE);
 
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    
-  g_mouse = new Arcball(WINDOW_W, WINDOW_H, 1.5f, true, true);
-  
-  while(!glfwWindowShouldClose(g_window)) {
+  //glEnable(GL_BLEND);
+  //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  //  
+  //g_mouse = new Arcball(WINDOW_W, WINDOW_H, 1.5f, true, true);
+  //
+  //while(!glfwWindowShouldClose(g_window)) {
 
-    TinyGL* gl_ptr = TinyGL::GetInstance();
-    Mesh* m = gl_ptr->getMesh("proxy_cube");
-    Shader* fpass = gl_ptr->getShader(FPASS_KEY);
-    Shader* spass = gl_ptr->getShader(SPASS_KEY);
-    FramebufferObject* fbo = gl_ptr->getFBO(FBO_KEY);
+  //  TinyGL* gl_ptr = TinyGL::GetInstance();
+  //  Mesh* m = gl_ptr->getMesh("proxy_cube");
+  //  Shader* fpass = gl_ptr->getShader(FPASS_KEY);
+  //  Shader* spass = gl_ptr->getShader(SPASS_KEY);
+  //  FramebufferObject* fbo = gl_ptr->getFBO(FBO_KEY);
 
-    fpass->bind();
-    glm::mat4 rot = g_viewMatrix * g_mouse->createViewRotationMatrix();
-    fpass->setUniformMatrix("u_mView", rot);
+  //  fpass->bind();
+  //  glm::mat4 rot = g_viewMatrix * g_mouse->createViewRotationMatrix();
+  //  fpass->setUniformMatrix("u_mView", rot);
 
-    //First pass
-    fbo->bind(GL_FRAMEBUFFER);
-    glViewport(0, 0, WINDOW_W, WINDOW_H);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glCullFace(GL_FRONT);
-    m->draw();
+  //  //First pass
+  //  fbo->bind(GL_FRAMEBUFFER);
+  //  glViewport(0, 0, WINDOW_W, WINDOW_H);
+  //  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  //  glCullFace(GL_FRONT);
+  //  m->draw();
 
-    FramebufferObject::unbind();
-    glViewport(0, 0, WINDOW_W, WINDOW_H);
+  //  FramebufferObject::unbind();
+  //  glViewport(0, 0, WINDOW_W, WINDOW_H);
 
-    //Second pass
-    spass->bind();
-    spass->setUniformMatrix("u_mView", rot);
+  //  //Second pass
+  //  spass->bind();
+  //  spass->setUniformMatrix("u_mView", rot);
 
-    DatasetManager::GetInstance()->GetCurrent()->bind(GL_TEXTURE1);
-    AlphaManager::GetInstance()->GetCurrent()->bind(GL_TEXTURE2);
-    TFManager::GetInstance()->GetCurrent()->bind(GL_TEXTURE3);
-    
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, fbo->getAttachmentId(GL_COLOR_ATTACHMENT0));
-    
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glCullFace(GL_BACK);
-    m->draw();
+  //  DatasetManager::GetInstance()->GetCurrent()->bind(GL_TEXTURE1);
+  //  AlphaManager::GetInstance()->GetCurrent()->bind(GL_TEXTURE2);
+  //  TFManager::GetInstance()->GetCurrent()->bind(GL_TEXTURE3);
+  //  
+  //  glActiveTexture(GL_TEXTURE0);
+  //  glBindTexture(GL_TEXTURE_2D, fbo->getAttachmentId(GL_COLOR_ATTACHMENT0));
+  //  
+  //  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  //  glCullFace(GL_BACK);
+  //  m->draw();
 
-    Shader::unbind();
+  //  Shader::unbind();
 
-    glfwSwapBuffers(g_window);
-    glfwPollEvents();
-  }
+  //  glfwSwapBuffers(g_window);
+  //  glfwPollEvents();
+  //}
 
-  DatasetManager::GetInstance()->FreeResources();
-  TinyGL::GetInstance()->freeResources();
-  delete g_mouse;
+  //DatasetManager::GetInstance()->FreeResources();
+  //TinyGL::GetInstance()->freeResources();
+  //delete g_mouse;
 
   glfwTerminate();
+  system("PAUSE");
   return 0;
 }
 

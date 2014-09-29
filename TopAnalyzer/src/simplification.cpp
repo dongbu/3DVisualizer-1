@@ -1,6 +1,7 @@
 #include "simplification.h"
 #include "ctfunc.h"
 #include <stack>
+#include <tbb/parallel_for.h>
 
 bool marked_for_removal(ctBranch* b) {
   if(b == NULL) return true;
@@ -65,18 +66,15 @@ void simplify_tree_dfs(ctBranch* root_branch, ctBranch** branch_map, size_t data
 void simplify_from_branchmap(ctBranch** branch_map, size_t map_size, double(*importance_measure)(ctBranch*), double threshold)
 {
   bool changed = false;
-  bool* visited = new bool[map_size];
-  memset(visited, false, sizeof(bool) * map_size);
 
   do {
     changed = false;
-    memset(visited, false, sizeof(bool) * map_size);
 
     for(size_t i = 0; i < map_size; i++) {
       FeatureSet* branch_data = (FeatureSet*) branch_map[i]->data;
 
-      if(branch_is_leaf(branch_map[i]) && visited[i] == false && branch_data->remove == false) {
-        
+      if(branch_is_leaf(branch_map[i]) && branch_data->remove == false) {
+
         if(importance_measure(branch_map[i]) > threshold) {
           branch_data->remove = false;
         } else {
@@ -85,13 +83,10 @@ void simplify_from_branchmap(ctBranch** branch_map, size_t map_size, double(*imp
           changed = true;
         }
 
-        visited[i] = true;
       }
     }
 
   } while(changed == true);
-
-  delete[] visited;
 }
 
 static std::vector<ctBranch*> queue_leaves(ctBranch* root_branch)
@@ -105,7 +100,7 @@ static std::vector<ctBranch*> queue_leaves(ctBranch* root_branch)
 
   do {
     ctBranch* curr_branch = stack.top();
-    
+
     stack.pop();
 
     if(curr_branch->children.head == NULL)
@@ -119,15 +114,34 @@ static std::vector<ctBranch*> queue_leaves(ctBranch* root_branch)
   return leaves;
 }
 
+class Reduce
+{
+  ctBranch** branch_map;
+  ctBranch* to_remove;
+
+public:
+
+  Reduce(ctBranch** a, ctBranch* to_rem) : branch_map(a), to_remove(to_rem)
+  {}
+
+  void operator()(const tbb::blocked_range<size_t>& range) const {
+
+    FeatureSet* rem_data = (FeatureSet*) to_remove->data;
+
+    for(int i = range.begin(); i != range.end(); i++) {
+      FeatureSet* bmap_data = (FeatureSet*) branch_map[i]->data;
+      if(bmap_data->label == rem_data->label) {
+        branch_map[i] = to_remove->parent;
+      }
+    }
+  }
+};
+
 static void point_to_parent(ctBranch* to_remove, ctBranch** branch_map, size_t map_size)
 {
   FeatureSet* rem_data = (FeatureSet*) to_remove->data;
 
-  for(size_t i = 0; i < map_size; i++) {
-    FeatureSet* bmap_data = (FeatureSet*) branch_map[i]->data;
-    if(bmap_data->label == rem_data->label)
-      branch_map[i] = to_remove->parent;
-  }
+  tbb::parallel_for(tbb::blocked_range<size_t>(0, map_size), Reduce(branch_map, to_remove));
 }
 
 void test_simplification(ctContext* ctx, ctBranch* root_branch, ctBranch** branch_map, size_t map_size, double(*importance_cb)(ctBranch*), double thresh)
@@ -151,15 +165,6 @@ void test_simplification(ctContext* ctx, ctBranch* root_branch, ctBranch** branc
         point_to_parent(leaves[i], branch_map, map_size);
         ctBranch_delete(leaves[i], ctx);
         changed = true;
-        /*if(leaves[i]->data != NULL) {
-          memset(leaves[i]->data, 0, sizeof(FeatureSet));
-          free(leaves[i]->data);
-          leaves[i]->data = NULL;
-        }
-
-        memset(leaves[i], 0, sizeof(ctBranch));
-        free(leaves[i]);
-        leaves[i] = NULL;*/
 
       }
     }

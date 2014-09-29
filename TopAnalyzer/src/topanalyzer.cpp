@@ -7,6 +7,7 @@
 #include "alphamanager.h"
 
 #include <queue>
+#include <tbb/tbb.h>
 
 extern "C"
 {
@@ -120,7 +121,7 @@ static ctBranch* BranchAlloc(void*)
 static void BranchFree(ctBranch* b, void*)
 {
   if(b->data != NULL) {
-    memset(b->data, 0, sizeof(FeatureSet));
+    //memset(b->data, 0, sizeof(FeatureSet));
     free(b->data);
     b->data = NULL;
   }
@@ -132,7 +133,7 @@ static void BranchFree(ctBranch* b, void*)
     parent_data->num_children--;
   }
 
-  memset(b, 0, sizeof(ctBranch));
+  //memset(b, 0, sizeof(ctBranch));
   free(b);
   b = NULL;
 }
@@ -151,12 +152,18 @@ void TopAnalyzer::AnalyzeCurrDataset(double flow_rate, std::string key)
 void TopAnalyzer::AnalyzeDataset(knl::Dataset* data, double flow_rate, std::string key)
 {
   assert(data != NULL);
+  tbb::tick_count a;
+  tbb::tick_count b;
 
   top::Dataset topd(*data);
   top::Mesh mesh(topd);
 
+  a = tbb::tick_count::now();
   std::vector<size_t> order;
   mesh.createGraph(order);
+  b = tbb::tick_count::now();
+  std::cout << "\tGraph created in " << (b - a).seconds() << " seconds" << std::endl;
+
 
   ctContext* ctx = ct_init(topd.size, &(order.front()), std_value, std_neighbors, &mesh);
   ct_vertexFunc(ctx, &vertex_proc);
@@ -165,23 +172,34 @@ void TopAnalyzer::AnalyzeDataset(knl::Dataset* data, double flow_rate, std::stri
 
   ct_branchAllocator(ctx, &BranchAlloc, &BranchFree);
 
+  a = tbb::tick_count::now();
   ct_sweepAndMerge(ctx);
   ctBranch* root_branch = ct_decompose(ctx);
   ctBranch** branch_map = ct_branchMap(ctx);
+  b = tbb::tick_count::now();
+  std::cout << "\tSweep and merge + decompose + branch map in " << (b - a).seconds() << " seconds" << std::endl;
 
   zero_branches(root_branch);
   size_t max_depth = 0;
   calc_branch_depth(root_branch, &max_depth, 0);
 
-  std::cout << count_branches(root_branch) << " branches before simplification." << std::endl;
-  std::cout << "Tree depth = " << max_depth << std::endl;
+  //std::cout << count_branches(root_branch) << " branches before simplification." << std::endl;
+  //std::cout << "Tree depth = " << max_depth << std::endl;
 
+  a = tbb::tick_count::now();
   calc_branch_features(branch_map, &topd);
+  b = tbb::tick_count::now();
+  std::cout << "\tFeatures calculated in " << (b - a).seconds() << " seconds" << std::endl;
 
   double avg_importance = calc_avg_importance(root_branch, &std_avg_importance);
+  
+
+  a = tbb::tick_count::now();
   //simplify_tree_dfs(root_branch, branch_map, topd.size, &std_avg_importance, avg_importance / 10);
-  //simplify_from_branchmap(branch_map, topd.size, &std_avg_importance, avg_importance);
-  test_simplification(ctx, root_branch, branch_map, topd.size, &std_avg_importance, avg_importance / 1000);
+  test_simplification(ctx, root_branch, branch_map, topd.size, &std_avg_importance, avg_importance / 10);
+  //simplify_from_branchmap(branch_map, topd.size, &std_avg_importance, avg_importance / 10);
+  b = tbb::tick_count::now();
+  std::cout << "\tSimplification in " << (b - a).seconds() << " seconds" << std::endl;
 
   calc_branch_features(branch_map, &topd);
   int last_label = label_branches(root_branch);
@@ -190,13 +208,19 @@ void TopAnalyzer::AnalyzeDataset(knl::Dataset* data, double flow_rate, std::stri
 
   max_depth = 0;
   calc_branch_depth(root_branch, &max_depth, 0);
-  std::cout << count_branches(root_branch) << " branches after simplification." << std::endl;
-  std::cout << "Tree depth = " << max_depth << std::endl;
+  /*std::cout << count_branches(root_branch) << " branches after simplification." << std::endl;
+  std::cout << "Tree depth = " << max_depth << std::endl;*/
   normalize_features(root_branch);
 
+  a = tbb::tick_count::now();
   calc_residue_flow(root_branch, 1.f / (double) max_depth, flow_rate, &topd);
-  
+  b = tbb::tick_count::now();
+  std::cout << "\tResidue flow in " << (b - a).seconds() << " seconds" << std::endl;
+
+  a = tbb::tick_count::now();
   knl::Dataset* alpha_map = CreateAlphaDataset(*data, branch_map);
+  b = tbb::tick_count::now();
+  std::cout << "\tAlpha map in " << (b - a).seconds() << " seconds" << std::endl;
 
   AlphaManager::GetInstance()->Add(key, alpha_map);
 
