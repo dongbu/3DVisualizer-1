@@ -81,7 +81,7 @@ void initResources()
   g_viewMatrix = glm::lookAt(g_eye, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
   g_projMatrix = glm::ortho(-0.8f, 0.8f, -0.8f, 0.8f, 1.f, 5.f);
 
-  DatasetManager::GetInstance()->Init("C:/Users/Guilherme/Pictures/datasets/");
+  DatasetManager::GetInstance()->Init("C:/Users/schardong/Pictures/datasets/");
 
   /*Dataset* pyro1 = Dataset::CreatePyroclasticVolume(128, 0.05f);
   Dataset* pyro2 = Dataset::CreatePyroclasticVolume(64, 0.4f);
@@ -92,7 +92,6 @@ void initResources()
   DatasetManager::getInstance()->Add("pyro3", pyro3);*/
 
   DatasetManager::GetInstance()->SetActive("nucleon", GL_TEXTURE1);
-  TopAnalyzer::GetInstance()->AnalyzeCurrDataset(g_flowRate, DatasetManager::GetInstance()->GetCurrentKey());
 
   /*std::cout << "\n\n\n--------------Neghip--------------\n";
   DatasetManager::GetInstance()->SetActive("neghip", GL_TEXTURE1);
@@ -126,7 +125,7 @@ void initResources()
   DatasetManager::GetInstance()->SetActive("stent8", GL_TEXTURE1);
   TopAnalyzer::GetInstance()->AnalyzeCurrDataset(g_flowRate, DatasetManager::GetInstance()->GetCurrentKey());*/
 
-  TFManager::GetInstance()->Init("C:/Users/Guilherme/Pictures/datasets/transfer-functions/");
+  TFManager::GetInstance()->Init("C:/Users/schardong/Pictures/datasets/transfer-functions/");
   TFManager::GetInstance()->SetActive("tff1", GL_TEXTURE3);
 
   TopAnalyzer::GetInstance()->AnalyzeCurrDataset(g_flowRate, DatasetManager::GetInstance()->GetCurrentKey());
@@ -214,7 +213,6 @@ int main()
   delete g_mouse;
 
   glfwTerminate();
-  system("PAUSE");
   return 0;
 }
 

@@ -35,7 +35,7 @@ namespace knl
 
     static Dataset* CreatePyroclasticVolume(size_t sz, float r);
 
-    virtual size_t Get(int idx)
+    virtual size_t Get(size_t idx)
     {
       if(bytes_elem == sizeof(GLushort)) {
         unsigned short* ptr = (unsigned short*) data + idx;
@@ -46,6 +46,20 @@ namespace knl
       } else {
         size_t* ptr = (size_t*) data + idx;
         return *ptr;
+      }
+    }
+
+    virtual void Set(size_t idx, size_t val)
+    {
+      if(bytes_elem == sizeof(GLushort)) {
+        GLushort* ptr = (GLushort*) data + idx;
+        *ptr = (GLushort) val;
+      } else if(bytes_elem == sizeof(GLubyte)) {
+        GLubyte* ptr = (GLubyte*) data + idx;
+        *ptr = (GLubyte) val;
+      } else {
+        size_t* ptr = (size_t*) data + idx;
+        *ptr = val;
       }
     }
 
