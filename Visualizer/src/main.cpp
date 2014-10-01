@@ -81,17 +81,9 @@ void initResources()
   g_viewMatrix = glm::lookAt(g_eye, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
   g_projMatrix = glm::ortho(-0.8f, 0.8f, -0.8f, 0.8f, 1.f, 5.f);
 
-  DatasetManager::GetInstance()->Init("C:/Users/schardong/Pictures/datasets/");
-
-  /*Dataset* pyro1 = Dataset::CreatePyroclasticVolume(128, 0.05f);
-  Dataset* pyro2 = Dataset::CreatePyroclasticVolume(64, 0.4f);
-  Dataset* pyro3 = Dataset::CreatePyroclasticVolume(200, 0.14f);
-
-  DatasetManager::getInstance()->Add("pyro1", pyro1);
-  DatasetManager::getInstance()->Add("pyro2", pyro2);
-  DatasetManager::getInstance()->Add("pyro3", pyro3);*/
-
-  DatasetManager::GetInstance()->SetActive("nucleon", GL_TEXTURE1);
+  //  DatasetManager::GetInstance()->Init("C:/Users/schardong/Pictures/datasets/");
+  DatasetManager::GetInstance()->Init("/home/guilherme/Pictures/datasets/");
+  DatasetManager::GetInstance()->SetActive("neghip", GL_TEXTURE1);
 
   /*std::cout << "\n\n\n--------------Neghip--------------\n";
   DatasetManager::GetInstance()->SetActive("neghip", GL_TEXTURE1);
@@ -125,15 +117,13 @@ void initResources()
   DatasetManager::GetInstance()->SetActive("stent8", GL_TEXTURE1);
   TopAnalyzer::GetInstance()->AnalyzeCurrDataset(g_flowRate, DatasetManager::GetInstance()->GetCurrentKey());*/
 
-  TFManager::GetInstance()->Init("C:/Users/schardong/Pictures/datasets/transfer-functions/");
+
+  //  TFManager::GetInstance()->Init("C:/Users/schardong/Pictures/datasets/transfer-functions/");
+  TFManager::GetInstance()->Init("/home/guilherme/Pictures/datasets/transfer-functions/");
   TFManager::GetInstance()->SetActive("tff1", GL_TEXTURE3);
 
   TopAnalyzer::GetInstance()->AnalyzeCurrDataset(g_flowRate, DatasetManager::GetInstance()->GetCurrentKey());
   AlphaManager::GetInstance()->SetActive(DatasetManager::GetInstance()->GetCurrentKey(), GL_TEXTURE2);
-
-  /*delete pyro1;
-  delete pyro2;
-  delete pyro3;*/
 }
 
 int main()
@@ -163,7 +153,7 @@ int main()
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
-  g_mouse = new Arcball(WINDOW_W, WINDOW_H, 1.5f, true, true);
+  g_mouse = new Arcball(WINDOW_W, WINDOW_H, 0.05f, true, true);
   
   while(!glfwWindowShouldClose(g_window)) {
 
@@ -265,7 +255,8 @@ static void initShaders()
   float screen_sz[2] = {(float)WINDOW_W, (float)WINDOW_H};
   glm::mat4 modelMatrix = TinyGL::GetInstance()->getMesh("proxy_cube")->m_modelMatrix;
 
-  Shader* fpass = new Shader(RESOURCE_PATH + "/shaders/FPass.vs", RESOURCE_PATH + "/shaders/FPass.fs");
+  Shader* fpass = new Shader(std::string(RESOURCE_PATH) + std::string("/shaders/FPass.vs"), 
+			     std::string(RESOURCE_PATH) + std::string("/shaders/FPass.fs"));
   fpass->bind();
   fpass->bindFragDataLoc("fColor", 0);
   fpass->setUniformMatrix("u_mView", g_viewMatrix);
@@ -284,7 +275,8 @@ static void initShaders()
   spass->setUniform1i("u_sBackFaces", 2);
   spass->setUniform1f("u_fNumSamples", (float)g_numSamples);*/
 
-  Shader* spass = new Shader(RESOURCE_PATH + "/shaders/SPass.vs", RESOURCE_PATH + "/shaders/SPassMultiOp.fs");
+  Shader* spass = new Shader(std::string(RESOURCE_PATH) + std::string("/shaders/SPass.vs"),
+			     std::string(RESOURCE_PATH) + std::string("/shaders/SPassMultiOp.fs"));
   spass->bind();
   spass->bindFragDataLoc("fColor", 0);
   spass->setUniformMatrix("u_mView", g_viewMatrix);

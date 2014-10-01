@@ -9,7 +9,7 @@ endif
 JUNK_DIR := bin/$(CONFIG)
 CXXFLAGS += -std=c++0x -MMD -Iinclude
 
-MODULES := kernel tinygl topanalyzer #visualizer
+MODULES := kernel tinygl topanalyzer visualizer
 
 kernel_PATH := Kernel
 tinygl_PATH := TinyGL

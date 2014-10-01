@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <cassert>
+#include <cstring>
 #include <GL/glew.h>
 
 using namespace knl;

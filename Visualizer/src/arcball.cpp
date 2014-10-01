@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Saburo Okita. All rights reserved.
 //
 
-#include "Arcball.h"
+#include "arcball.h"
 
 /**
  * Constructor.
