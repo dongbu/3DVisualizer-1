@@ -5,6 +5,11 @@ TODOs:
   -Make it possible to use a global color function with local opacity functions (change the shaders basically);
   -Create a base Manager class, since the Dataset, TFunction and Alpha managers have almost the same code.
     -Too many f***** linker errors!
+  -Passar os vértices para os ramos na árvore.
+    -Reconstruir o vertex-branch-map.
+
+IDEAS:
+  -Calcular os centróides das regiões definidas pelos vértices e unir os ramos simplificados com os centróides mais próximos. Possivelmente vou ter que implementar algum algoritmo de closest-pair.
 
 FIXMEs:
   -Performance issues when marking branches for removal (TopAnalyzer).
