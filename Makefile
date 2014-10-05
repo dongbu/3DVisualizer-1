@@ -7,7 +7,7 @@ else
 endif
 
 JUNK_DIR := bin/$(CONFIG)
-CXXFLAGS += -std=c++0x -MMD -Iinclude
+CXXFLAGS += -std=c++11 -MMD -Iinclude
 
 MODULES := kernel tinygl topanalyzer visualizer
 

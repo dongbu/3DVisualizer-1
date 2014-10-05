@@ -192,7 +192,7 @@ void TopAnalyzer::AnalyzeDataset(knl::Dataset* data, double flow_rate, std::stri
   std::cout << "\tFeatures calculated in " << (b - a).seconds() << " seconds" << std::endl;
 
   double avg_importance = calc_avg_importance(root_branch, &std_avg_importance);
-  
+  calc_vertices_branch(root_branch, branch_map, topd.size);
 
   a = tbb::tick_count::now();
   topSimplifyTree(ctx, root_branch, branch_map, topd.size, &std_avg_importance, avg_importance / 1000);
@@ -200,6 +200,7 @@ void TopAnalyzer::AnalyzeDataset(knl::Dataset* data, double flow_rate, std::stri
   b = tbb::tick_count::now();
   std::cout << "\tSimplification in " << (b - a).seconds() << " seconds" << std::endl;
 
+  rebuild_branch_map(root_branch, branch_map, topd.size);
   calc_branch_features(branch_map, &topd);
   int last_label = label_branches(root_branch);
 

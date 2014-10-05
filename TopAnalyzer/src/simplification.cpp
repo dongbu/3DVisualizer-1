@@ -1,6 +1,9 @@
 #include "simplification.h"
 #include "ctfunc.h"
+
 #include <stack>
+#include <algorithm>
+#include <vector>
 #include <tbb/parallel_for.h>
 
 bool marked_for_removal(ctBranch* b) {
@@ -114,34 +117,41 @@ static std::vector<ctBranch*> queue_leaves(ctBranch* root_branch)
   return leaves;
 }
 
-class PointToParent
-{
-  ctBranch** branch_map;
-  ctBranch* to_remove;
+// class PointToParent
+// {
+//   ctBranch** branch_map;
+//   ctBranch* to_remove;
 
-public:
+// public:
 
-  PointToParent(ctBranch** a, ctBranch* to_rem) : branch_map(a), to_remove(to_rem)
-  {}
+//   PointToParent(ctBranch** a, ctBranch* to_rem) : branch_map(a), to_remove(to_rem)
+//   {}
 
-  void operator()(const tbb::blocked_range<size_t>& range) const {
+//   void operator()(const tbb::blocked_range<size_t>& range) const {
 
-    FeatureSet* rem_data = (FeatureSet*) to_remove->data;
+//     FeatureSet* rem_data = (FeatureSet*) to_remove->data;
 
-    for(int i = range.begin(); i != range.end(); i++) {
-      FeatureSet* bmap_data = (FeatureSet*) branch_map[i]->data;
-      if(bmap_data->label == rem_data->label) {
-        branch_map[i] = to_remove->parent;
-      }
-    }
-  }
-};
+//     for(int i = range.begin(); i != range.end(); i++) {
+//       FeatureSet* bmap_data = (FeatureSet*) branch_map[i]->data;
+//       if(bmap_data->label == rem_data->label) {
+//         branch_map[i] = to_remove->parent;
+//       }
+//     }
+//   }
+// };
 
 static void point_to_parent(ctBranch* to_remove, ctBranch** branch_map, size_t map_size)
 {
   FeatureSet* rem_data = (FeatureSet*) to_remove->data;
+  FeatureSet* par_data = (FeatureSet*) to_remove->parent->data;
 
-  tbb::parallel_for(tbb::blocked_range<size_t>(0, map_size), PointToParent(branch_map, to_remove));
+  std::vector<size_t> new_vertices(rem_data->vertices.size() + par_data->vertices.size());
+  std::merge(rem_data->vertices.begin(), rem_data->vertices.end(),
+  	     par_data->vertices.begin(), par_data->vertices.end(),
+  	     new_vertices.begin());
+
+  par_data->vertices = new_vertices;
+  // tbb::parallel_for(tbb::blocked_range<size_t>(0, map_size), PointToParent(branch_map, to_remove));
 }
 
 void topSimplifyTree(ctContext* ctx, ctBranch* root_branch, ctBranch** branch_map, size_t map_size, double(*importance_cb)(ctBranch*), double thresh)
@@ -165,7 +175,6 @@ void topSimplifyTree(ctContext* ctx, ctBranch* root_branch, ctBranch** branch_ma
         point_to_parent(leaves[i], branch_map, map_size);
         ctBranch_delete(leaves[i], ctx);
         changed = true;
-
       }
     }
 

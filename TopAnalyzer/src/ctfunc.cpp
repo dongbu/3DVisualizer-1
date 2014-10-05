@@ -3,6 +3,8 @@
 
 #include <queue>
 #include <cstring>
+#include <algorithm>
+#include <vector>
 #include <tbb/blocked_range.h>
 #include <tbb/parallel_reduce.h>
 
@@ -480,4 +482,62 @@ void calc_saddle_min_max(ctBranch* root_branch, top::Dataset* data)
       std::cout << "nc: " << branch_data->num_children << " min: " << branch_data->c_s_min << " max: " << branch_data->c_s_max << std::endl;
     }
   } while(!branch_queue.empty());
+}
+
+void calc_vertices_branch(ctBranch* root_branch, ctBranch** branch_map, size_t map_size)
+{
+  if(!branch_map || map_size == 0) {
+    return;
+  }
+
+  //Here we insert the addresses of the vertices in each branch's vector.
+  for(size_t i = 0; i < map_size; i++) {
+    FeatureSet* branch_data = (FeatureSet*) branch_map[i]->data;
+    branch_data->vertices.push_back(i);
+  }
+
+  //Now we sort the vertices in each branch. This makes it easier to merge the
+  //vectors during the simplification.
+  std::queue<ctBranch*> branch_queue;
+  branch_queue.push(root_branch);
+
+  do {
+    ctBranch* curr_branch = branch_queue.front();
+    branch_queue.pop();
+
+    FeatureSet* branch_data = (FeatureSet*) curr_branch->data;
+
+    std::sort(branch_data->vertices.begin(), branch_data->vertices.end());
+
+    for(ctBranch* c = curr_branch->children.head; c != NULL; c = c->nextChild) {
+      branch_queue.push(c);
+    }
+
+  } while(!branch_queue.empty());
+}
+
+void rebuild_branch_map(ctBranch* root_branch, ctBranch** branch_map, size_t map_size)
+{
+  if(!root_branch || !branch_map || map_size == 0) {
+    return;
+  }
+
+  std::queue<ctBranch*> branch_queue;
+  branch_queue.push(root_branch);
+
+  do {
+    ctBranch* curr_branch = branch_queue.front();
+    branch_queue.pop();
+
+    FeatureSet* branch_data = (FeatureSet*) curr_branch->data;
+
+    for(size_t i = 0; i < branch_data->vertices.size(); i++) {
+      branch_map[branch_data->vertices[i]] = curr_branch;
+    }
+
+    for(ctBranch* c = curr_branch->children.head; c != NULL; c = c->nextChild) {
+      branch_queue.push(c);
+    }
+
+  } while(!branch_queue.empty());  
 }

@@ -2,10 +2,7 @@
 #define FEATURESET_H
 
 #include <cstdlib>
-
-#ifdef  __cplusplus
-extern "C" {
-#endif
+#include <vector>
 
 typedef struct
 {
@@ -17,6 +14,8 @@ typedef struct
 
   int label;   //branch label. Used to save the transfer functions in the right order.
   double porosity;
+  std::vector<size_t> vertices;
+
 
   bool remove; //if set to true, the branch is removed from the tree.
   double delta_h; // (non leaf nodes)
@@ -36,9 +35,5 @@ typedef struct
   double norm_p;
   double norm_hv;
 } FeatureSet;
-
-#ifdef  __cplusplus
-}
-#endif
 
 #endif // FEATURESET_H
