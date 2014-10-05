@@ -15,7 +15,7 @@ typedef struct
   int label;   //branch label. Used to save the transfer functions in the right order.
   double porosity;
   std::vector<size_t> vertices;
-
+  size_t centroid; //Linear index of the branch's centroid.
 
   bool remove; //if set to true, the branch is removed from the tree.
   double delta_h; // (non leaf nodes)

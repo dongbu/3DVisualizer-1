@@ -103,6 +103,35 @@ void calc_branch_num_children(ctBranch* root_branch)
   } while(!branch_queue.empty());
 }
 
+void calc_centroid(ctBranch* branch, top::Dataset* topd)
+{
+  using namespace std;
+
+  if(!branch)
+    return;
+
+  FeatureSet* data = (FeatureSet*) branch->data;
+  vector<size_t> vtx = data->vertices;
+
+  size_t sx = 0;
+  size_t sy = 0;
+  size_t sz = 0;
+
+  for(size_t i = 0; i < vtx.size(); i++) {
+    size_t x, y, z;
+    topd->convertIndex(vtx[i], x, y, z);
+    sx += x;
+    sy += y;
+    sz += z;
+  }
+
+  sx /= vtx.size();
+  sy /= vtx.size();
+  sz /= vtx.size();
+
+  data->centroid = topd->convertIndex(sx, sy, sz);
+}
+
 FeatureSet* find_max_features_children(ctBranch* root_branch)
 {
   FeatureSet* max_features = (FeatureSet*) calloc(1, sizeof(FeatureSet));

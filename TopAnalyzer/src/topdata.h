@@ -45,6 +45,17 @@ namespace top
       y = (id - z * size01) / data->width;
       x = id - z * size01 - y * data->width;
     }
+    
+    size_t operator()(int idx)
+    {
+      return Get(idx);
+    }
+
+    size_t operator()(int i, int j, int k)
+    {
+      size_t idx = convertIndex(i, j, k);
+      return Get(idx);
+    }
 
     bool greater(size_t a, size_t b);
     bool less(size_t a, size_t b);

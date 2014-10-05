@@ -63,10 +63,24 @@ namespace knl
       }
     }
 
+    size_t operator()(int idx)
+    {
+      return Get(idx);
+    }
+
+    size_t operator()(int i, int j, int k)
+    {
+      return Get(ToLinear(i, j, k));
+    }
+
   private:
     bool is_uploaded;
     bool is_loaded;
 
+    inline size_t ToLinear(int i, int j, int k)
+    {
+      return (k * height + j) * width + i;
+    }
   };
 
 }

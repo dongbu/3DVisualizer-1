@@ -28,6 +28,7 @@ void calc_branch_features(ctBranch**, top::Dataset*);
 double calc_avg_importance(ctBranch*, double (*importance_measure)(ctBranch*));
 void calc_branch_depth(ctBranch*, size_t*, size_t);
 void calc_branch_num_children(ctBranch*);
+  void calc_centroid(ctBranch*, top::Dataset*);
 void normalize_features(ctBranch*);
 int label_branches(ctBranch*);
 
