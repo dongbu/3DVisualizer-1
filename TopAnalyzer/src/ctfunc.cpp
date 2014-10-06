@@ -536,7 +536,9 @@ void calc_vertices_branch(ctBranch* root_branch, ctBranch** branch_map, size_t m
 
     FeatureSet* branch_data = (FeatureSet*) curr_branch->data;
 
-    std::sort(branch_data->vertices.begin(), branch_data->vertices.end());
+    if(!branch_data->vertices.empty()) {
+      std::sort(branch_data->vertices.begin(), branch_data->vertices.end(), std::less<size_t>());
+    }
 
     for(ctBranch* c = curr_branch->children.head; c != NULL; c = c->nextChild) {
       branch_queue.push(c);

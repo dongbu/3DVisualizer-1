@@ -13,9 +13,6 @@
     <ClCompile Include="src\logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\perlin.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\tfunction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -23,6 +20,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\datasetmanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\perlin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -196,7 +196,7 @@ void TopAnalyzer::AnalyzeDataset(knl::Dataset* data, double flow_rate, std::stri
 
   a = tbb::tick_count::now();
   //  simplify_tree_dfs(ctx, root_branch, branch_map, topd.size, &std_avg_importance, avg_importance / 1000);
-  topSimplifyTree(ctx, root_branch, branch_map, topd.size, &std_avg_importance, avg_importance / 1000);
+  topSimplifyTree(ctx, root_branch, branch_map, topd, &std_avg_importance, avg_importance / 1000);
   //  topSimplifyTreeZhou(ctx, root_branch, branch_map, topd, &std_avg_importance, avg_importance / 1000);
   b = tbb::tick_count::now();
   std::cout << "\tSimplification in " << (b - a).seconds() << " seconds" << std::endl;

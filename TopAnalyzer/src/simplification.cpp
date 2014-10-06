@@ -6,6 +6,28 @@
 #include <vector>
 #include <tbb/parallel_for.h>
 
+static void recalc_branch_features(ctBranch* root_branch, top::Dataset* data)
+{
+  if(!root_branch || ! data)
+    return;
+
+  FeatureSet* root_data = (FeatureSet*) root_branch->data;
+
+  root_data->v = root_data->vertices.size();
+  root_data->p = std::abs((long) (data->data->Get(root_branch->extremum) - data->data->Get(root_branch->saddle)));
+  root_data->hv = 0;
+  root_data->porosity = 300.0;
+
+  for(size_t i = 0; i < root_data->vertices.size(); i++) {
+    root_data->hv += data->data->Get(i);
+
+    if(root_data->min_intensity > data->data->Get(i))
+      root_data->min_intensity = data->data->Get(i);
+    else if(root_data->max_intensity < data->data->Get(i))
+      root_data->max_intensity = data->data->Get(i);
+  }
+}
+
 bool marked_for_removal(ctBranch* b) {
   if(b == NULL) return true;
   FeatureSet* fs = (FeatureSet*) b->data;
@@ -108,8 +130,9 @@ static std::vector<ctBranch*> queue_leaves(ctBranch* root_branch)
     if(curr_branch->children.head == NULL)
       leaves.push_back(curr_branch);
 
-    for(ctBranch* c = curr_branch->children.head; c != NULL; c = c->nextChild)
+    for(ctBranch* c = curr_branch->children.head; c != NULL; c = c->nextChild) {
       stack.push(c);
+    }
 
   } while(!stack.empty());
 
@@ -130,7 +153,7 @@ static void point_to_parent(ctBranch* to_remove, ctBranch** branch_map, size_t m
    tbb::parallel_for(tbb::blocked_range<size_t>(0, map_size), PointToParent(branch_map, to_remove));
 }
 
-void topSimplifyTree(ctContext* ctx, ctBranch* root_branch, ctBranch** branch_map, size_t map_size, double(*importance_cb)(ctBranch*), double thresh)
+void topSimplifyTree(ctContext* ctx, ctBranch* root_branch, ctBranch** branch_map, top::Dataset& topd, double(*importance_cb)(ctBranch*), double thresh)
 {
   using namespace std;
 
@@ -148,7 +171,9 @@ void topSimplifyTree(ctContext* ctx, ctBranch* root_branch, ctBranch** branch_ma
         continue;
 
       if(importance_cb(leaves[i]) < thresh) {
-        point_to_parent(leaves[i], branch_map, map_size);
+        point_to_parent(leaves[i], branch_map, topd.size);
+        recalc_branch_features(leaves[i]->parent, &topd);
+        ((FeatureSet*) leaves[i]->data)->remove = true;
         ctBranch_delete(leaves[i], ctx);
         changed = true;
       }
@@ -193,7 +218,6 @@ static void reduce_to_saddle(ctBranch* to_remove, ctBranch** branch_map, top::Da
 
 void topSimplifyTreeZhou(ctContext* ctx, ctBranch* root_branch, ctBranch** branch_map, top::Dataset& top_data, double(*importance_cb)(ctBranch*), double thresh)
 {
-  
   using namespace std;
 
   if(count_branches(root_branch) == 1)
@@ -211,7 +235,7 @@ void topSimplifyTreeZhou(ctContext* ctx, ctBranch* root_branch, ctBranch** branc
 
       if(importance_cb(leaves[i]) < thresh) {
         reduce_to_saddle(leaves[i], branch_map, top_data);
-	point_to_parent(leaves[i], branch_map, top_data);
+	      point_to_parent(leaves[i], branch_map, top_data.size);
         ctBranch_delete(leaves[i], ctx);
         changed = true;
       }
