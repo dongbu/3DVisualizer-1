@@ -24,29 +24,54 @@ bool branch_is_leaf(ctBranch* b)
   return will_remove;
 }
 
-void mark_for_removal(ctBranch* root_branch, ctBranch** branch_map, size_t data_size, double (*importance_measure)(ctBranch*), double threshold)
+class PointToParent
+{
+  ctBranch** branch_map;
+  ctBranch* to_remove;
+
+public:
+
+  PointToParent(ctBranch** a, ctBranch* to_rem) : branch_map(a), to_remove(to_rem)
+  {}
+
+  void operator()(const tbb::blocked_range<size_t>& range) const {
+
+    FeatureSet* rem_data = (FeatureSet*) to_remove->data;
+
+    for(int i = range.begin(); i != range.end(); i++) {
+      FeatureSet* bmap_data = (FeatureSet*) branch_map[i]->data;
+      if(bmap_data->label == rem_data->label) {
+        branch_map[i] = to_remove->parent;
+      }
+    }
+  }
+};
+
+void mark_for_removal(ctContext* ctx, ctBranch* root_branch, ctBranch** branch_map, size_t data_size, double (*importance_measure)(ctBranch*), double threshold)
 {
   if(root_branch == NULL) return;
   FeatureSet* branch_data = (FeatureSet*) root_branch->data;
 
   for(ctBranch* c = root_branch->children.head; c != NULL; c = c->nextChild)
-    mark_for_removal(c, branch_map, data_size, importance_measure, threshold);
+    mark_for_removal(ctx, c, branch_map, data_size, importance_measure, threshold);
 
   if(branch_is_leaf(root_branch)) {
-    branch_data->remove = importance_measure(root_branch) > threshold ? false : true;
-    //importance_measure(root_branch) > threshold ? branch_data->remove = false : branch_data->remove = true;
-    //TODO: Associate the vertices with the parent branch
-    for(size_t i = 0; i < data_size; i++) {
-      if(branch_map[i] == root_branch && root_branch->parent != NULL) {
-        branch_map[i] = root_branch->parent;
-      }
+    //branch_data->remove = importance_measure(root_branch) >= threshold ? false : true;
+    if(importance_measure(root_branch) < threshold) {
+      tbb::parallel_for(tbb::blocked_range<size_t>(0, data_size), PointToParent(branch_map, root_branch));
+      ctBranch_delete(root_branch, ctx);
     }
+    // for(size_t i = 0; i < data_size; i++) {
+    //   if(branch_map[i] == root_branch && root_branch->parent != NULL) {
+    //     branch_map[i] = root_branch->parent;
+    //   }
+    // }
   }
 }
 
-DEPRECATED void simplify_tree_dfs(ctBranch* root_branch, ctBranch** branch_map, size_t data_size, double (*importance_measure)(ctBranch*), double threshold)
+void simplify_tree_dfs(ctContext* ctx, ctBranch* root_branch, ctBranch** branch_map, size_t data_size, double (*importance_measure)(ctBranch*), double threshold)
 {
-  mark_for_removal(root_branch, branch_map, data_size, importance_measure, threshold);
+  mark_for_removal(ctx, root_branch, branch_map, data_size, importance_measure, threshold);
   //    remove_marked_branches(root_branch, branch_map, data, ctx);
   //    if(root_branch == NULL) return;
   //    FeatureSet* branch_data = (FeatureSet*) root_branch->data;
@@ -64,32 +89,6 @@ DEPRECATED void simplify_tree_dfs(ctBranch* root_branch, ctBranch** branch_map, 
   //        }
   //        return;
   //    }
-}
-
-DEPRECATED void simplify_from_branchmap(ctBranch** branch_map, size_t map_size, double(*importance_measure)(ctBranch*), double threshold)
-{
-  bool changed = false;
-
-  do {
-    changed = false;
-
-    for(size_t i = 0; i < map_size; i++) {
-      FeatureSet* branch_data = (FeatureSet*) branch_map[i]->data;
-
-      if(branch_is_leaf(branch_map[i]) && branch_data->remove == false) {
-
-        if(importance_measure(branch_map[i]) > threshold) {
-          branch_data->remove = false;
-        } else {
-          branch_data->remove = true;
-          branch_map[i] = branch_map[i]->parent;
-          changed = true;
-        }
-
-      }
-    }
-
-  } while(changed == true);
 }
 
 static std::vector<ctBranch*> queue_leaves(ctBranch* root_branch)
@@ -117,29 +116,6 @@ static std::vector<ctBranch*> queue_leaves(ctBranch* root_branch)
   return leaves;
 }
 
-// class PointToParent
-// {
-//   ctBranch** branch_map;
-//   ctBranch* to_remove;
-
-// public:
-
-//   PointToParent(ctBranch** a, ctBranch* to_rem) : branch_map(a), to_remove(to_rem)
-//   {}
-
-//   void operator()(const tbb::blocked_range<size_t>& range) const {
-
-//     FeatureSet* rem_data = (FeatureSet*) to_remove->data;
-
-//     for(int i = range.begin(); i != range.end(); i++) {
-//       FeatureSet* bmap_data = (FeatureSet*) branch_map[i]->data;
-//       if(bmap_data->label == rem_data->label) {
-//         branch_map[i] = to_remove->parent;
-//       }
-//     }
-//   }
-// };
-
 static void point_to_parent(ctBranch* to_remove, ctBranch** branch_map, size_t map_size)
 {
   FeatureSet* rem_data = (FeatureSet*) to_remove->data;
@@ -147,11 +123,11 @@ static void point_to_parent(ctBranch* to_remove, ctBranch** branch_map, size_t m
 
   std::vector<size_t> new_vertices(rem_data->vertices.size() + par_data->vertices.size());
   std::merge(rem_data->vertices.begin(), rem_data->vertices.end(),
-  	     par_data->vertices.begin(), par_data->vertices.end(),
-  	     new_vertices.begin());
+   	     par_data->vertices.begin(), par_data->vertices.end(),
+   	     new_vertices.begin());
 
-  par_data->vertices = new_vertices;
-  // tbb::parallel_for(tbb::blocked_range<size_t>(0, map_size), PointToParent(branch_map, to_remove));
+   par_data->vertices = new_vertices;
+   tbb::parallel_for(tbb::blocked_range<size_t>(0, map_size), PointToParent(branch_map, to_remove));
 }
 
 void topSimplifyTree(ctContext* ctx, ctBranch* root_branch, ctBranch** branch_map, size_t map_size, double(*importance_cb)(ctBranch*), double thresh)
@@ -235,9 +211,9 @@ void topSimplifyTreeZhou(ctContext* ctx, ctBranch* root_branch, ctBranch** branc
 
       if(importance_cb(leaves[i]) < thresh) {
         reduce_to_saddle(leaves[i], branch_map, top_data);
+	point_to_parent(leaves[i], branch_map, top_data);
         ctBranch_delete(leaves[i], ctx);
         changed = true;
-
       }
     }
 

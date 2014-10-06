@@ -27,6 +27,10 @@ glm::mat4 g_projMatrix;
 static GLuint g_numSamples = 356;
 static double g_flowRate = 850.0;
 
+static void testSimplification();
+static void initResources();
+static GLuint initGLFW();
+static GLuint initGLEW();
 static void initMesh();
 static void initFBO();
 static void initShaders();
@@ -36,6 +40,89 @@ static void cb_drawcube(size_t num_points);
 static void cb_keyboard(GLFWwindow*, int, int, int, int);
 static void cb_mousebutton(GLFWwindow*, int, int, int);
 static void cb_mousemotion(GLFWwindow*, double, double);
+
+int main()
+{
+  Logger::GetInstance()->setLogStream(&std::cout);
+
+  GLuint errCode = initGLFW();
+  if(errCode != 0)
+    return -1;
+
+  errCode = initGLEW();
+  //  testSimplification();
+  initResources();
+  initMesh();
+  
+  initFBO();
+  initShaders();
+  
+  glClearColor(0.3f, 0.3f, 0.3f, 1.f);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+  glEnable(GL_DEPTH_TEST);
+  glDepthFunc(GL_LESS);
+  glClearDepth(1.0f);
+
+  glEnable(GL_CULL_FACE);
+
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
+  g_mouse = new Arcball(WINDOW_W, WINDOW_H, 0.05f, true, true);
+  
+  while(!glfwWindowShouldClose(g_window)) {
+
+    TinyGL* gl_ptr = TinyGL::GetInstance();
+    Mesh* m = gl_ptr->getMesh("proxy_cube");
+    Shader* fpass = gl_ptr->getShader(FPASS_KEY);
+    Shader* spass = gl_ptr->getShader(SPASS_KEY);
+    FramebufferObject* fbo = gl_ptr->getFBO(FBO_KEY);
+
+    fpass->bind();
+    glm::mat4 rot = g_viewMatrix * g_mouse->createViewRotationMatrix();
+    fpass->setUniformMatrix("u_mView", rot);
+
+    //First pass
+    fbo->bind(GL_FRAMEBUFFER);
+    glViewport(0, 0, WINDOW_W, WINDOW_H);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glCullFace(GL_FRONT);
+    m->draw();
+
+    FramebufferObject::unbind();
+    glViewport(0, 0, WINDOW_W, WINDOW_H);
+
+    //Second pass
+    spass->bind();
+    spass->setUniformMatrix("u_mView", rot);
+
+    DatasetManager::GetInstance()->GetCurrent()->bind(GL_TEXTURE1);
+    AlphaManager::GetInstance()->GetCurrent()->bind(GL_TEXTURE2);
+    TFManager::GetInstance()->GetCurrent()->bind(GL_TEXTURE3);
+    
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, fbo->getAttachmentId(GL_COLOR_ATTACHMENT0));
+    
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glCullFace(GL_BACK);
+    m->draw();
+
+    Shader::unbind();
+
+    glfwSwapBuffers(g_window);
+    glfwPollEvents();
+  }
+
+  DatasetManager::GetInstance()->FreeResources();
+  TFManager::GetInstance()->FreeResources();
+  AlphaManager::GetInstance()->FreeResources();
+  TinyGL::GetInstance()->freeResources();
+  delete g_mouse;
+
+  glfwTerminate();
+  return 0;
+}
 
 GLuint initGLFW()
 {
@@ -77,19 +164,14 @@ GLuint initGLEW()
   return 0;
 }
 
-void initResources()
+void testSimplification()
 {
-  using namespace knl;
-  g_eye = glm::vec3(0, 0, 3.5);
-  g_viewMatrix = glm::lookAt(g_eye, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-  g_projMatrix = glm::ortho(-0.8f, 0.8f, -0.8f, 0.8f, 1.f, 5.f);
 
   //  TopAnalyzer* top = TopAnalyzer::GetInstance();
   //  DatasetManager* dm = DatasetManager::GetInstance();
+  //  std::thread t1(&TopAnalyzer::AnalyzeCurrDataset, top, g_flowRate, dm->GetCurrentKey());
 
-  //  DatasetManager::GetInstance()->Init("C:/Users/schardong/Pictures/datasets/");
   DatasetManager::GetInstance()->Init("/home/guilherme/Pictures/datasets/");
-  //  DatasetManager::GetInstance()->SetActive("neghip", GL_TEXTURE1);
 
   std::cout << "\n\n\n--------------Neghip--------------\n";
   DatasetManager::GetInstance()->SetActive("neghip", GL_TEXTURE1);
@@ -122,96 +204,25 @@ void initResources()
   std::cout << "\n\n\n--------------Stent--------------\n";
   DatasetManager::GetInstance()->SetActive("stent8", GL_TEXTURE1);
   TopAnalyzer::GetInstance()->AnalyzeCurrDataset(g_flowRate, DatasetManager::GetInstance()->GetCurrentKey());
-
-
-  //  TFManager::GetInstance()->Init("C:/Users/schardong/Pictures/datasets/transfer-functions/");
-  //  TFManager::GetInstance()->Init("/home/guilherme/Pictures/datasets/transfer-functions/");
-  //  TFManager::GetInstance()->SetActive("tff1", GL_TEXTURE3);
-
-  //  TopAnalyzer::GetInstance()->AnalyzeCurrDataset(g_flowRate, DatasetManager::GetInstance()->GetCurrentKey());
-  //  AlphaManager::GetInstance()->SetActive(DatasetManager::GetInstance()->GetCurrentKey(), GL_TEXTURE2);
 }
 
-int main()
+void initResources()
 {
-  Logger::GetInstance()->setLogStream(&std::cout);
+  using namespace knl;
+  g_eye = glm::vec3(0, 0, 3.5);
+  g_viewMatrix = glm::lookAt(g_eye, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+  g_projMatrix = glm::ortho(-0.8f, 0.8f, -0.8f, 0.8f, 1.f, 5.f);
 
-  GLuint errCode = initGLFW();
-  if(errCode != 0)
-    return -1;
+  //  DatasetManager::GetInstance()->Init("C:/Users/schardong/Pictures/datasets/");
+  DatasetManager::GetInstance()->Init("/home/guilherme/Pictures/datasets/");
+  DatasetManager::GetInstance()->SetActive("neghip", GL_TEXTURE1);
 
-  errCode = initGLEW();
-  initResources();
-  // initMesh();
-  
-  // initFBO();
-  // initShaders();
-  
-  // glClearColor(0.3f, 0.3f, 0.3f, 1.f);
-  // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  //  TFManager::GetInstance()->Init("C:/Users/schardong/Pictures/datasets/transfer-functions/");
+  TFManager::GetInstance()->Init("/home/guilherme/Pictures/datasets/transfer-functions/");
+  TFManager::GetInstance()->SetActive("tff1", GL_TEXTURE3);
 
-  // glEnable(GL_DEPTH_TEST);
-  // glDepthFunc(GL_LESS);
-  // glClearDepth(1.0f);
-
-  // glEnable(GL_CULL_FACE);
-
-  // glEnable(GL_BLEND);
-  // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    
-  // g_mouse = new Arcball(WINDOW_W, WINDOW_H, 0.05f, true, true);
-  
-  // while(!glfwWindowShouldClose(g_window)) {
-
-  //   TinyGL* gl_ptr = TinyGL::GetInstance();
-  //   Mesh* m = gl_ptr->getMesh("proxy_cube");
-  //   Shader* fpass = gl_ptr->getShader(FPASS_KEY);
-  //   Shader* spass = gl_ptr->getShader(SPASS_KEY);
-  //   FramebufferObject* fbo = gl_ptr->getFBO(FBO_KEY);
-
-  //   fpass->bind();
-  //   glm::mat4 rot = g_viewMatrix * g_mouse->createViewRotationMatrix();
-  //   fpass->setUniformMatrix("u_mView", rot);
-
-  //   //First pass
-  //   fbo->bind(GL_FRAMEBUFFER);
-  //   glViewport(0, 0, WINDOW_W, WINDOW_H);
-  //   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  //   glCullFace(GL_FRONT);
-  //   m->draw();
-
-  //   FramebufferObject::unbind();
-  //   glViewport(0, 0, WINDOW_W, WINDOW_H);
-
-  //   //Second pass
-  //   spass->bind();
-  //   spass->setUniformMatrix("u_mView", rot);
-
-  //   DatasetManager::GetInstance()->GetCurrent()->bind(GL_TEXTURE1);
-  //   AlphaManager::GetInstance()->GetCurrent()->bind(GL_TEXTURE2);
-  //   TFManager::GetInstance()->GetCurrent()->bind(GL_TEXTURE3);
-    
-  //   glActiveTexture(GL_TEXTURE0);
-  //   glBindTexture(GL_TEXTURE_2D, fbo->getAttachmentId(GL_COLOR_ATTACHMENT0));
-    
-  //   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  //   glCullFace(GL_BACK);
-  //   m->draw();
-
-  //   Shader::unbind();
-
-  //   glfwSwapBuffers(g_window);
-  //   glfwPollEvents();
-  // }
-
-  DatasetManager::GetInstance()->FreeResources();
-  TFManager::GetInstance()->FreeResources();
-  AlphaManager::GetInstance()->FreeResources();
-  TinyGL::GetInstance()->freeResources();
-  delete g_mouse;
-
-  glfwTerminate();
-  return 0;
+  TopAnalyzer::GetInstance()->AnalyzeCurrDataset(g_flowRate, DatasetManager::GetInstance()->GetCurrentKey());
+  AlphaManager::GetInstance()->SetActive(DatasetManager::GetInstance()->GetCurrentKey(), GL_TEXTURE2);
 }
 
 static void initMesh()
