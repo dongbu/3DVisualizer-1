@@ -187,7 +187,12 @@ public:
   }
 };
 
-void topSimplifyTree(ctContext* ctx, ctBranch* root_branch, ctBranch** branch_map, top::Dataset& topd, double(*importance_cb)(ctBranch*), double thresh)
+void topSimplifyTree(ctContext* ctx,
+		     ctBranch* root_branch,
+		     ctBranch** branch_map,
+		     top::Dataset& topd,
+		     double(*importance_cb)(ctBranch*),
+		     double thresh)
 {
   using namespace std;
 
@@ -209,18 +214,14 @@ void topSimplifyTree(ctContext* ctx, ctBranch* root_branch, ctBranch** branch_ma
       ((FeatureSet*) leaves[idx]->data)->visited = true;
     }
 
-    unordered_set<ctBranch*> parents;
-    while(idx < leaves.size()) {
+    size_t i = idx;
+    while(i < leaves.size()) {
       //point_to_parent(leaves[idx], branch_map, topd.size);
       //parents.insert(leaves[idx]->parent);
-      merge_branches(leaves[idx]->parent, leaves[idx], &topd);
-      ctBranch_delete(leaves[idx], ctx);
-      ++idx;
+      merge_branches(leaves[i]->parent, leaves[i], &topd);
+      ctBranch_delete(leaves[i], ctx);
+      ++i;
     }
-
-    /*for(auto it = parents.begin(); it != parents.end(); ++it) {
-      recalc_branch_features(*it, &topd);
-      }*/
 
     leaves.clear();
 

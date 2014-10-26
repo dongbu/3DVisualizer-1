@@ -50,8 +50,8 @@ int main()
     return -1;
 
   errCode = initGLEW();
-  //testSimplification();
-  initResources();
+  testSimplification();
+  /*initResources();
   initMesh();
   
   initFBO();
@@ -112,13 +112,13 @@ int main()
 
     glfwSwapBuffers(g_window);
     glfwPollEvents();
-  }
+    }*/
 
   DatasetManager::GetInstance()->FreeResources();
   TFManager::GetInstance()->FreeResources();
   AlphaManager::GetInstance()->FreeResources();
   TinyGL::GetInstance()->freeResources();
-  delete g_mouse;
+  //delete g_mouse;
 
   glfwTerminate();
   return 0;
@@ -132,7 +132,7 @@ GLuint initGLFW()
   glfwWindowHint(GLFW_SAMPLES, 4);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-  glfwWindowHint( GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE );
+  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
   g_window = glfwCreateWindow(WINDOW_W, WINDOW_H, "First window", NULL, NULL);

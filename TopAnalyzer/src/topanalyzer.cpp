@@ -167,9 +167,9 @@ void TopAnalyzer::AnalyzeDataset(knl::Dataset* data, double flow_rate, std::stri
 
 
   ctContext* ctx = ct_init(topd.size, &(order.front()), std_value, std_neighbors, &mesh);
-  /*ct_vertexFunc(ctx, &vertex_proc);
+  ct_vertexFunc(ctx, &vertex_proc);
   ct_arcMergeFunc(ctx, &arc_merge_proc);
-  ct_priorityFunc(ctx, &arc_priority_proc);*/
+  ct_priorityFunc(ctx, &arc_priority_proc);
 
   ct_branchAllocator(ctx, &BranchAlloc, &BranchFree);
 
