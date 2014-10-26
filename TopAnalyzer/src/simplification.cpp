@@ -2,9 +2,30 @@
 #include "ctfunc.h"
 
 #include <stack>
-#include <algorithm>
 #include <vector>
+#include <queue>
+#include <unordered_set>
+#include <algorithm>
 #include <tbb/parallel_for.h>
+
+static void merge_branches(ctBranch* a, ctBranch* b, top::Dataset* data)
+{
+  if(!a || ! b || !data)
+    return;
+
+  FeatureSet* a_d = (FeatureSet*) a->data;
+  FeatureSet* b_d = (FeatureSet*) b->data;
+
+  a_d->v += b_d->v;
+  a_d->hv += b_d->hv;
+  a_d->p = std::abs((long) (data->data->Get(a->extremum) - data->data->Get(a->saddle)));
+
+  size_t sz = a_d->vertices.size();
+  a_d->vertices.resize(sz + b_d->vertices.size(), 0);
+  for(size_t i = 0; i < b_d->vertices.size(); ++i, ++sz) {
+    a_d->vertices[sz] = b_d->vertices[i];
+  }
+}
 
 static void recalc_branch_features(ctBranch* root_branch, top::Dataset* data)
 {
@@ -124,10 +145,11 @@ static std::vector<ctBranch*> queue_leaves(ctBranch* root_branch)
 
   do {
     ctBranch* curr_branch = stack.top();
+    FeatureSet* branch_data = (FeatureSet*) curr_branch->data;
 
     stack.pop();
 
-    if(curr_branch->children.head == NULL)
+    if(curr_branch->children.head == NULL && branch_data->visited == false)
       leaves.push_back(curr_branch);
 
     for(ctBranch* c = curr_branch->children.head; c != NULL; c = c->nextChild) {
@@ -153,6 +175,18 @@ static void point_to_parent(ctBranch* to_remove, ctBranch** branch_map, size_t m
    tbb::parallel_for(tbb::blocked_range<size_t>(0, map_size), PointToParent(branch_map, to_remove));
 }
 
+class leaf_comp
+{
+  double(*imp_cb)(ctBranch*);
+public:
+  leaf_comp(double(*cb)(ctBranch*)) : imp_cb(cb)
+  {}
+  bool operator()(const ctBranch* a, const ctBranch* b) const
+  {
+    return imp_cb(const_cast<ctBranch*>(a)) > imp_cb(const_cast<ctBranch*>(b));
+  }
+};
+
 void topSimplifyTree(ctContext* ctx, ctBranch* root_branch, ctBranch** branch_map, top::Dataset& topd, double(*importance_cb)(ctBranch*), double thresh)
 {
   using namespace std;
@@ -161,27 +195,36 @@ void topSimplifyTree(ctContext* ctx, ctBranch* root_branch, ctBranch** branch_ma
     return;
 
   bool changed = false;
+  size_t idx;
+  vector<ctBranch*> leaves;
 
   do {
-    vector<ctBranch*> leaves = queue_leaves(root_branch);
-    changed = false;
+    leaves = queue_leaves(root_branch);
+    std::sort(leaves.begin(), leaves.end(), leaf_comp(importance_cb));
 
-    for(size_t i = 0; i < leaves.size(); i++) {
-      if(leaves[i] == NULL)
-        continue;
+    for(idx = 0; idx < leaves.size(); ++idx) {
+      if(leaves[idx] == NULL) continue;
+      if(importance_cb(leaves[idx]) < thresh) break;
 
-      if(importance_cb(leaves[i]) < thresh) {
-        point_to_parent(leaves[i], branch_map, topd.size);
-        recalc_branch_features(leaves[i]->parent, &topd);
-        ((FeatureSet*) leaves[i]->data)->remove = true;
-        ctBranch_delete(leaves[i], ctx);
-        changed = true;
-      }
+      ((FeatureSet*) leaves[idx]->data)->visited = true;
     }
+
+    unordered_set<ctBranch*> parents;
+    while(idx < leaves.size()) {
+      //point_to_parent(leaves[idx], branch_map, topd.size);
+      //parents.insert(leaves[idx]->parent);
+      merge_branches(leaves[idx]->parent, leaves[idx], &topd);
+      ctBranch_delete(leaves[idx], ctx);
+      ++idx;
+    }
+
+    /*for(auto it = parents.begin(); it != parents.end(); ++it) {
+      recalc_branch_features(*it, &topd);
+      }*/
 
     leaves.clear();
 
-  } while(changed);
+  } while(idx != leaves.size());
 }
 
 class ReduceToSaddle

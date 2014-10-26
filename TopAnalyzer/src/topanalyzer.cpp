@@ -157,6 +157,7 @@ void TopAnalyzer::AnalyzeDataset(knl::Dataset* data, double flow_rate, std::stri
 
   top::Dataset topd(*data);
   top::Mesh mesh(topd);
+  std::cout << "    Analyzing " << key << std::endl;
 
   a = tbb::tick_count::now();
   std::vector<size_t> order;
@@ -166,9 +167,9 @@ void TopAnalyzer::AnalyzeDataset(knl::Dataset* data, double flow_rate, std::stri
 
 
   ctContext* ctx = ct_init(topd.size, &(order.front()), std_value, std_neighbors, &mesh);
-  ct_vertexFunc(ctx, &vertex_proc);
+  /*ct_vertexFunc(ctx, &vertex_proc);
   ct_arcMergeFunc(ctx, &arc_merge_proc);
-  ct_priorityFunc(ctx, &arc_priority_proc);
+  ct_priorityFunc(ctx, &arc_priority_proc);*/
 
   ct_branchAllocator(ctx, &BranchAlloc, &BranchFree);
 
@@ -183,7 +184,7 @@ void TopAnalyzer::AnalyzeDataset(knl::Dataset* data, double flow_rate, std::stri
   size_t max_depth = 0;
   calc_branch_depth(root_branch, &max_depth, 0);
 
-  //std::cout << count_branches(root_branch) << " branches before simplification." << std::endl;
+  std::cout << "\t" << count_branches(root_branch) << " branches before simplification." << std::endl;
   //std::cout << "Tree depth = " << max_depth << std::endl;
 
   a = tbb::tick_count::now();
@@ -200,6 +201,7 @@ void TopAnalyzer::AnalyzeDataset(knl::Dataset* data, double flow_rate, std::stri
   //  topSimplifyTreeZhou(ctx, root_branch, branch_map, topd, &std_avg_importance, avg_importance / 1000);
   b = tbb::tick_count::now();
   std::cout << "\tSimplification in " << (b - a).seconds() << " seconds" << std::endl;
+  std::cout << "\t" << count_branches(root_branch) << " branches after the simplification." << std::endl;
 
   rebuild_branch_map(root_branch, branch_map, topd.size);
   calc_branch_features(branch_map, &topd);

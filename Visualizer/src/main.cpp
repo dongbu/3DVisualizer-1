@@ -50,7 +50,7 @@ int main()
     return -1;
 
   errCode = initGLEW();
-  //  testSimplification();
+  //testSimplification();
   initResources();
   initMesh();
   
@@ -215,7 +215,7 @@ void initResources()
 
   //  DatasetManager::GetInstance()->Init("C:/Users/schardong/Pictures/datasets/");
   DatasetManager::GetInstance()->Init("/home/guilherme/Pictures/datasets/");
-  DatasetManager::GetInstance()->SetActive("neghip", GL_TEXTURE1);
+  DatasetManager::GetInstance()->SetActive("bonsai", GL_TEXTURE1);
 
   //  TFManager::GetInstance()->Init("C:/Users/schardong/Pictures/datasets/transfer-functions/");
   TFManager::GetInstance()->Init("/home/guilherme/Pictures/datasets/transfer-functions/");
