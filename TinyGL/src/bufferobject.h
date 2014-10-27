@@ -26,7 +26,7 @@ public:
     return m_id;
   }
 
-protected:
+private:
   GLuint m_id;
   GLenum m_target;
   GLenum m_usage;

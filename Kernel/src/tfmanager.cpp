@@ -15,13 +15,16 @@ bool TFManager::Init(std::string path)
   if(!load_ok) return false;
 
   TiXmlNode* node = NULL;
-  TiXmlElement* elem = NULL;
-  TiXmlElement* data_elem = NULL;
+  //TiXmlElement* elem = NULL;
+  //TiXmlElement* data_elem = NULL;
 
   node = metafile.FirstChild("transfer-functions");
-  data_elem = node->ToElement();
+  //data_elem = node->ToElement();
 
-  for(TiXmlNode* data_child = node->FirstChildElement(); data_child != NULL; data_child = data_child->NextSiblingElement()) {
+  for(TiXmlNode* data_child = node->FirstChildElement();
+      data_child != NULL;
+      data_child = data_child->NextSiblingElement()) {
+
     TFunction* tf = new TFunction;
     std::string type_str = data_child->ToElement()->Attribute("type");
 

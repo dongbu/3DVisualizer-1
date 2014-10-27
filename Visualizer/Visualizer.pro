@@ -16,10 +16,9 @@ INCLUDEPATH += ../TinyGL/src
 INCLUDEPATH += ../TopAnalyzer/src
 INCLUDEPATH += ../../libtourtre/include
 
-
-LIBS += -L$$OUT_PWD/../kernel -lviskernel
-LIBS += -L$$OUT_PWD/../tinygl -ltinygl
-LIBS += -L$$OUT_PWD/../topanalyzer -lcontourtree
+LIBS += -L$$OUT_PWD/../Kernel -lviskernel
+LIBS += -L$$OUT_PWD/../TinyGL -ltinygl
+LIBS += -L$$OUT_PWD/../TopAnalyzer -lcontourtree
 
 LIBS +=-ltbb -ltbbmalloc
 LIBS += -lGLEW
@@ -46,3 +45,15 @@ HEADERS += \
 SOURCES += \
     src/arcball.cpp \
     src/main.cpp
+
+OTHER_FILES += \
+    ../Resources/shaders/FPass.vs \
+    ../Resources/shaders/SPass.vs \
+    ../Resources/shaders/FPass.fs \
+    ../Resources/shaders/SPass.fs \
+    ../Resources/shaders/SPassMultiOp.fs
+
+shader.files = $$OTHER_FILES
+shader.path = $$OUT_PWD/shaders
+
+INSTALLS += shader

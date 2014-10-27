@@ -17,13 +17,16 @@ bool DatasetManager::Init(std::string path)
   if(!load_ok) return false;
 
   TiXmlNode* node = NULL;
-  TiXmlElement* elem = NULL;
-  TiXmlElement* data_elem = NULL;
+  //TiXmlElement* elem = NULL;
+//  TiXmlElement* data_elem = NULL;
 
   node = metafile.FirstChild("datasets");
-  data_elem = node->ToElement();
+//  data_elem = node->ToElement();
 
-  for(TiXmlNode* data_child = node->FirstChild(); data_child != NULL; data_child = data_child->NextSibling()) {
+  for(TiXmlNode* data_child = node->FirstChild();
+      data_child != NULL;
+      data_child = data_child->NextSibling()) {
+
     Dataset* d = new Dataset;
     std::istringstream(data_child->FirstChild("width")->FirstChild()->Value()) >> d->width;
     std::istringstream(data_child->FirstChild("height")->FirstChild()->Value()) >> d->height;

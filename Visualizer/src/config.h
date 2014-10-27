@@ -20,7 +20,7 @@ static const std::string FBO_KEY = "back_faces";
 #ifdef WIN32
   static const std::string RESOURCE_PATH = "../Resources";
 #else
-  static const char* RESOURCE_PATH = "../../Resources";
+  static const char* RESOURCE_PATH = ".";
 #endif // WIN32
 
 #endif // VISUALIZER_H

@@ -41,7 +41,7 @@ public:
 
     FeatureSet* rem_data = (FeatureSet*) to_remove->data;
 
-    for(int i = range.begin(); i != range.end(); i++) {
+    for(size_t i = range.begin(); i != range.end(); i++) {
       FeatureSet* bmap_data = (FeatureSet*) branch_map[i]->data;
       if(bmap_data->label == rem_data->label) {
         branch_map[i] = to_remove->parent;

@@ -35,9 +35,7 @@ static GLuint initGLEW();
 static void initMesh();
 static void initFBO();
 static void initShaders();
-static void cb_drawpoint(size_t num_points);
-static void cb_drawcube_idx(size_t num_points);
-static void cb_drawcube(size_t num_points);
+static void cb_drawcube_idx(size_t);
 static void cb_keyboard(GLFWwindow*, int, int, int, int);
 static void cb_mousebutton(GLFWwindow*, int, int, int);
 static void cb_mousemotion(GLFWwindow*, double, double);
@@ -217,7 +215,7 @@ void initResources()
 
   //  DatasetManager::GetInstance()->Init("C:/Users/schardong/Pictures/datasets/");
   DatasetManager::GetInstance()->Init("/home/guilherme/Pictures/datasets/");
-  DatasetManager::GetInstance()->SetActive("bonsai", GL_TEXTURE1);
+  DatasetManager::GetInstance()->SetActive("nucleon", GL_TEXTURE1);
 
   //  TFManager::GetInstance()->Init("C:/Users/schardong/Pictures/datasets/transfer-functions/");
   TFManager::GetInstance()->Init("/home/guilherme/Pictures/datasets/transfer-functions/");
@@ -374,7 +372,7 @@ static void cb_mousemotion(GLFWwindow* win, double xpos, double ypos)
   g_mouse->cursorCallback(win, xpos, ypos);
 }
 
-static void cb_drawcube_idx(size_t num_points)
+static void cb_drawcube_idx(size_t)
 {
   glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
 }

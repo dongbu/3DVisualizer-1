@@ -20,7 +20,7 @@ namespace knl
 
     Dataset();
     Dataset(Dataset& rhs);
-    ~Dataset();
+    virtual ~Dataset();
 
     bool IsLoaded() { return is_loaded; }
     bool IsUploaded() { return is_uploaded; }
