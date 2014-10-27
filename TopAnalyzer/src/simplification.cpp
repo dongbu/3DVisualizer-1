@@ -27,46 +27,6 @@ static void merge_branches(ctBranch* a, ctBranch* b, top::Dataset* data)
   }
 }
 
-static void recalc_branch_features(ctBranch* root_branch, top::Dataset* data)
-{
-  if(!root_branch || ! data)
-    return;
-
-  FeatureSet* root_data = (FeatureSet*) root_branch->data;
-
-  root_data->v = root_data->vertices.size();
-  root_data->p = std::abs((long) (data->data->Get(root_branch->extremum) - data->data->Get(root_branch->saddle)));
-  root_data->hv = 0;
-  root_data->porosity = 300.0;
-
-  for(size_t i = 0; i < root_data->vertices.size(); i++) {
-    root_data->hv += data->data->Get(i);
-
-    if(root_data->min_intensity > data->data->Get(i))
-      root_data->min_intensity = data->data->Get(i);
-    else if(root_data->max_intensity < data->data->Get(i))
-      root_data->max_intensity = data->data->Get(i);
-  }
-}
-
-bool marked_for_removal(ctBranch* b) {
-  if(b == NULL) return true;
-  FeatureSet* fs = (FeatureSet*) b->data;
-  return fs->remove;
-  return fs == NULL? false : fs->remove;
-}
-
-bool branch_is_leaf(ctBranch* b)
-{
-  if(b == NULL || b->children.head == NULL) return true;
-
-  bool will_remove = true;
-  for(ctBranch* c = b->children.head; c != NULL && will_remove == true; c = c->nextChild)
-    will_remove = marked_for_removal(c);
-
-  return will_remove;
-}
-
 class PointToParent
 {
   ctBranch** branch_map;
@@ -89,50 +49,6 @@ public:
     }
   }
 };
-
-void mark_for_removal(ctContext* ctx, ctBranch* root_branch, ctBranch** branch_map, size_t data_size, double (*importance_measure)(ctBranch*), double threshold)
-{
-  if(root_branch == NULL) return;
-  FeatureSet* branch_data = (FeatureSet*) root_branch->data;
-
-  for(ctBranch* c = root_branch->children.head; c != NULL; c = c->nextChild)
-    mark_for_removal(ctx, c, branch_map, data_size, importance_measure, threshold);
-
-  if(branch_is_leaf(root_branch)) {
-    //branch_data->remove = importance_measure(root_branch) >= threshold ? false : true;
-    if(importance_measure(root_branch) < threshold) {
-      tbb::parallel_for(tbb::blocked_range<size_t>(0, data_size), PointToParent(branch_map, root_branch));
-      ctBranch_delete(root_branch, ctx);
-    }
-    // for(size_t i = 0; i < data_size; i++) {
-    //   if(branch_map[i] == root_branch && root_branch->parent != NULL) {
-    //     branch_map[i] = root_branch->parent;
-    //   }
-    // }
-  }
-}
-
-void simplify_tree_dfs(ctContext* ctx, ctBranch* root_branch, ctBranch** branch_map, size_t data_size, double (*importance_measure)(ctBranch*), double threshold)
-{
-  mark_for_removal(ctx, root_branch, branch_map, data_size, importance_measure, threshold);
-  //    remove_marked_branches(root_branch, branch_map, data, ctx);
-  //    if(root_branch == NULL) return;
-  //    FeatureSet* branch_data = (FeatureSet*) root_branch->data;
-
-  //    for(ctBranch* c = root_branch->children.head; c != NULL; c = c->nextChild)
-  //        simplify_tree_dfs(c, branch_map, data, ctx, importance_measure, threshold);
-
-  //    if(/*root_branch->children.head == NULL*/branch_is_leaf(root_branch)) {
-  //        double arc_importance = importance_measure(root_branch);
-  //        if(arc_importance < threshold) {
-  //            branch_data->remove = true;
-  //            //remove_branch(root_branch, branch_map, data, ctx);
-  //        } else {
-  //            std::cout << "Volume: " << branch_data->v << "\tHypervolume: " << branch_data->hv << "\tPersistance: " << branch_data->p << std::endl;
-  //        }
-  //        return;
-  //    }
-}
 
 static std::vector<ctBranch*> queue_leaves(ctBranch* root_branch)
 {
@@ -199,11 +115,12 @@ void topSimplifyTree(ctContext* ctx,
   if(count_branches(root_branch) == 1)
     return;
 
-  bool changed = false;
   size_t idx;
   vector<ctBranch*> leaves;
 
   do {
+
+    leaves.clear();
     leaves = queue_leaves(root_branch);
     std::sort(leaves.begin(), leaves.end(), leaf_comp(importance_cb));
 
@@ -216,14 +133,10 @@ void topSimplifyTree(ctContext* ctx,
 
     size_t i = idx;
     while(i < leaves.size()) {
-      //point_to_parent(leaves[idx], branch_map, topd.size);
-      //parents.insert(leaves[idx]->parent);
       merge_branches(leaves[i]->parent, leaves[i], &topd);
       ctBranch_delete(leaves[i], ctx);
       ++i;
     }
-
-    leaves.clear();
 
   } while(idx != leaves.size());
 }

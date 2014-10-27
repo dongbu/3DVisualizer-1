@@ -2,6 +2,7 @@
 #include <thread>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <iup/iup.h>
 
 #include "config.h"
 #include "logger.h"
@@ -25,7 +26,7 @@ glm::vec3 g_eye;
 glm::mat4 g_viewMatrix;
 glm::mat4 g_projMatrix;
 static GLuint g_numSamples = 356;
-static double g_flowRate = 850.0;
+static double g_flowRate = 350.0;
 
 static void testSimplification();
 static void initResources();
@@ -41,17 +42,18 @@ static void cb_keyboard(GLFWwindow*, int, int, int, int);
 static void cb_mousebutton(GLFWwindow*, int, int, int);
 static void cb_mousemotion(GLFWwindow*, double, double);
 
-int main()
+int main(int argc, char** argv)
 {
   Logger::GetInstance()->setLogStream(&std::cout);
+  IupOpen(&argc, &argv);
 
   GLuint errCode = initGLFW();
   if(errCode != 0)
     return -1;
 
   errCode = initGLEW();
-  testSimplification();
-  /*initResources();
+  //testSimplification();
+  initResources();
   initMesh();
   
   initFBO();
@@ -112,13 +114,13 @@ int main()
 
     glfwSwapBuffers(g_window);
     glfwPollEvents();
-    }*/
+    }
 
   DatasetManager::GetInstance()->FreeResources();
   TFManager::GetInstance()->FreeResources();
   AlphaManager::GetInstance()->FreeResources();
   TinyGL::GetInstance()->freeResources();
-  //delete g_mouse;
+  delete g_mouse;
 
   glfwTerminate();
   return 0;
@@ -197,8 +199,8 @@ void testSimplification()
   DatasetManager::GetInstance()->SetActive("BostonTeapot", GL_TEXTURE1);
   TopAnalyzer::GetInstance()->AnalyzeCurrDataset(g_flowRate, DatasetManager::GetInstance()->GetCurrentKey());
 
-  std::cout << "\n\n\n--------------Carp--------------\n";
-  DatasetManager::GetInstance()->SetActive("carp", GL_TEXTURE1);
+  std::cout << "\n\n\n--------------CT-Knee--------------\n";
+  DatasetManager::GetInstance()->SetActive("CT-Knee", GL_TEXTURE1);
   TopAnalyzer::GetInstance()->AnalyzeCurrDataset(g_flowRate, DatasetManager::GetInstance()->GetCurrentKey());
 
   std::cout << "\n\n\n--------------Stent--------------\n";
@@ -356,7 +358,7 @@ static void cb_keyboard(GLFWwindow* win, int key, int scancode, int action, int 
       DatasetManager::GetInstance()->SetActive("foot", GL_TEXTURE1);
       break;
     case GLFW_KEY_F9:
-      DatasetManager::GetInstance()->SetActive("virgo", GL_TEXTURE1);
+      DatasetManager::GetInstance()->SetActive("CT-Knee", GL_TEXTURE1);
       break;
     }
   }
