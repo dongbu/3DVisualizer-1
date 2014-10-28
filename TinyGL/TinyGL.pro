@@ -14,6 +14,8 @@ CONFIG(debug, debug|release) {
 
 INCLUDEPATH += ../Kernel/src
 
+DESTDIR = $$OUT_PWD/../
+
 HEADERS += \
     src/axis.h \
     src/bufferobject.h \

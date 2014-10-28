@@ -16,9 +16,11 @@ INCLUDEPATH += ../TinyGL/src
 INCLUDEPATH += ../TopAnalyzer/src
 INCLUDEPATH += ../../libtourtre/include
 
-LIBS += -L$$OUT_PWD/../Kernel -lviskernel
-LIBS += -L$$OUT_PWD/../TinyGL -ltinygl
-LIBS += -L$$OUT_PWD/../TopAnalyzer -lcontourtree
+DESTDIR = $$OUT_PWD/../
+
+LIBS += -L$$OUT_PWD/.. -lviskernel
+LIBS += -L$$OUT_PWD/.. -ltinygl
+LIBS += -L$$OUT_PWD/.. -lcontourtree
 
 LIBS +=-ltbb -ltbbmalloc
 LIBS += -lGLEW
@@ -27,6 +29,7 @@ LIBS += -lGL
 LIBS += -ltourtre
 LIBS += -ltinyxml
 LIBS += -liup
+LIBS += -liupgl
 LIBS += -lXmu
 LIBS += -lXt
 LIBS += -lX11
@@ -54,6 +57,6 @@ OTHER_FILES += \
     ../Resources/shaders/SPassMultiOp.fs
 
 shader.files = $$OTHER_FILES
-shader.path = $$OUT_PWD/shaders
+shader.path = $$DESTDIR/shaders
 
 INSTALLS += shader

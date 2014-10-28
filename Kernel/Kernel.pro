@@ -12,6 +12,8 @@ CONFIG(debug, debug|release) {
   QMAKE_CXXFLAGS += -g3 -O0 -pg
 }
 
+DESTDIR = $$OUT_PWD/../
+
 HEADERS += \
     src/datahandler.h \
     src/dataset.h \

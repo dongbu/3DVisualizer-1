@@ -16,6 +16,8 @@ INCLUDEPATH += ../Kernel/src
 INCLUDEPATH += ../TinyGL/src
 INCLUDEPATH += ../../libtourtre/include
 
+DESTDIR = $$OUT_PWD/../
+
 HEADERS += \
     src/alphamanager.h \
     src/ctfunc.h \
