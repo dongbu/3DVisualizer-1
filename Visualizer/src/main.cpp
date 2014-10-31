@@ -1,8 +1,9 @@
 #include <iostream>
-#include <thread>
+#include <cstdio>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iup/iup.h>
+#include <iup/iupgl.h>
 
 #include "config.h"
 #include "logger.h"
@@ -36,21 +37,39 @@ static void initMesh();
 static void initFBO();
 static void initShaders();
 static void cb_drawcube_idx(size_t);
-static void cb_keyboard(GLFWwindow*, int, int, int, int);
-static void cb_mousebutton(GLFWwindow*, int, int, int);
-static void cb_mousemotion(GLFWwindow*, double, double);
+//static void cb_keyboard(GLFWwindow*, int, int, int, int);
+//static void cb_mousebutton(GLFWwindow*, int, int, int);
+//static void cb_mousemotion(GLFWwindow*, double, double);
+static int cb_draw(Ihandle*, float, float);
 
 int main(int argc, char** argv)
 {
   Logger::GetInstance()->setLogStream(&std::cout);
+
+  Ihandle* canvas;
+  Ihandle* dlg;
+
   IupOpen(&argc, &argv);
+  IupGLCanvasOpen();
 
-  GLuint errCode = initGLFW();
-  if(errCode != 0)
-    return -1;
+  canvas = IupGLCanvas(NULL);
+  IupSetCallback(canvas, "ACTION", (Icallback) cb_draw);
+  IupSetAttribute(canvas, IUP_BUFFER, IUP_DOUBLE);
 
-  errCode = initGLEW();
-  //testSimplification();
+  char* rastersize = (char*) calloc(7, sizeof(char));
+  sprintf(rastersize, "%dx%d", WINDOW_W, WINDOW_H);
+
+  IupSetAttribute(canvas, "RASTERSIZE", rastersize);
+
+  IupGLMakeCurrent(canvas);
+
+  dlg = IupDialog(IupHbox(IupFill(), canvas, IupFill()));
+  IupSetAttribute(dlg, "TITLE", "My first IUP window");
+  IupMap(dlg);
+
+  IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
+
+  initGLEW();
   initResources();
   initMesh();
   
@@ -68,51 +87,10 @@ int main(int argc, char** argv)
 
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    
+
   g_mouse = new Arcball(WINDOW_W, WINDOW_H, 0.05f, true, true);
-  
-  while(!glfwWindowShouldClose(g_window)) {
 
-    TinyGL* gl_ptr = TinyGL::GetInstance();
-    Mesh* m = gl_ptr->getMesh("proxy_cube");
-    Shader* fpass = gl_ptr->getShader(FPASS_KEY);
-    Shader* spass = gl_ptr->getShader(SPASS_KEY);
-    FramebufferObject* fbo = gl_ptr->getFBO(FBO_KEY);
-
-    fpass->bind();
-    glm::mat4 rot = g_viewMatrix * g_mouse->createViewRotationMatrix();
-    fpass->setUniformMatrix("u_mView", rot);
-
-    //First pass
-    fbo->bind(GL_FRAMEBUFFER);
-    glViewport(0, 0, WINDOW_W, WINDOW_H);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glCullFace(GL_FRONT);
-    m->draw();
-
-    FramebufferObject::unbind();
-    glViewport(0, 0, WINDOW_W, WINDOW_H);
-
-    //Second pass
-    spass->bind();
-    spass->setUniformMatrix("u_mView", rot);
-
-    DatasetManager::GetInstance()->GetCurrent()->bind(GL_TEXTURE1);
-    AlphaManager::GetInstance()->GetCurrent()->bind(GL_TEXTURE2);
-    TFManager::GetInstance()->GetCurrent()->bind(GL_TEXTURE3);
-    
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, fbo->getAttachmentId(GL_COLOR_ATTACHMENT0));
-    
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glCullFace(GL_BACK);
-    m->draw();
-
-    Shader::unbind();
-
-    glfwSwapBuffers(g_window);
-    glfwPollEvents();
-    }
+  IupMainLoop();
 
   DatasetManager::GetInstance()->FreeResources();
   TFManager::GetInstance()->FreeResources();
@@ -120,34 +98,34 @@ int main(int argc, char** argv)
   TinyGL::GetInstance()->freeResources();
   delete g_mouse;
 
-  glfwTerminate();
+  IupClose();
   return 0;
 }
 
 GLuint initGLFW()
 {
-  if(!glfwInit())
-    return 1;
+//  if(!glfwInit())
+//    return 1;
 
-  glfwWindowHint(GLFW_SAMPLES, 4);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+//  glfwWindowHint(GLFW_SAMPLES, 4);
+//  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+//  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+//  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+//  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  g_window = glfwCreateWindow(WINDOW_W, WINDOW_H, "First window", NULL, NULL);
+//  g_window = glfwCreateWindow(WINDOW_W, WINDOW_H, "First window", NULL, NULL);
 
-  if(!g_window) {
-    glfwTerminate();
-    return 2;
-  }
+//  if(!g_window) {
+//    glfwTerminate();
+//    return 2;
+//  }
 
-  glfwMakeContextCurrent(g_window);
-  glfwSetInputMode(g_window, GLFW_STICKY_KEYS, GL_TRUE);
-  glfwSetKeyCallback(g_window, cb_keyboard);
-  glfwSetMouseButtonCallback(g_window, cb_mousebutton);
-  glfwSetCursorPosCallback(g_window, cb_mousemotion);
-  return 0;
+//  glfwMakeContextCurrent(g_window);
+//  glfwSetInputMode(g_window, GLFW_STICKY_KEYS, GL_TRUE);
+//  glfwSetKeyCallback(g_window, cb_keyboard);
+//  glfwSetMouseButtonCallback(g_window, cb_mousebutton);
+//  glfwSetCursorPosCallback(g_window, cb_mousemotion);
+//  return 0;
 }
 
 GLuint initGLEW()
@@ -155,11 +133,9 @@ GLuint initGLEW()
   glewExperimental = true;
   GLenum err = glewInit();
   if(err != GLEW_OK) {
-    std::cerr << glewGetErrorString(err) << std::endl;
+    std::cerr << "ERROR: " << glewGetErrorString(err) << std::endl;
     return 1;
   }
-
-  printf("%d\n", err);
 
   return 0;
 }
@@ -314,62 +290,107 @@ static void initShaders()
   TinyGL::GetInstance()->addResource(SHADER, SPASS_KEY, spass);
 }
 
-static void cb_keyboard(GLFWwindow* win, int key, int scancode, int action, int mods)
-{
-  if(action == GLFW_PRESS) {
-    switch(key) {
-    case GLFW_KEY_ESCAPE:
-      glfwSetWindowShouldClose(win, GL_TRUE);
-      break;
-    case GLFW_KEY_SPACE:
-      TopAnalyzer::GetInstance()->AnalyzeCurrDataset(g_flowRate, DatasetManager::GetInstance()->GetCurrentKey());
-      AlphaManager::GetInstance()->SetActive(DatasetManager::GetInstance()->GetCurrentKey(), GL_TEXTURE2);
-      break;
-    case GLFW_KEY_1:
-      TFManager::GetInstance()->SetActive("tff1", GL_TEXTURE3);
-      break;
-    case GLFW_KEY_2:
-      TFManager::GetInstance()->SetActive("tff2", GL_TEXTURE3);
-      break;
-    case GLFW_KEY_F1:
-      DatasetManager::GetInstance()->SetActive("neghip", GL_TEXTURE1);
-      break;
-    case GLFW_KEY_F2:
-      DatasetManager::GetInstance()->SetActive("bonsai", GL_TEXTURE1);
-      break;
-    case GLFW_KEY_F3:
-      DatasetManager::GetInstance()->SetActive("nucleon", GL_TEXTURE1);
-      break;
-    case GLFW_KEY_F4:
-      DatasetManager::GetInstance()->SetActive("silicium", GL_TEXTURE1);
-      break;
-    case GLFW_KEY_F5:
-      DatasetManager::GetInstance()->SetActive("fuel", GL_TEXTURE1);
-      break;
-    case GLFW_KEY_F6:
-      DatasetManager::GetInstance()->SetActive("BostonTeapot", GL_TEXTURE1);
-      break;
-    case GLFW_KEY_F7:
-      DatasetManager::GetInstance()->SetActive("lobster", GL_TEXTURE1);
-      break;
-    case GLFW_KEY_F8:
-      DatasetManager::GetInstance()->SetActive("foot", GL_TEXTURE1);
-      break;
-    case GLFW_KEY_F9:
-      DatasetManager::GetInstance()->SetActive("CT-Knee", GL_TEXTURE1);
-      break;
-    }
-  }
-}
+//static void cb_keyboard(GLFWwindow* win, int key, int scancode, int action, int mods)
+//{
+//  if(action == GLFW_PRESS) {
+//    switch(key) {
+//    case GLFW_KEY_ESCAPE:
+//      glfwSetWindowShouldClose(win, GL_TRUE);
+//      break;
+//    case GLFW_KEY_SPACE:
+//      TopAnalyzer::GetInstance()->AnalyzeCurrDataset(g_flowRate, DatasetManager::GetInstance()->GetCurrentKey());
+//      AlphaManager::GetInstance()->SetActive(DatasetManager::GetInstance()->GetCurrentKey(), GL_TEXTURE2);
+//      break;
+//    case GLFW_KEY_1:
+//      TFManager::GetInstance()->SetActive("tff1", GL_TEXTURE3);
+//      break;
+//    case GLFW_KEY_2:
+//      TFManager::GetInstance()->SetActive("tff2", GL_TEXTURE3);
+//      break;
+//    case GLFW_KEY_F1:
+//      DatasetManager::GetInstance()->SetActive("neghip", GL_TEXTURE1);
+//      break;
+//    case GLFW_KEY_F2:
+//      DatasetManager::GetInstance()->SetActive("bonsai", GL_TEXTURE1);
+//      break;
+//    case GLFW_KEY_F3:
+//      DatasetManager::GetInstance()->SetActive("nucleon", GL_TEXTURE1);
+//      break;
+//    case GLFW_KEY_F4:
+//      DatasetManager::GetInstance()->SetActive("silicium", GL_TEXTURE1);
+//      break;
+//    case GLFW_KEY_F5:
+//      DatasetManager::GetInstance()->SetActive("fuel", GL_TEXTURE1);
+//      break;
+//    case GLFW_KEY_F6:
+//      DatasetManager::GetInstance()->SetActive("BostonTeapot", GL_TEXTURE1);
+//      break;
+//    case GLFW_KEY_F7:
+//      DatasetManager::GetInstance()->SetActive("lobster", GL_TEXTURE1);
+//      break;
+//    case GLFW_KEY_F8:
+//      DatasetManager::GetInstance()->SetActive("foot", GL_TEXTURE1);
+//      break;
+//    case GLFW_KEY_F9:
+//      DatasetManager::GetInstance()->SetActive("CT-Knee", GL_TEXTURE1);
+//      break;
+//    }
+//  }
+//}
 
-static void cb_mousebutton(GLFWwindow* win, int button, int action, int mods)
-{
-  g_mouse->mouseButtonCallback(win, button, action, mods);
-}
+//static void cb_mousebutton(GLFWwindow* win, int button, int action, int mods)
+//{
+//  g_mouse->mouseButtonCallback(win, button, action, mods);
+//}
 
-static void cb_mousemotion(GLFWwindow* win, double xpos, double ypos)
+//static void cb_mousemotion(GLFWwindow* win, double xpos, double ypos)
+//{
+//  g_mouse->cursorCallback(win, xpos, ypos);
+//}
+
+static int cb_draw(Ihandle* ih, float, float)
 {
-  g_mouse->cursorCallback(win, xpos, ypos);
+  IupGLMakeCurrent(ih);
+
+  TinyGL* gl_ptr = TinyGL::GetInstance();
+  Mesh* m = gl_ptr->getMesh("proxy_cube");
+  Shader* fpass = gl_ptr->getShader(FPASS_KEY);
+  Shader* spass = gl_ptr->getShader(SPASS_KEY);
+  FramebufferObject* fbo = gl_ptr->getFBO(FBO_KEY);
+
+  fpass->bind();
+  glm::mat4 rot = g_viewMatrix * g_mouse->createViewRotationMatrix();
+  fpass->setUniformMatrix("u_mView", rot);
+
+  //First pass
+  fbo->bind(GL_FRAMEBUFFER);
+  glViewport(0, 0, WINDOW_W, WINDOW_H);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glCullFace(GL_FRONT);
+  m->draw();
+
+  FramebufferObject::unbind();
+  glViewport(0, 0, WINDOW_W, WINDOW_H);
+
+  //Second pass
+  spass->bind();
+  spass->setUniformMatrix("u_mView", rot);
+
+  DatasetManager::GetInstance()->GetCurrent()->bind(GL_TEXTURE1);
+  AlphaManager::GetInstance()->GetCurrent()->bind(GL_TEXTURE2);
+  TFManager::GetInstance()->GetCurrent()->bind(GL_TEXTURE3);
+
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, fbo->getAttachmentId(GL_COLOR_ATTACHMENT0));
+
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glCullFace(GL_BACK);
+  m->draw();
+
+  Shader::unbind();
+
+  IupGLSwapBuffers(ih);
+  return IUP_DEFAULT;
 }
 
 static void cb_drawcube_idx(size_t)

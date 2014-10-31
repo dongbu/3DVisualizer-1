@@ -23,22 +23,11 @@ LIBS += -L$$OUT_PWD/.. -ltinygl
 LIBS += -L$$OUT_PWD/.. -lcontourtree
 
 LIBS +=-ltbb -ltbbmalloc
-LIBS += -lGLEW
-LIBS += -lglfw
-LIBS += -lGL
-LIBS += -ltourtre
-LIBS += -ltinyxml
-LIBS += -liup
-LIBS += -liupgl
-LIBS += -lXmu
-LIBS += -lXt
-LIBS += -lX11
+LIBS += -lGLEW -lGL
+LIBS += -ltourtre -ltinyxml
+LIBS += -liup -liupgl -lXmu -lXt -lX11
 LIBS += -lm
-LIBS += -lgtk-x11-2.0
-LIBS += -lgdk-x11-2.0
-LIBS += -lgdk_pixbuf-2.0
-LIBS += -lpango-1.0
-LIBS += -lgobject-2.0
+LIBS += -lgtk-x11-2.0 -lgdk-x11-2.0 -lgdk_pixbuf-2.0 -lpango-1.0 -lgobject-2.0
 LIBS += -lglib-2.0
 
 HEADERS += \
