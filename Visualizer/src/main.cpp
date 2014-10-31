@@ -1,9 +1,9 @@
 #include <iostream>
 #include <cstdio>
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include <iup/iup.h>
 #include <iup/iupgl.h>
+#include <iup/iupkey.h>
 
 #include "config.h"
 #include "logger.h"
@@ -20,8 +20,8 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
 
-GLFWwindow* g_window;
 static Arcball* g_mouse;
+Ihandle* canvas;
 
 glm::vec3 g_eye;
 glm::mat4 g_viewMatrix;
@@ -37,26 +37,38 @@ static void initMesh();
 static void initFBO();
 static void initShaders();
 static void cb_drawcube_idx(size_t);
-//static void cb_keyboard(GLFWwindow*, int, int, int, int);
-//static void cb_mousebutton(GLFWwindow*, int, int, int);
-//static void cb_mousemotion(GLFWwindow*, double, double);
+
+static int cb_idle();
+static int cb_keypress(Ihandle*, int, int);
+static int cb_mousebutton(Ihandle*, int, int, int, int, char*);
+static int cb_mousemotion(Ihandle*, int, int, char*);
+static int cb_mousewheel(Ihandle*, float, int, int, char*);
 static int cb_draw(Ihandle*, float, float);
+static int cb_resize(Ihandle*, int, int);
 
 int main(int argc, char** argv)
 {
   Logger::GetInstance()->setLogStream(&std::cout);
 
-  Ihandle* canvas;
   Ihandle* dlg;
 
   IupOpen(&argc, &argv);
   IupGLCanvasOpen();
 
   canvas = IupGLCanvas(NULL);
+
+  IupSetFunction("IDLE_ACTION", (Icallback) cb_idle);
   IupSetCallback(canvas, "ACTION", (Icallback) cb_draw);
+  IupSetCallback(canvas, "KEYPRESS_CB", (Icallback) cb_keypress);
+
+  IupSetCallback(canvas, "BUTTON_CB", (Icallback) cb_mousebutton);
+  IupSetCallback(canvas, "MOTION_CB", (Icallback) cb_mousemotion);
+  //  IupSetCallback(canvas, "WHEEL_CB", (Icallback) cb_mousewheel);
+  //  IupSetCallback(canvas, "RESIZE_CB", (Icallback) cb_resize);
+
   IupSetAttribute(canvas, IUP_BUFFER, IUP_DOUBLE);
 
-  char* rastersize = (char*) calloc(7, sizeof(char));
+  char* rastersize = (char*) calloc(30, sizeof(char));
   sprintf(rastersize, "%dx%d", WINDOW_W, WINDOW_H);
 
   IupSetAttribute(canvas, "RASTERSIZE", rastersize);
@@ -72,7 +84,6 @@ int main(int argc, char** argv)
   initGLEW();
   initResources();
   initMesh();
-  
   initFBO();
   initShaders();
   
@@ -100,32 +111,6 @@ int main(int argc, char** argv)
 
   IupClose();
   return 0;
-}
-
-GLuint initGLFW()
-{
-//  if(!glfwInit())
-//    return 1;
-
-//  glfwWindowHint(GLFW_SAMPLES, 4);
-//  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-//  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-//  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-//  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-//  g_window = glfwCreateWindow(WINDOW_W, WINDOW_H, "First window", NULL, NULL);
-
-//  if(!g_window) {
-//    glfwTerminate();
-//    return 2;
-//  }
-
-//  glfwMakeContextCurrent(g_window);
-//  glfwSetInputMode(g_window, GLFW_STICKY_KEYS, GL_TRUE);
-//  glfwSetKeyCallback(g_window, cb_keyboard);
-//  glfwSetMouseButtonCallback(g_window, cb_mousebutton);
-//  glfwSetCursorPosCallback(g_window, cb_mousemotion);
-//  return 0;
 }
 
 GLuint initGLEW()
@@ -250,8 +235,8 @@ static void initShaders()
   float screen_sz[2] = {(float)WINDOW_W, (float)WINDOW_H};
   glm::mat4 modelMatrix = TinyGL::GetInstance()->getMesh("proxy_cube")->m_modelMatrix;
 
-  Shader* fpass = new Shader(std::string(RESOURCE_PATH) + std::string("/shaders/FPass.vs"), 
-			     std::string(RESOURCE_PATH) + std::string("/shaders/FPass.fs"));
+  Shader* fpass = new Shader(std::string(RESOURCE_PATH) + std::string("/shaders/FPass.vs"),
+                             std::string(RESOURCE_PATH) + std::string("/shaders/FPass.fs"));
   fpass->bind();
   fpass->bindFragDataLoc("fColor", 0);
   fpass->setUniformMatrix("u_mView", g_viewMatrix);
@@ -271,7 +256,7 @@ static void initShaders()
   spass->setUniform1f("u_fNumSamples", (float)g_numSamples);*/
 
   Shader* spass = new Shader(std::string(RESOURCE_PATH) + std::string("/shaders/SPass.vs"),
-			     std::string(RESOURCE_PATH) + std::string("/shaders/SPassMultiOp.fs"));
+                             std::string(RESOURCE_PATH) + std::string("/shaders/SPassMultiOp.fs"));
   spass->bind();
   spass->bindFragDataLoc("fColor", 0);
   spass->setUniformMatrix("u_mView", g_viewMatrix);
@@ -290,63 +275,72 @@ static void initShaders()
   TinyGL::GetInstance()->addResource(SHADER, SPASS_KEY, spass);
 }
 
-//static void cb_keyboard(GLFWwindow* win, int key, int scancode, int action, int mods)
-//{
-//  if(action == GLFW_PRESS) {
-//    switch(key) {
-//    case GLFW_KEY_ESCAPE:
-//      glfwSetWindowShouldClose(win, GL_TRUE);
-//      break;
-//    case GLFW_KEY_SPACE:
-//      TopAnalyzer::GetInstance()->AnalyzeCurrDataset(g_flowRate, DatasetManager::GetInstance()->GetCurrentKey());
-//      AlphaManager::GetInstance()->SetActive(DatasetManager::GetInstance()->GetCurrentKey(), GL_TEXTURE2);
-//      break;
-//    case GLFW_KEY_1:
-//      TFManager::GetInstance()->SetActive("tff1", GL_TEXTURE3);
-//      break;
-//    case GLFW_KEY_2:
-//      TFManager::GetInstance()->SetActive("tff2", GL_TEXTURE3);
-//      break;
-//    case GLFW_KEY_F1:
-//      DatasetManager::GetInstance()->SetActive("neghip", GL_TEXTURE1);
-//      break;
-//    case GLFW_KEY_F2:
-//      DatasetManager::GetInstance()->SetActive("bonsai", GL_TEXTURE1);
-//      break;
-//    case GLFW_KEY_F3:
-//      DatasetManager::GetInstance()->SetActive("nucleon", GL_TEXTURE1);
-//      break;
-//    case GLFW_KEY_F4:
-//      DatasetManager::GetInstance()->SetActive("silicium", GL_TEXTURE1);
-//      break;
-//    case GLFW_KEY_F5:
-//      DatasetManager::GetInstance()->SetActive("fuel", GL_TEXTURE1);
-//      break;
-//    case GLFW_KEY_F6:
-//      DatasetManager::GetInstance()->SetActive("BostonTeapot", GL_TEXTURE1);
-//      break;
-//    case GLFW_KEY_F7:
-//      DatasetManager::GetInstance()->SetActive("lobster", GL_TEXTURE1);
-//      break;
-//    case GLFW_KEY_F8:
-//      DatasetManager::GetInstance()->SetActive("foot", GL_TEXTURE1);
-//      break;
-//    case GLFW_KEY_F9:
-//      DatasetManager::GetInstance()->SetActive("CT-Knee", GL_TEXTURE1);
-//      break;
-//    }
-//  }
-//}
+static int cb_keypress(Ihandle*, int c, int press)
+{
+  if(press == 0) {
+    switch(c) {
+    case K_ESC:
+      return IUP_CLOSE;
+      break;
+    case K_SP:
+      TopAnalyzer::GetInstance()->AnalyzeCurrDataset(g_flowRate, DatasetManager::GetInstance()->GetCurrentKey());
+      AlphaManager::GetInstance()->SetActive(DatasetManager::GetInstance()->GetCurrentKey(), GL_TEXTURE2);
+      break;
+    case K_1:
+      TFManager::GetInstance()->SetActive("tff1", GL_TEXTURE3);
+      break;
+    case K_2:
+      TFManager::GetInstance()->SetActive("tff2", GL_TEXTURE3);
+      break;
+    case K_F1:
+      DatasetManager::GetInstance()->SetActive("neghip", GL_TEXTURE1);
+      break;
+    case K_F2:
+      DatasetManager::GetInstance()->SetActive("bonsai", GL_TEXTURE1);
+      break;
+    case K_F3:
+      DatasetManager::GetInstance()->SetActive("nucleon", GL_TEXTURE1);
+      break;
+    case K_F4:
+      DatasetManager::GetInstance()->SetActive("silicium", GL_TEXTURE1);
+      break;
+    case K_F5:
+      DatasetManager::GetInstance()->SetActive("fuel", GL_TEXTURE1);
+      break;
+    case K_F6:
+      DatasetManager::GetInstance()->SetActive("BostonTeapot", GL_TEXTURE1);
+      break;
+    case K_F7:
+      DatasetManager::GetInstance()->SetActive("lobster", GL_TEXTURE1);
+      break;
+    case K_F8:
+      DatasetManager::GetInstance()->SetActive("foot", GL_TEXTURE1);
+      break;
+    case K_F9:
+      DatasetManager::GetInstance()->SetActive("CT-Knee", GL_TEXTURE1);
+      break;
+    }
+  }
+  return IUP_DEFAULT;
+}
 
-//static void cb_mousebutton(GLFWwindow* win, int button, int action, int mods)
-//{
-//  g_mouse->mouseButtonCallback(win, button, action, mods);
-//}
+static int cb_idle()
+{
+  cb_draw(canvas, 0.f, 0.f);
+  return IUP_DEFAULT;
+}
 
-//static void cb_mousemotion(GLFWwindow* win, double xpos, double ypos)
-//{
-//  g_mouse->cursorCallback(win, xpos, ypos);
-//}
+static int cb_mousebutton(Ihandle* win, int button, int pressed, int x, int y, char*)
+{
+  //g_mouse->mouseButtonCallback(win, button, pressed, 0);
+  return IUP_DEFAULT;
+}
+
+static int cb_mousemotion(Ihandle* win, int xpos, int ypos, char*)
+{
+  //g_mouse->cursorCallback(win, xpos, ypos);
+  return IUP_DEFAULT;
+}
 
 static int cb_draw(Ihandle* ih, float, float)
 {
@@ -357,6 +351,8 @@ static int cb_draw(Ihandle* ih, float, float)
   Shader* fpass = gl_ptr->getShader(FPASS_KEY);
   Shader* spass = gl_ptr->getShader(SPASS_KEY);
   FramebufferObject* fbo = gl_ptr->getFBO(FBO_KEY);
+
+  if(!fpass || !spass || !fbo || !m) return IUP_DEFAULT;
 
   fpass->bind();
   glm::mat4 rot = g_viewMatrix * g_mouse->createViewRotationMatrix();
