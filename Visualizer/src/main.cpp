@@ -31,7 +31,6 @@ static double g_flowRate = 350.0;
 
 static void testSimplification();
 static void initResources();
-static GLuint initGLFW();
 static GLuint initGLEW();
 static void initMesh();
 static void initFBO();
@@ -44,7 +43,6 @@ static int cb_mousebutton(Ihandle*, int, int, int, int, char*);
 static int cb_mousemotion(Ihandle*, int, int, char*);
 static int cb_mousewheel(Ihandle*, float, int, int, char*);
 static int cb_draw(Ihandle*, float, float);
-static int cb_resize(Ihandle*, int, int);
 
 int main(int argc, char** argv)
 {
@@ -63,8 +61,8 @@ int main(int argc, char** argv)
 
   IupSetCallback(canvas, "BUTTON_CB", (Icallback) cb_mousebutton);
   IupSetCallback(canvas, "MOTION_CB", (Icallback) cb_mousemotion);
+
   //  IupSetCallback(canvas, "WHEEL_CB", (Icallback) cb_mousewheel);
-  //  IupSetCallback(canvas, "RESIZE_CB", (Icallback) cb_resize);
 
   IupSetAttribute(canvas, IUP_BUFFER, IUP_DOUBLE);
 
@@ -72,6 +70,7 @@ int main(int argc, char** argv)
   sprintf(rastersize, "%dx%d", WINDOW_W, WINDOW_H);
 
   IupSetAttribute(canvas, "RASTERSIZE", rastersize);
+  free(rastersize);
 
   IupGLMakeCurrent(canvas);
 
@@ -127,11 +126,6 @@ GLuint initGLEW()
 
 void testSimplification()
 {
-
-  //  TopAnalyzer* top = TopAnalyzer::GetInstance();
-  //  DatasetManager* dm = DatasetManager::GetInstance();
-  //  std::thread t1(&TopAnalyzer::AnalyzeCurrDataset, top, g_flowRate, dm->GetCurrentKey());
-
   DatasetManager::GetInstance()->Init("/home/guilherme/Pictures/datasets/");
 
   std::cout << "\n\n\n--------------Neghip--------------\n";
@@ -330,15 +324,15 @@ static int cb_idle()
   return IUP_DEFAULT;
 }
 
-static int cb_mousebutton(Ihandle* win, int button, int pressed, int x, int y, char*)
+static int cb_mousebutton(Ihandle* win, int button, int pressed, int, int, char*)
 {
-  //g_mouse->mouseButtonCallback(win, button, pressed, 0);
+  g_mouse->mouseButtonCallback(win, button, pressed);
   return IUP_DEFAULT;
 }
 
 static int cb_mousemotion(Ihandle* win, int xpos, int ypos, char*)
 {
-  //g_mouse->cursorCallback(win, xpos, ypos);
+  g_mouse->cursorCallback(win, static_cast<double>(xpos), static_cast<double>(ypos));
   return IUP_DEFAULT;
 }
 

@@ -12,6 +12,7 @@
 #include <iostream>
 
 #include <GLFW/glfw3.h>
+#include <iup/iup.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
@@ -27,8 +28,8 @@ public:
   Arcball( int window_width, int window_height, GLfloat roll_speed = 1.0f, bool x_axis = true, bool y_axis = true );
   glm::vec3 toScreenCoord( double x, double y );
 
-  void mouseButtonCallback( GLFWwindow * window, int button, int action, int mods );
-  void cursorCallback( GLFWwindow *window, double x, double y );
+  void mouseButtonCallback(Ihandle* window, int button, int pressed);
+  void cursorCallback(Ihandle* window, double x, double y );
 
   glm::mat4 createViewRotationMatrix();
   glm::mat4 createModelRotationMatrix( glm::mat4& view_matrix );
