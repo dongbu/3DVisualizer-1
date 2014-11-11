@@ -14,6 +14,7 @@ CONFIG(debug, debug|release) {
 INCLUDEPATH += ../Kernel/src
 INCLUDEPATH += ../TinyGL/src
 INCLUDEPATH += ../TopAnalyzer/src
+INCLUDEPATH += ../Renderer/src
 INCLUDEPATH += ../../libtourtre/include
 
 DESTDIR = $$OUT_PWD/../
@@ -21,6 +22,7 @@ DESTDIR = $$OUT_PWD/../
 LIBS += -L$$OUT_PWD/.. -lviskernel
 LIBS += -L$$OUT_PWD/.. -ltinygl
 LIBS += -L$$OUT_PWD/.. -lcontourtree
+LIBS += -L$$OUT_PWD/.. -lrenderer
 
 LIBS +=-ltbb -ltbbmalloc
 LIBS += -lGLEW -lGL
@@ -31,21 +33,7 @@ LIBS += -lgtk-x11-2.0 -lgdk-x11-2.0 -lgdk_pixbuf-2.0 -lpango-1.0 -lgobject-2.0
 LIBS += -lglib-2.0
 
 HEADERS += \
-    src/arcball.h \
     src/config.h
 
 SOURCES += \
-    src/arcball.cpp \
     src/main.cpp
-
-OTHER_FILES += \
-    ../Resources/shaders/FPass.vs \
-    ../Resources/shaders/SPass.vs \
-    ../Resources/shaders/FPass.fs \
-    ../Resources/shaders/SPass.fs \
-    ../Resources/shaders/SPassMultiOp.fs
-
-shader.files = $$OTHER_FILES
-shader.path = $$DESTDIR/shaders
-
-INSTALLS += shader

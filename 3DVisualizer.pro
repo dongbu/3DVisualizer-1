@@ -4,4 +4,5 @@ SUBDIRS += \
     Kernel \
     TinyGL \
     TopAnalyzer \
+    Renderer \
     Visualizer

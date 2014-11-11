@@ -6,6 +6,7 @@
 #include <iup/iupkey.h>
 
 #include "config.h"
+#include "renderer.h"
 #include "logger.h"
 #include "tinygl.h"
 #include "arcball.h"
