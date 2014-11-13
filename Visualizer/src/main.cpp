@@ -6,7 +6,7 @@
 #include <iup/iupkey.h>
 
 #include "config.h"
-#include "renderer.h"
+#include "glslrenderer.h"
 #include "logger.h"
 #include "tinygl.h"
 #include "arcball.h"
@@ -23,6 +23,8 @@
 
 static Arcball* g_mouse;
 Ihandle* canvas;
+
+static GLSLRenderer* rend = NULL;
 
 glm::vec3 g_eye;
 glm::mat4 g_viewMatrix;
@@ -42,7 +44,6 @@ static int cb_idle();
 static int cb_keypress(Ihandle*, int, int);
 static int cb_mousebutton(Ihandle*, int, int, int, int, char*);
 static int cb_mousemotion(Ihandle*, int, int, char*);
-static int cb_mousewheel(Ihandle*, float, int, int, char*);
 static int cb_draw(Ihandle*, float, float);
 
 int main(int argc, char** argv)
@@ -99,7 +100,11 @@ int main(int argc, char** argv)
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  g_mouse = new Arcball(WINDOW_W, WINDOW_H, 0.05f, true, true);
+  rend = new GLSLRenderer;
+  rend->init();
+  rend->Updating(true);
+
+  //g_mouse = new Arcball(WINDOW_W, WINDOW_H, 0.05f, true, true);
 
   IupMainLoop();
 
@@ -108,6 +113,7 @@ int main(int argc, char** argv)
   AlphaManager::GetInstance()->FreeResources();
   TinyGL::GetInstance()->freeResources();
   delete g_mouse;
+  delete rend;
 
   IupClose();
   return 0;
@@ -264,7 +270,7 @@ static void initShaders()
   spass->setUniform1i("u_sAlphaMap", 2);
   spass->setUniform1i("u_sColorTFunction", 3);
 
-  Shader::unbind();
+  Shader::Unbind();
 
   TinyGL::GetInstance()->addResource(SHADER, FPASS_KEY, fpass);
   TinyGL::GetInstance()->addResource(SHADER, SPASS_KEY, spass);
@@ -272,116 +278,122 @@ static void initShaders()
 
 static int cb_keypress(Ihandle*, int c, int press)
 {
-  if(press == 0) {
-    switch(c) {
-    case K_ESC:
-      return IUP_CLOSE;
-      break;
-    case K_SP:
-      TopAnalyzer::GetInstance()->AnalyzeCurrDataset(g_flowRate, DatasetManager::GetInstance()->GetCurrentKey());
-      AlphaManager::GetInstance()->SetActive(DatasetManager::GetInstance()->GetCurrentKey(), GL_TEXTURE2);
-      break;
-    case K_1:
-      TFManager::GetInstance()->SetActive("tff1", GL_TEXTURE3);
-      break;
-    case K_2:
-      TFManager::GetInstance()->SetActive("tff2", GL_TEXTURE3);
-      break;
-    case K_F1:
-      DatasetManager::GetInstance()->SetActive("neghip", GL_TEXTURE1);
-      break;
-    case K_F2:
-      DatasetManager::GetInstance()->SetActive("bonsai", GL_TEXTURE1);
-      break;
-    case K_F3:
-      DatasetManager::GetInstance()->SetActive("nucleon", GL_TEXTURE1);
-      break;
-    case K_F4:
-      DatasetManager::GetInstance()->SetActive("silicium", GL_TEXTURE1);
-      break;
-    case K_F5:
-      DatasetManager::GetInstance()->SetActive("fuel", GL_TEXTURE1);
-      break;
-    case K_F6:
-      DatasetManager::GetInstance()->SetActive("BostonTeapot", GL_TEXTURE1);
-      break;
-    case K_F7:
-      DatasetManager::GetInstance()->SetActive("lobster", GL_TEXTURE1);
-      break;
-    case K_F8:
-      DatasetManager::GetInstance()->SetActive("foot", GL_TEXTURE1);
-      break;
-    case K_F9:
-      DatasetManager::GetInstance()->SetActive("CT-Knee", GL_TEXTURE1);
-      break;
-    }
-  }
-  return IUP_DEFAULT;
+  if(rend) return rend->keypress(c, press);
+//  if(press == 0) {
+//    switch(c) {
+//    case K_ESC:
+//      return IUP_CLOSE;
+//      break;
+//    case K_SP:
+//      TopAnalyzer::GetInstance()->AnalyzeCurrDataset(g_flowRate, DatasetManager::GetInstance()->GetCurrentKey());
+//      AlphaManager::GetInstance()->SetActive(DatasetManager::GetInstance()->GetCurrentKey(), GL_TEXTURE2);
+//      break;
+//    case K_1:
+//      TFManager::GetInstance()->SetActive("tff1", GL_TEXTURE3);
+//      break;
+//    case K_2:
+//      TFManager::GetInstance()->SetActive("tff2", GL_TEXTURE3);
+//      break;
+//    case K_F1:
+//      DatasetManager::GetInstance()->SetActive("neghip", GL_TEXTURE1);
+//      break;
+//    case K_F2:
+//      DatasetManager::GetInstance()->SetActive("bonsai", GL_TEXTURE1);
+//      break;
+//    case K_F3:
+//      DatasetManager::GetInstance()->SetActive("nucleon", GL_TEXTURE1);
+//      break;
+//    case K_F4:
+//      DatasetManager::GetInstance()->SetActive("silicium", GL_TEXTURE1);
+//      break;
+//    case K_F5:
+//      DatasetManager::GetInstance()->SetActive("fuel", GL_TEXTURE1);
+//      break;
+//    case K_F6:
+//      DatasetManager::GetInstance()->SetActive("BostonTeapot", GL_TEXTURE1);
+//      break;
+//    case K_F7:
+//      DatasetManager::GetInstance()->SetActive("lobster", GL_TEXTURE1);
+//      break;
+//    case K_F8:
+//      DatasetManager::GetInstance()->SetActive("foot", GL_TEXTURE1);
+//      break;
+//    case K_F9:
+//      DatasetManager::GetInstance()->SetActive("CT-Knee", GL_TEXTURE1);
+//      break;
+//    }
+//  }
+//  return IUP_DEFAULT;
 }
 
 static int cb_idle()
 {
-  cb_draw(canvas, 0.f, 0.f);
+  return cb_draw(canvas, 0.f, 0.f);
+}
+
+static int cb_mousebutton(Ihandle* win, int button, int pressed, int a, int b, char* c)
+{
+  if(rend) return rend->mousebutton(button, pressed, a, b, c);
+//  g_mouse->mouseButtonCallback(button, pressed);
   return IUP_DEFAULT;
 }
 
-static int cb_mousebutton(Ihandle* win, int button, int pressed, int, int, char*)
+static int cb_mousemotion(Ihandle* win, int xpos, int ypos, char* a)
 {
-  g_mouse->mouseButtonCallback(win, button, pressed);
+  if(rend) return rend->mousemotion(xpos, ypos, a);
+//  g_mouse->cursorCallback(static_cast<double>(xpos), static_cast<double>(ypos));
   return IUP_DEFAULT;
 }
 
-static int cb_mousemotion(Ihandle* win, int xpos, int ypos, char*)
+static int cb_draw(Ihandle* ih, float a, float b)
 {
-  g_mouse->cursorCallback(win, static_cast<double>(xpos), static_cast<double>(ypos));
-  return IUP_DEFAULT;
-}
-
-static int cb_draw(Ihandle* ih, float, float)
-{
+  int e = IUP_DEFAULT;
   IupGLMakeCurrent(ih);
+  if(rend) e = rend->update();
 
-  TinyGL* gl_ptr = TinyGL::GetInstance();
-  Mesh* m = gl_ptr->getMesh("proxy_cube");
-  Shader* fpass = gl_ptr->getShader(FPASS_KEY);
-  Shader* spass = gl_ptr->getShader(SPASS_KEY);
-  FramebufferObject* fbo = gl_ptr->getFBO(FBO_KEY);
+//  IupGLMakeCurrent(ih);
 
-  if(!fpass || !spass || !fbo || !m) return IUP_DEFAULT;
+//  TinyGL* gl_ptr = TinyGL::GetInstance();
+//  Mesh* m = gl_ptr->getMesh("proxy_cube");
+//  Shader* fpass = gl_ptr->getShader(FPASS_KEY);
+//  Shader* spass = gl_ptr->getShader(SPASS_KEY);
+//  FramebufferObject* fbo = gl_ptr->getFBO(FBO_KEY);
 
-  fpass->bind();
-  glm::mat4 rot = g_viewMatrix * g_mouse->createViewRotationMatrix();
-  fpass->setUniformMatrix("u_mView", rot);
+//  if(!fpass || !spass || !fbo || !m) return IUP_DEFAULT;
+
+//  fpass->bind();
+//  glm::mat4 rot = g_viewMatrix * g_mouse->createViewRotationMatrix();
+//  fpass->setUniformMatrix("u_mView", rot);
 
   //First pass
-  fbo->bind(GL_FRAMEBUFFER);
-  glViewport(0, 0, WINDOW_W, WINDOW_H);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glCullFace(GL_FRONT);
-  m->draw();
+//  fbo->bind(GL_FRAMEBUFFER);
+//  glViewport(0, 0, WINDOW_W, WINDOW_H);
+//  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//  glCullFace(GL_FRONT);
+//  m->draw();
 
-  FramebufferObject::unbind();
-  glViewport(0, 0, WINDOW_W, WINDOW_H);
+//  FramebufferObject::unbind();
+//  glViewport(0, 0, WINDOW_W, WINDOW_H);
 
   //Second pass
-  spass->bind();
-  spass->setUniformMatrix("u_mView", rot);
+//  spass->bind();
+//  spass->setUniformMatrix("u_mView", rot);
 
-  DatasetManager::GetInstance()->GetCurrent()->bind(GL_TEXTURE1);
-  AlphaManager::GetInstance()->GetCurrent()->bind(GL_TEXTURE2);
-  TFManager::GetInstance()->GetCurrent()->bind(GL_TEXTURE3);
+//  DatasetManager::GetInstance()->GetCurrent()->bind(GL_TEXTURE1);
+//  AlphaManager::GetInstance()->GetCurrent()->bind(GL_TEXTURE2);
+//  TFManager::GetInstance()->GetCurrent()->bind(GL_TEXTURE3);
 
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, fbo->getAttachmentId(GL_COLOR_ATTACHMENT0));
+//  glActiveTexture(GL_TEXTURE0);
+//  glBindTexture(GL_TEXTURE_2D, fbo->getAttachmentId(GL_COLOR_ATTACHMENT0));
 
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glCullFace(GL_BACK);
-  m->draw();
+//  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//  glCullFace(GL_BACK);
+//  m->draw();
 
-  Shader::unbind();
+//  Shader::Unbind();
 
   IupGLSwapBuffers(ih);
-  return IUP_DEFAULT;
+  return e;
 }
 
 static void cb_drawcube_idx(size_t)

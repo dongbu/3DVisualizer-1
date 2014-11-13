@@ -14,26 +14,6 @@
  */
 class Shader
 {
-private:
-  GLuint m_nProgId;
-  GLuint m_nVertId;
-  GLuint m_nFragId;
-  GLuint m_nTessControlId;
-  GLuint m_nTessEvalId;
-  GLuint m_nGeomId;
-
-  std::string m_sVertPath;
-  std::string m_sFragPath;
-  std::string m_sGeomPath;
-  std::string m_sTessControlPath;
-  std::string m_sTessEvalPath;
-
-  const char *fileRead(const char *filename);
-  GLuint compile(GLuint shaderType, const char *shaderCode);
-  GLint getUniformLocation(std::string s);
-  char* getShaderInfoLog(int id);
-  char* getProgramInfoLog(int id, GLenum progVar);
-
 public:
   Shader(std::string vertName,
     std::string fragName,
@@ -59,9 +39,30 @@ public:
   int* getUniformiv(std::string name, int size);
 
   void bind();
-  static void unbind();
+  static void Unbind();
 
   void validate();
   void bindFragDataLoc(std::string name, int layLoc);
+
+private:
+  GLuint m_nProgId;
+  GLuint m_nVertId;
+  GLuint m_nFragId;
+  GLuint m_nTessControlId;
+  GLuint m_nTessEvalId;
+  GLuint m_nGeomId;
+
+  std::string m_sVertPath;
+  std::string m_sFragPath;
+  std::string m_sGeomPath;
+  std::string m_sTessControlPath;
+  std::string m_sTessEvalPath;
+
+  const char *fileRead(const char *filename);
+  GLuint compile(GLuint shaderType, const char *shaderCode);
+  GLint getUniformLocation(std::string s);
+  char* getShaderInfoLog(int id);
+  char* getProgramInfoLog(int id, GLenum progVar);
+
 };
 #endif // SHADER_H

@@ -22,11 +22,12 @@ DESTDIR = $$OUT_PWD/../
 HEADERS += \
     src/arcball.h \
     src/config.h \
+    src/glslrenderer.h \
     src/renderer.h
 
 SOURCES += \
     src/arcball.cpp \
-    src/renderer.cpp
+    src/glslrenderer.cpp
 
 OTHER_FILES += \
     ../Resources/shaders/FPass.vs \

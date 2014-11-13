@@ -207,7 +207,7 @@ void Shader::bind()
   glUseProgram(getProgramId());
 }
 
-void Shader::unbind()
+void Shader::Unbind()
 {
   glUseProgram(0);
 }

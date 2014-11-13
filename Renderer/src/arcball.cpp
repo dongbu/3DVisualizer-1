@@ -57,11 +57,11 @@ glm::vec3 Arcball::toScreenCoord( double x, double y ) {
  * Event 1: at the start of tracking, recording the first cursor pos
  * Event 2: tracking of subsequent cursor movement
  */
-void Arcball::mouseButtonCallback(Ihandle* window, int button, int pressed){
+void Arcball::mouseButtonCallback(int button, int pressed){
     mouseEvent = ( pressed && button == IUP_BUTTON1 );
 }
 
-void Arcball::cursorCallback(Ihandle* window, double x, double y ){
+void Arcball::cursorCallback(double x, double y ){
     if( mouseEvent == 0 )
         return;
     else if( mouseEvent == 1 ) {

@@ -1,28 +1,46 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include <iup/iup.h>
-
 enum RendererType
 {
-  GLSL,
-  OPENCL
+  GLSL
 };
 
 class Renderer
 {
 public:
-  Renderer(enum RendererType t = RendererType::GLSL);
-  ~Renderer();
+  virtual int init() = 0;
+  virtual int update() = 0;
+  virtual int keypress(int, int) = 0;
+  virtual int mousebutton(int, int, int, int, char*) = 0;
+  virtual int mousemotion(int, int, char*) = 0;
+  virtual int mousewheel(float, int, int, char*) = 0;
+  virtual int draw(float, float) = 0;
 
-  static int Init(int, char**);
+  bool IsInitialized()
+  {
+    return m_initialized;
+  }
 
-  int cb_idle();
-  int cb_keypress(Ihandle*, int, int);
-  int cb_mousebutton(Ihandle*, int, int, int, int, char*);
-  int cb_mousemotion(Ihandle*, int, int, char*);
-  int cb_mousewheel(Ihandle*, float, int, int, char*);
-  int cb_draw(Ihandle*, float, float);
+  bool IsUpdating()
+  {
+    return m_updating;
+  }
+
+  void Updating(bool u)
+  {
+    m_updating = u;
+  }
+
+protected:
+  void Initialized(bool i)
+  {
+    m_initialized = i;
+  }
+
+private:
+  bool m_initialized;
+  bool m_updating;
 };
 
 #endif // RENDERER_H
