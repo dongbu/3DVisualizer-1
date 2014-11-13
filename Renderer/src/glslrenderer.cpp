@@ -33,7 +33,7 @@ int GLSLRenderer::init()
 
 int GLSLRenderer::update()
 {
-  if(!IsUpdating() or !IsInitialized())
+  if(!IsUpdating() || !IsInitialized())
     return IUP_DEFAULT;
 
   draw(0.f, 0.f);

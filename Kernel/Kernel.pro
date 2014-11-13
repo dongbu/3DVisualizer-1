@@ -2,14 +2,28 @@ TARGET = viskernel
 TEMPLATE = lib
 CONFIG += staticlib
 
-QMAKE_CXXFLAGS += -std=c++11 -MMD
+win32 {
+    CONFIG(release, debug|release) {
+      QMAKE_CXXFLAGS += /O2
+    }
 
-CONFIG(release, debug|release) {
-  QMAKE_CXXFLAGS += -g0 -O2
+    CONFIG(debug, debug|release) {
+      QMAKE_CXXFLAGS += /Od
+    }
+
+    INCLUDEPATH += ../../glew/include
+    INCLUDEPATH += ../../tinyxml
 }
+unix {
+    QMAKE_CXXFLAGS += -std=c++11 -MMD
 
-CONFIG(debug, debug|release) {
-  QMAKE_CXXFLAGS += -g3 -O0 -pg
+    CONFIG(release, debug|release) {
+      QMAKE_CXXFLAGS += -g0 -O2
+    }
+
+    CONFIG(debug, debug|release) {
+      QMAKE_CXXFLAGS += -g3 -O0 -pg
+    }
 }
 
 DESTDIR = $$OUT_PWD/../

@@ -1,50 +1,39 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="src\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{8d883ca2-b012-40d9-ab91-32c1b8432307}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{a67a218c-940e-4359-a9dd-fac749d8410a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="src\arcball.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\glslrenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderermanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{267810fc-7849-450c-b006-7c149e094ee4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shaders">
-      <UniqueIdentifier>{124a810f-e594-4c47-b82f-46ebdd71aa26}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{04da2ccd-a6f2-4a3f-8e9d-bd3901877b34}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\config.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\mouse.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\arcball.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\Resources\shaders\SPass.fs">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\Resources\shaders\SPass.vs">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\Resources\shaders\FPass.vs">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\Resources\shaders\FPass.fs">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\Resources\shaders\SPassMultiOp.fs">
-      <Filter>Shaders</Filter>
-    </None>
+    <ClInclude Include="src\config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\glslrenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderermanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

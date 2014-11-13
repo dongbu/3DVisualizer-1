@@ -1,9 +1,16 @@
 #include <iostream>
 #include <cstdio>
 #include <GL/glew.h>
-#include <iup/iup.h>
-#include <iup/iupgl.h>
-#include <iup/iupkey.h>
+
+#ifdef WIN32
+  #include <iup.h>
+  #include <iupgl.h>
+  #include <iupkey.h>
+#else
+  #include <iup/iup.h>
+  #include <iup/iupgl.h>
+  #include <iup/iupkey.h>
+#endif
 
 #include "config.h"
 #include "glslrenderer.h"
