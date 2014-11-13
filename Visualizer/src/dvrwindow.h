@@ -1,9 +1,11 @@
 #ifndef DVRWINDOW_H
 #define DVRWINDOW_H
 
-#include "glwindow.h"
+#include <cstdlib>
 
-class DVRWindow : public GLWindow
+class Renderer;
+
+class DVRWindow
 {
 public:
 
@@ -15,6 +17,7 @@ public:
 
 private:
   size_t m_frame;
+  Renderer* m_renderer;
 
   void InitShaders();
   void InitFBO();

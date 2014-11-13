@@ -33,7 +33,9 @@ LIBS += -lgtk-x11-2.0 -lgdk-x11-2.0 -lgdk_pixbuf-2.0 -lpango-1.0 -lgobject-2.0
 LIBS += -lglib-2.0
 
 HEADERS += \
-    src/config.h
+    src/config.h \
+    src/dvrwindow.h
 
 SOURCES += \
-    src/main.cpp
+    src/main.cpp \
+    src/dvrwindow.cpp

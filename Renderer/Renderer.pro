@@ -23,11 +23,13 @@ HEADERS += \
     src/arcball.h \
     src/config.h \
     src/glslrenderer.h \
-    src/renderer.h
+    src/renderer.h \
+    src/renderermanager.h
 
 SOURCES += \
     src/arcball.cpp \
-    src/glslrenderer.cpp
+    src/glslrenderer.cpp \
+    src/renderermanager.cpp
 
 OTHER_FILES += \
     ../Resources/shaders/FPass.vs \
