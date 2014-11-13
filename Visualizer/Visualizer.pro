@@ -34,8 +34,10 @@ LIBS += -lglib-2.0
 
 HEADERS += \
     src/config.h \
+    src/viswindow.h \
     src/dvrwindow.h
 
 SOURCES += \
     src/main.cpp \
+    src/viswindow.cpp \
     src/dvrwindow.cpp
