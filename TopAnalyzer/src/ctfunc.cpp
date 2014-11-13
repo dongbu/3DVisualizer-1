@@ -530,7 +530,7 @@ void calc_vertices_branch(ctBranch* root_branch, ctBranch** branch_map, size_t m
   std::queue<ctBranch*> branch_queue;
   branch_queue.push(root_branch);
 
-  do {
+  /*do {
     ctBranch* curr_branch = branch_queue.front();
     branch_queue.pop();
 
@@ -544,7 +544,7 @@ void calc_vertices_branch(ctBranch* root_branch, ctBranch** branch_map, size_t m
       branch_queue.push(c);
     }
 
-  } while(!branch_queue.empty());
+  } while(!branch_queue.empty());*/
 }
 
 void rebuild_branch_map(ctBranch* root_branch, ctBranch** branch_map, size_t map_size)

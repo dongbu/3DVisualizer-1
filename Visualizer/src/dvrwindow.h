@@ -4,10 +4,8 @@
 #include <cstdlib>
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
-#include "viswindow.h"
 
-class Renderer;
-class Arcball;
+#include "viswindow.h"
 
 class DVRWindow : public VisWindow
 {
@@ -16,8 +14,8 @@ public:
   virtual ~DVRWindow();
 
   virtual int init();
-  virtual void update();
-  virtual void resize(int w, int h);
+  virtual void update(){}
+  virtual void resize(int w, int h){}
   virtual void draw();
   virtual void keypress(int key, int press);
   virtual void mousebutton(int button, int press, int x, int y);
@@ -31,8 +29,8 @@ private:
 
   glm::mat4 m_viewMatrix;
   glm::mat4 m_projMatrix;
-  Arcball* m_arcball;
 
+  void InitRenderer();
   void InitShaders();
   void InitFBO();
   void InitMesh();

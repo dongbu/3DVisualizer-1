@@ -1,12 +1,11 @@
 #ifndef RENDERERMANAGER_H
 #define RENDERERMANAGER_H
 
-#include "singleton.h"
 #include <cstdlib>
 #include <map>
 #include <string>
-
-class Renderer;
+#include "singleton.h"
+#include "renderer.h"
 
 class RendererManager : public Singleton<RendererManager>
 {

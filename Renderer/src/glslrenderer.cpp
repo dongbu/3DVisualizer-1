@@ -7,11 +7,17 @@
 #include "tfmanager.h"
 #include "config.h"
 
-GLSLRenderer::GLSLRenderer()
+GLSLRenderer::GLSLRenderer(size_t w, size_t h)
 {
+  m_type = RendererType::GLSL;
   Initialized(false);
   Updating(false);
-  m_mouse = new Arcball(700, 700, 0.05f, true, true);
+
+#ifdef WIN32
+  m_arcball = new Arcball(GetWidth(), GetHeight(), 0.5);
+#else
+  m_arcball = new Arcball(GetWidth(), GetHeight(), 0.05);
+#endif
 }
 
 GLSLRenderer::~GLSLRenderer()
@@ -19,8 +25,8 @@ GLSLRenderer::~GLSLRenderer()
   Updating(false);
   Initialized(false);
 
-  //TODO: Delete resources here
-  delete m_mouse;
+  delete m_arcball;
+  m_arcball = nullptr;
 }
 
 int GLSLRenderer::init()
@@ -29,84 +35,34 @@ int GLSLRenderer::init()
   m_viewMatrix = glm::lookAt(m_eye, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
   m_projMatrix = glm::ortho(-0.8f, 0.8f, -0.8f, 0.8f, 1.f, 5.f);
   Initialized(true);
+  return 0;
 }
 
-int GLSLRenderer::update()
+void GLSLRenderer::update()
 {
   if(!IsUpdating() || !IsInitialized())
-    return IUP_DEFAULT;
-
-  draw(0.f, 0.f);
-  return IUP_DEFAULT;
+    return;
 }
 
-int GLSLRenderer::keypress(int c, int press)
+void GLSLRenderer::keypress(int key, int press)
 {
-  if(press == 0) {
-    switch(c) {
-    case K_ESC:
-      return IUP_CLOSE;
-      break;
-    case K_SP:
-      TopAnalyzer::GetInstance()->AnalyzeCurrDataset(300.f, DatasetManager::GetInstance()->GetCurrentKey());
-      AlphaManager::GetInstance()->SetActive(DatasetManager::GetInstance()->GetCurrentKey(), GL_TEXTURE2);
-      break;
-    case K_1:
-      TFManager::GetInstance()->SetActive("tff1", GL_TEXTURE3);
-      break;
-    case K_2:
-      TFManager::GetInstance()->SetActive("tff2", GL_TEXTURE3);
-      break;
-    case K_F1:
-      DatasetManager::GetInstance()->SetActive("neghip", GL_TEXTURE1);
-      break;
-    case K_F2:
-      DatasetManager::GetInstance()->SetActive("bonsai", GL_TEXTURE1);
-      break;
-    case K_F3:
-      DatasetManager::GetInstance()->SetActive("nucleon", GL_TEXTURE1);
-      break;
-    case K_F4:
-      DatasetManager::GetInstance()->SetActive("silicium", GL_TEXTURE1);
-      break;
-    case K_F5:
-      DatasetManager::GetInstance()->SetActive("fuel", GL_TEXTURE1);
-      break;
-    case K_F6:
-      DatasetManager::GetInstance()->SetActive("BostonTeapot", GL_TEXTURE1);
-      break;
-    case K_F7:
-      DatasetManager::GetInstance()->SetActive("lobster", GL_TEXTURE1);
-      break;
-    case K_F8:
-      DatasetManager::GetInstance()->SetActive("foot", GL_TEXTURE1);
-      break;
-    case K_F9:
-      DatasetManager::GetInstance()->SetActive("CT-Knee", GL_TEXTURE1);
-      break;
-    }
-  }
-  return IUP_DEFAULT;
 }
 
-int GLSLRenderer::mousebutton(int button, int pressed, int, int, char*)
+void GLSLRenderer::mousebutton(int button, int pressed, int, int)
 {
-  m_mouse->mouseButtonCallback(button, pressed);
-  return IUP_DEFAULT;
+  m_arcball->mouseButtonCallback(button, pressed);
 }
 
-int GLSLRenderer::mousemotion(int xpos, int ypos, char*)
+void GLSLRenderer::mousemove(int x, int y)
 {
-  m_mouse->cursorCallback(static_cast<double>(xpos), static_cast<double>(ypos));
-  return IUP_DEFAULT;
+  m_arcball->cursorCallback(static_cast<double>(x), static_cast<double>(y));
 }
 
-int GLSLRenderer::mousewheel(float, int, int, char*)
+void GLSLRenderer::mousewheel(float, int, int)
 {
-  return IUP_DEFAULT;
 }
 
-int GLSLRenderer::draw(float, float)
+void GLSLRenderer::draw()
 {
   TinyGL* gl_ptr = TinyGL::GetInstance();
   Mesh* m = gl_ptr->getMesh("proxy_cube");
@@ -114,21 +70,21 @@ int GLSLRenderer::draw(float, float)
   Shader* spass = gl_ptr->getShader(SPASS_KEY);
   FramebufferObject* fbo = gl_ptr->getFBO(FBO_KEY);
 
-  if(!fpass || !spass || !fbo || !m) return IUP_DEFAULT;
+  if(!fpass || !spass || !fbo || !m) return;
 
   fpass->bind();
-  glm::mat4 rot = m_viewMatrix * m_mouse->createViewRotationMatrix();
+  glm::mat4 rot = m_viewMatrix * m_arcball->createViewRotationMatrix();
   fpass->setUniformMatrix("u_mView", rot);
 
   //First pass
   fbo->bind(GL_FRAMEBUFFER);
-  glViewport(0, 0, WINDOW_W, WINDOW_H);
+  glViewport(0, 0, GetWidth(), GetHeight());
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glCullFace(GL_FRONT);
   m->draw();
 
   FramebufferObject::unbind();
-  glViewport(0, 0, WINDOW_W, WINDOW_H);
+  glViewport(0, 0, GetWidth(), GetHeight());
 
   //Second pass
   spass->bind();
@@ -146,6 +102,4 @@ int GLSLRenderer::draw(float, float)
   m->draw();
 
   Shader::Unbind();
-
-  return IUP_DEFAULT;
 }

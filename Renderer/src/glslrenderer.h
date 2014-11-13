@@ -19,18 +19,18 @@
 class GLSLRenderer : public Renderer
 {
 public:
-  GLSLRenderer();
+  GLSLRenderer(size_t w = 640, size_t h = 480);
   ~GLSLRenderer();
 
   virtual int init();
-  virtual int update();
-  virtual int keypress(int, int);
-  virtual int mousebutton(int, int, int, int, char*);
-  virtual int mousemotion(int, int, char*);
-  virtual int mousewheel(float, int, int, char*);
-  virtual int draw(float, float);
+  virtual void update();
+  virtual void keypress(int key, int press);
+  virtual void mousebutton(int button, int press, int x, int y);
+  virtual void mousemove(int x, int y);
+  virtual void mousewheel(float dist, int x, int y);
+  virtual void draw();
 
-  Arcball* m_mouse;
+  Arcball* m_arcball;
   glm::mat4 m_viewMatrix;
   glm::mat4 m_projMatrix;
   glm::vec3 m_eye;

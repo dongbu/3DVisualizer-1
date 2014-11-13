@@ -8,6 +8,7 @@
 #include "cube.h"
 #include "arcball.h"
 #include "config.h"
+#include "glslrenderer.h"
 
 static void cb_drawcube_idx(size_t)
 {
@@ -19,11 +20,8 @@ DVRWindow::DVRWindow(int w, int h) :
   m_numSamples(256),
   m_flowRate(300.f)
 {
-#ifdef WIN32
-  m_arcball = new Arcball(w, h, 0.5);
-#else
-  m_arcball = new Arcball(w, h, 0.05);
-#endif
+  SetWidth(w);
+  SetHeight(h);
 }
 
 DVRWindow::~DVRWindow()
@@ -32,13 +30,11 @@ DVRWindow::~DVRWindow()
   TFManager::GetInstance()->FreeResources();
   AlphaManager::GetInstance()->FreeResources();
   TinyGL::GetInstance()->freeResources();
-
-  delete m_arcball;
-  m_arcball = nullptr;
 }
 
 int DVRWindow::init()
 {
+  InitRenderer();
   InitResources();
   InitMesh();
   InitFBO();
@@ -62,6 +58,37 @@ int DVRWindow::init()
 void DVRWindow::draw()
 {
   //RendererManager::GetInstance()->GetCurrent()->draw();
+}
+
+void DVRWindow::keypress(int key, int press)
+{
+  //RendererManager::GetInstance()->GetCurrent()->keypress(key, press);
+  std::cout << key << " " << press << std::endl;
+}
+
+void DVRWindow::mousebutton(int button, int press, int x, int y)
+{
+  //RendererManager::GetInstance()->GetCurrent()->mousebutton(button, press, x, y);
+  std::cout << button << " " << press << " " << x << " " << y << std::endl;
+}
+
+void DVRWindow::mousemove(int x, int y)
+{
+  //RendererManager::GetInstance()->GetCurrent()->mousemove(x, y);
+}
+
+void DVRWindow::mousewheel(float dist, int x, int y)
+{
+  //RendererManager::GetInstance()->GetCurrent()->mousewheel(dist, x, y);
+}
+
+void DVRWindow::InitRenderer()
+{
+  GLSLRenderer* rend = new GLSLRenderer(GetWidth(), GetHeight());
+  rend->init();
+  rend->Updating(true);
+
+  RendererManager::GetInstance()->Add("glslrenderer", rend);
 }
 
 void DVRWindow::InitShaders()

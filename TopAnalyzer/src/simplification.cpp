@@ -21,7 +21,7 @@ static void merge_branches(ctBranch* a, ctBranch* b, top::Dataset* data)
   a_d->p = std::abs((long) (data->data->Get(a->extremum) - data->data->Get(a->saddle)));
 
   size_t sz = a_d->vertices.size();
-  a_d->vertices.resize(sz + b_d->vertices.size(), 0);
+  a_d->vertices.resize(sz + b_d->vertices.size());
   for(size_t i = 0; i < b_d->vertices.size(); ++i, ++sz) {
     a_d->vertices[sz] = b_d->vertices[i];
   }

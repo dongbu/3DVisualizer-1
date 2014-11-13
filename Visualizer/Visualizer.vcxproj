@@ -11,10 +11,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\dvrwindow.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\viswindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\config.h" />
+    <ClInclude Include="src\dvrwindow.h" />
+    <ClInclude Include="src\viswindow.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Resources\shaders\FPass.fs" />
@@ -68,9 +72,10 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../../iup/lib;../../Bolt/lib;../../tbb/lib/ia32/vc12;../../libtourtre/Debug;../../tinyxml/DebugtinyxmlSTL;../../glew/lib;../Debug;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Renderer.lib;TopAnalyzer.lib;Kernel.lib;TinyGL.lib;Tourtre.lib;tinyxmlSTL.lib;iupcore.lib;iupgl.lib;tbb_debug.lib;tbbmalloc_debug.lib;glew32d.lib;opengl32.lib;kernel32.lib;user32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <AdditionalLibraryDirectories>../../iup;../../Bolt/lib;../../tbb/lib/ia32/vc12;../../libtourtre/Debug;../../tinyxml/DebugtinyxmlSTL;../../glew/lib;../Debug;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Renderer.lib;TopAnalyzer.lib;Kernel.lib;TinyGL.lib;Tourtre.lib;tinyxmlSTL.lib;iup.lib;iupgl.lib;tbb_debug.lib;tbbmalloc_debug.lib;glew32d.lib;opengl32.lib;gdi32.lib;comctl32.lib;kernel32.lib;user32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>
+      </IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
     </Link>
@@ -90,9 +95,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>../../iup/lib;../../Bolt/lib;../../tbb/lib/ia32/vc12;../../libtourtre/Release;../../tinyxml/ReleasetinyxmlSTL;../../glew/lib;../Release;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Renderer.lib;TopAnalyzer.lib;Kernel.lib;TinyGL.lib;Tourtre.lib;tinyxmlSTL.lib;iupcore.lib;iupgl.lib;tbb.lib;tbbmalloc.lib;glew32.lib;opengl32.lib;kernel32.lib;user32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <IgnoreSpecificDefaultLibraries>libcmtd</IgnoreSpecificDefaultLibraries>
+      <AdditionalLibraryDirectories>../../iup;../../Bolt/lib;../../tbb/lib/ia32/vc12;../../libtourtre/Release;../../tinyxml/ReleasetinyxmlSTL;../../glew/lib;../Release;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Renderer.lib;TopAnalyzer.lib;Kernel.lib;TinyGL.lib;Tourtre.lib;tinyxmlSTL.lib;iup.lib;iupgl.lib;tbb.lib;tbbmalloc.lib;glew32.lib;opengl32.lib;gdi32.lib;comctl32.lib;kernel32.lib;user32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
