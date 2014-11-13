@@ -48,7 +48,7 @@ bool AlphaManager::Add(std::string key, Dataset* alpha_map)
 
 void AlphaManager::SetActive(std::string key, GLenum tex_unit)
 {
-  if(m_activeKey == key) return;
+  if(key.empty() || m_activeKey == key) return;
 
   std::map<std::string, Dataset*>::iterator it = m_alphaMap.find(key);
 

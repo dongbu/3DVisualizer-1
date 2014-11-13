@@ -58,7 +58,7 @@ bool TFManager::Add(std::string key, TFunction* tf)
 
 void TFManager::SetActive(std::string key, GLenum tex_unit)
 {
-  if(m_activeKey == key) return;
+  if(key.empty() || m_activeKey == key) return;
 
   std::map<std::string, TFunction*>::iterator it = m_funcMap.find(key);
 
