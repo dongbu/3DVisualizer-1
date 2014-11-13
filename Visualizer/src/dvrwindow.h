@@ -2,29 +2,41 @@
 #define DVRWINDOW_H
 
 #include <cstdlib>
+#include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
+#include "viswindow.h"
 
 class Renderer;
+class Arcball;
 
-class DVRWindow
+class DVRWindow : public VisWindow
 {
 public:
+  DVRWindow(int w = 640, int h = 480);
+  virtual ~DVRWindow();
 
-  DVRWindow();
-  ~DVRWindow();
-
-  void Init();
-  void Render();
+  virtual int init();
+  virtual void update();
+  virtual void resize(int w, int h);
+  virtual void draw();
+  virtual void keypress(int key, int press);
+  virtual void mousebutton(int button, int press, int x, int y);
+  virtual void mousemove(int x, int y);
+  virtual void mousewheel(float dist, int x, int y);
 
 private:
   size_t m_frame;
-  Renderer* m_renderer;
+  size_t m_numSamples;
+  float m_flowRate;
+
+  glm::mat4 m_viewMatrix;
+  glm::mat4 m_projMatrix;
+  Arcball* m_arcball;
 
   void InitShaders();
   void InitFBO();
   void InitMesh();
   void InitResources();
-
-  void cb_drawcube_idx(size_t);
 };
 
 #endif // DVRWINDOW_H
