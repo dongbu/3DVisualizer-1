@@ -69,7 +69,6 @@ void initIUP()
 
   IupSetCallback(canvas, "BUTTON_CB", (Icallback) cb_mousebutton);
   IupSetCallback(canvas, "MOTION_CB", (Icallback) cb_mousemove);
-
   //  IupSetCallback(canvas, "WHEEL_CB", (Icallback) cb_mousewheel);
 
   IupSetAttribute(canvas, IUP_BUFFER, IUP_DOUBLE);
@@ -151,7 +150,7 @@ static int cb_idle()
 
 static int cb_mousebutton(Ihandle* win, int button, int pressed, int x, int y, char* c)
 {
-  if(g_window)  g_window->mousebutton(button, pressed, x, y);
+  if(g_window) g_window->mousebutton(button, pressed, x, y);
   return IUP_DEFAULT;
 }
 

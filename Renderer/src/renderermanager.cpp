@@ -25,6 +25,8 @@ void RendererManager::SetActive(std::string key)
 
   if(it == m_rendererMap.end()) return;
 
+  m_activeKey = key;
+
   //TODO:SetActive here somehow.
 }
 

@@ -57,29 +57,71 @@ int DVRWindow::init()
 
 void DVRWindow::draw()
 {
-  //RendererManager::GetInstance()->GetCurrent()->draw();
+  RendererManager::GetInstance()->GetCurrent()->draw();
 }
 
 void DVRWindow::keypress(int key, int press)
 {
-  //RendererManager::GetInstance()->GetCurrent()->keypress(key, press);
-  std::cout << key << " " << press << std::endl;
+  RendererManager::GetInstance()->GetCurrent()->keypress(key, press);
+  if(press == 0) {
+    switch(key) {
+    case K_ESC:
+      break;
+    case K_SP:
+      TopAnalyzer::GetInstance()->AnalyzeCurrDataset(m_flowRate, DatasetManager::GetInstance()->GetCurrentKey());
+      AlphaManager::GetInstance()->SetActive(DatasetManager::GetInstance()->GetCurrentKey(), GL_TEXTURE2);
+      break;
+    case K_1:
+      TFManager::GetInstance()->SetActive("tff1", GL_TEXTURE3);
+      break;
+    case K_2:
+      TFManager::GetInstance()->SetActive("tff2", GL_TEXTURE3);
+      break;
+    case K_F1:
+      DatasetManager::GetInstance()->SetActive("neghip", GL_TEXTURE1);
+      break;
+    case K_F2:
+      DatasetManager::GetInstance()->SetActive("bonsai", GL_TEXTURE1);
+      break;
+    case K_F3:
+      DatasetManager::GetInstance()->SetActive("nucleon", GL_TEXTURE1);
+      break;
+    case K_F4:
+      DatasetManager::GetInstance()->SetActive("silicium", GL_TEXTURE1);
+      break;
+    case K_F5:
+      DatasetManager::GetInstance()->SetActive("fuel", GL_TEXTURE1);
+      break;
+    case K_F6:
+      DatasetManager::GetInstance()->SetActive("BostonTeapot", GL_TEXTURE1);
+      break;
+    case K_F7:
+      DatasetManager::GetInstance()->SetActive("lobster", GL_TEXTURE1);
+      break;
+    case K_F8:
+      DatasetManager::GetInstance()->SetActive("foot", GL_TEXTURE1);
+      break;
+    case K_F9:
+      DatasetManager::GetInstance()->SetActive("CT-Knee", GL_TEXTURE1);
+      break;
+    }
+  }
 }
 
 void DVRWindow::mousebutton(int button, int press, int x, int y)
 {
-  //RendererManager::GetInstance()->GetCurrent()->mousebutton(button, press, x, y);
+  RendererManager::GetInstance()->GetCurrent()->mousebutton(button, press, x, y);
   std::cout << button << " " << press << " " << x << " " << y << std::endl;
 }
 
 void DVRWindow::mousemove(int x, int y)
 {
-  //RendererManager::GetInstance()->GetCurrent()->mousemove(x, y);
+  RendererManager::GetInstance()->GetCurrent()->mousemove(x, y);
 }
 
 void DVRWindow::mousewheel(float dist, int x, int y)
 {
-  //RendererManager::GetInstance()->GetCurrent()->mousewheel(dist, x, y);
+  RendererManager::GetInstance()->GetCurrent()->mousewheel(dist, x, y);
 }
 
 void DVRWindow::InitRenderer()
@@ -178,7 +220,7 @@ void DVRWindow::InitMesh()
   cube->setDrawCb(cb_drawcube_idx);
 
   TinyGL::GetInstance()->addResource(MESH, "proxy_cube", cube);
-  //TODO: Can I delete the cube?
+  delete cube;
 }
 
 void DVRWindow::InitResources()
