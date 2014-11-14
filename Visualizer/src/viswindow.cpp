@@ -8,6 +8,7 @@
 #include "cube.h"
 #include "config.h"
 #include "glslrenderer.h"
+#include "sphere.h"
 
 #include <GL/glew.h>
 #include <QCoreApplication>
@@ -20,17 +21,24 @@ static void cb_drawcube_idx(size_t)
   glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
 }
 
+static void cb_drawsphere(size_t num)
+{
+  glDrawElements(GL_TRIANGLES, num, GL_UNSIGNED_INT, NULL);
+}
+
 VisWindow::VisWindow(QScreen* screen, int w, int h) :
-  QWindow(screen)
+  QWindow(screen),
+  m_numSamples(256),
+  m_flowRate(300.f)
 {
   setSurfaceType(OpenGLSurface);
 
   QSurfaceFormat format;
-  format.setDepthBufferSize( 24 );
-  format.setMajorVersion( 3 );
-  format.setMinorVersion( 3 );
-  format.setSamples( 4 );
-  format.setProfile( QSurfaceFormat::CoreProfile );
+  format.setDepthBufferSize(24);
+  format.setMajorVersion(3);
+  format.setMinorVersion(3);
+  format.setSamples(4);
+  format.setProfile(QSurfaceFormat::CoreProfile);
 
   resize(w, h);
   setFormat(format);
@@ -43,21 +51,67 @@ VisWindow::VisWindow(QScreen* screen, int w, int h) :
   m_context->makeCurrent(this);
   Init();
 
+  QTimer* timer = new QTimer(this);
+  connect(timer, SIGNAL(timeout()), this, SLOT(draw()));
+  timer->start(16);
 }
 
 void VisWindow::draw()
 {
-
+  m_context->makeCurrent(this);
+  RendererManager::GetInstance()->GetCurrent()->draw();
+  m_context->swapBuffers(this);
 }
 
 void VisWindow::resizeEvent(QResizeEvent*)
 {
-
+  RendererManager::GetInstance()->GetCurrent()->resize(width(), height());
 }
 
-void VisWindow::keyPressEvent(QKeyEvent*)
+void VisWindow::keyPressEvent(QKeyEvent* e)
 {
-
+  switch(e->key()) {
+  case Qt::Key_Escape:
+    QCoreApplication::instance()->quit();
+    break;
+  case Qt::Key_Space:
+    TopAnalyzer::GetInstance()->AnalyzeCurrDataset(m_flowRate, DatasetManager::GetInstance()->GetCurrentKey());
+    AlphaManager::GetInstance()->SetActive(DatasetManager::GetInstance()->GetCurrentKey(), GL_TEXTURE2);
+    break;
+  case Qt::Key_1:
+    TFManager::GetInstance()->SetActive("tff1", GL_TEXTURE3);
+    break;
+  case Qt::Key_2:
+    TFManager::GetInstance()->SetActive("tff2", GL_TEXTURE3);
+    break;
+  case Qt::Key_F1:
+    DatasetManager::GetInstance()->SetActive("neghip", GL_TEXTURE1);
+    break;
+  case Qt::Key_F2:
+    DatasetManager::GetInstance()->SetActive("bonsai", GL_TEXTURE1);
+    break;
+  case Qt::Key_F3:
+    DatasetManager::GetInstance()->SetActive("nucleon", GL_TEXTURE1);
+    break;
+  case Qt::Key_F4:
+    DatasetManager::GetInstance()->SetActive("silicium", GL_TEXTURE1);
+    break;
+  case Qt::Key_F5:
+    DatasetManager::GetInstance()->SetActive("fuel", GL_TEXTURE1);
+    break;
+  case Qt::Key_F6:
+    DatasetManager::GetInstance()->SetActive("BostonTeapot", GL_TEXTURE1);
+    break;
+  case Qt::Key_F7:
+    DatasetManager::GetInstance()->SetActive("lobster", GL_TEXTURE1);
+    break;
+  case Qt::Key_F8:
+    DatasetManager::GetInstance()->SetActive("foot", GL_TEXTURE1);
+    break;
+  case Qt::Key_F9:
+    DatasetManager::GetInstance()->SetActive("CT-Knee", GL_TEXTURE1);
+    break;
+  }
 }
 
 void VisWindow::keyReleaseEvent(QKeyEvent*)
@@ -67,7 +121,7 @@ void VisWindow::keyReleaseEvent(QKeyEvent*)
 
 void VisWindow::mousePressEvent(QMouseEvent*)
 {
-
+  //RendererManager::GetInstance()->GetCurrent()->mousebutton();
 }
 
 void VisWindow::mouseReleaseEvent(QMouseEvent*)
@@ -105,7 +159,7 @@ void VisWindow::Init()
 
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+  m_timer.start();
 }
 
 void VisWindow::InitGLEW()
@@ -125,6 +179,7 @@ void VisWindow::InitRenderer()
   rend->Updating(true);
 
   RendererManager::GetInstance()->Add("glslrenderer", rend);
+  RendererManager::GetInstance()->SetActive("glslrenderer");
 }
 
 void VisWindow::InitShaders()
@@ -154,6 +209,7 @@ void VisWindow::InitShaders()
 
   Shader* spass = new Shader(std::string(RESOURCE_PATH) + std::string("/shaders/SPass.vs"),
                              std::string(RESOURCE_PATH) + std::string("/shaders/SPassMultiOp.fs"));
+
   spass->bind();
   spass->bindFragDataLoc("fColor", 0);
   spass->setUniformMatrix("u_mView", m_viewMatrix);
@@ -215,7 +271,6 @@ void VisWindow::InitMesh()
   cube->setDrawCb(cb_drawcube_idx);
 
   TinyGL::GetInstance()->addResource(MESH, "proxy_cube", cube);
-  delete cube;
 }
 
 void VisWindow::InitResources()

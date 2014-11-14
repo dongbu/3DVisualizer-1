@@ -219,7 +219,6 @@ void DVRWindow::InitMesh()
   cube->setDrawCb(cb_drawcube_idx);
 
   TinyGL::GetInstance()->addResource(MESH, "proxy_cube", cube);
-  delete cube;
 }
 
 void DVRWindow::InitResources()

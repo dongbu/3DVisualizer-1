@@ -7,7 +7,8 @@
 #include "tfmanager.h"
 #include "config.h"
 
-GLSLRenderer::GLSLRenderer(size_t w, size_t h)
+GLSLRenderer::GLSLRenderer(size_t w, size_t h) :
+  Renderer(w, h)
 {
   m_type = RendererType::GLSL;
   Initialized(false);
@@ -45,13 +46,10 @@ void GLSLRenderer::update()
 }
 
 void GLSLRenderer::resize(int w, int h)
-{
-
-}
+{}
 
 void GLSLRenderer::keypress(int key, int press)
-{
-}
+{}
 
 void GLSLRenderer::mousebutton(int button, int pressed, int, int)
 {
@@ -64,11 +62,13 @@ void GLSLRenderer::mousemove(int x, int y)
 }
 
 void GLSLRenderer::mousewheel(float, int, int)
-{
-}
+{}
 
 void GLSLRenderer::draw()
 {
+  if(!IsUpdating() || !IsInitialized())
+    return;
+
   TinyGL* gl_ptr = TinyGL::GetInstance();
   Mesh* m = gl_ptr->getMesh("proxy_cube");
   Shader* fpass = gl_ptr->getShader(FPASS_KEY);
@@ -105,6 +105,7 @@ void GLSLRenderer::draw()
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glCullFace(GL_BACK);
   m->draw();
-
   Shader::Unbind();
+
+  m->draw();
 }

@@ -44,8 +44,9 @@ int main(int argc, char** argv)
   Logger::GetInstance()->setLogStream(&std::cout);
 
   QGuiApplication app(argc, argv);
-  VisWindow win;
+  VisWindow win(0, WINDOW_W, WINDOW_H);
   win.show();
+
   return app.exec();
 
 //  initIUP();
