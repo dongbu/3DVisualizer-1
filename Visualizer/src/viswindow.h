@@ -3,6 +3,8 @@
 
 #include <QWindow>
 #include <QTime>
+#include <QMenuBar>
+#include <QMenu>
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 
@@ -30,12 +32,16 @@ protected:
 private:
   QOpenGLContext* m_context;
   QTime m_timer;
+  QMenuBar* m_menubar;
+  QMenu* m_filemenu;
 
   size_t m_numSamples;
   float m_flowRate;
 
   glm::mat4 m_viewMatrix;
   glm::mat4 m_projMatrix;
+
+  void CreateMenu();
 
   void Init();
   void InitGLEW();

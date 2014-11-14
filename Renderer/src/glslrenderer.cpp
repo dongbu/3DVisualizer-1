@@ -106,6 +106,4 @@ void GLSLRenderer::draw()
   glCullFace(GL_BACK);
   m->draw();
   Shader::Unbind();
-
-  m->draw();
 }

@@ -58,7 +58,7 @@ glm::vec3 Arcball::toScreenCoord( double x, double y ) {
  * Event 2: tracking of subsequent cursor movement
  */
 void Arcball::mouseButtonCallback(int button, int pressed){
-    mouseEvent = ( pressed && button == IUP_BUTTON1 );
+    mouseEvent = ( pressed && button == 1 );
 }
 
 void Arcball::cursorCallback(double x, double y ){

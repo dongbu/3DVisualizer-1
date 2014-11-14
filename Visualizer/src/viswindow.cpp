@@ -15,15 +15,11 @@
 #include <QKeyEvent>
 #include <QOpenGLContext>
 #include <QTimer>
+#include <QMainWindow>
 
 static void cb_drawcube_idx(size_t)
 {
   glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
-}
-
-static void cb_drawsphere(size_t num)
-{
-  glDrawElements(GL_TRIANGLES, num, GL_UNSIGNED_INT, NULL);
 }
 
 VisWindow::VisWindow(QScreen* screen, int w, int h) :
@@ -119,24 +115,28 @@ void VisWindow::keyReleaseEvent(QKeyEvent*)
 
 }
 
-void VisWindow::mousePressEvent(QMouseEvent*)
+void VisWindow::mousePressEvent(QMouseEvent* e)
 {
-  //RendererManager::GetInstance()->GetCurrent()->mousebutton();
+  RendererManager::GetInstance()->GetCurrent()->mousebutton(e->button(), 1, e->x(), e->y());
 }
 
-void VisWindow::mouseReleaseEvent(QMouseEvent*)
+void VisWindow::mouseReleaseEvent(QMouseEvent* e)
 {
-
+  RendererManager::GetInstance()->GetCurrent()->mousebutton(e->button(), 0, e->x(), e->y());
 }
 
-void VisWindow::mouseMoveEvent(QMouseEvent*)
+void VisWindow::mouseMoveEvent(QMouseEvent* e)
 {
-
+  RendererManager::GetInstance()->GetCurrent()->mousemove(e->x(), e->y());
 }
 
 void VisWindow::wheelEvent(QWheelEvent*)
-{
+{}
 
+void VisWindow::CreateMenu()
+{
+//  m_menubar = new QMenuBar(this);
+//  m_filemenu = m_menubar->addMenu("File");
 }
 
 void VisWindow::Init()
