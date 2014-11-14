@@ -5,22 +5,21 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 
-#include "viswindow.h"
 
-class DVRWindow : public VisWindow
+class DVRWindow
 {
 public:
   DVRWindow(int w = 640, int h = 480);
   virtual ~DVRWindow();
 
-  virtual int init();
-  virtual void update(){}
-  virtual void resize(int w, int h){}
-  virtual void draw();
-  virtual void keypress(int key, int press);
-  virtual void mousebutton(int button, int press, int x, int y);
-  virtual void mousemove(int x, int y);
-  virtual void mousewheel(float dist, int x, int y);
+//  virtual int init();
+//  virtual void update(){}
+//  virtual void resize(int w, int h){}
+//  virtual void draw();
+//  virtual void keypress(int key, int press);
+//  virtual void mousebutton(int button, int press, int x, int y);
+//  virtual void mousemove(int x, int y);
+//  virtual void mousewheel(float dist, int x, int y);
 
 private:
   size_t m_frame;

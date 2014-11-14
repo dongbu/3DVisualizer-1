@@ -6,7 +6,6 @@
 #include "renderermanager.h"
 #include "tinygl.h"
 #include "cube.h"
-#include "arcball.h"
 #include "config.h"
 #include "glslrenderer.h"
 

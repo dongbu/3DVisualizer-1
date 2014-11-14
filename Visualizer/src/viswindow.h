@@ -1,47 +1,49 @@
 #ifndef VISWINDOW_H
 #define VISWINDOW_H
 
-class VisWindow
+#include <QWindow>
+#include <QTime>
+#include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
+
+class QOpenGLContext;
+
+class VisWindow : public QWindow
 {
+  Q_OBJECT
+
 public:
-  VisWindow(int w = 640, int h = 480);
-  virtual ~VisWindow();
+  VisWindow(QScreen* screen = 0, int w = 640, int h = 480);
 
-  /**
-   * Pure virtual methods. Callbacks to be implemented by the derived classes.
-   */
-  virtual int init() = 0;
-  virtual void update() = 0;
-  virtual void resize(int w, int h) = 0;
-  virtual void draw() = 0;
-  virtual void keypress(int key, int press) = 0;
-  virtual void mousebutton(int button, int press, int x, int y) = 0;
-  virtual void mousemove(int x, int y) = 0;
-  virtual void mousewheel(float dist, int x, int y) = 0;
-
-  int GetWidth()
-  {
-    return m_width;
-  }
-
-  int GetHeight()
-  {
-    return m_height;
-  }
-
-  void SetWidth(int w)
-  {
-    m_width = w;
-  }
-
-  void SetHeight(int h)
-  {
-    m_height = h;
-  }
+protected slots:
+  void draw();
 
 protected:
-  int m_width;
-  int m_height;
+  virtual void resizeEvent(QResizeEvent *);
+  virtual void keyPressEvent(QKeyEvent *);
+  virtual void keyReleaseEvent(QKeyEvent *);
+  virtual void mousePressEvent(QMouseEvent *);
+  virtual void mouseReleaseEvent(QMouseEvent *);
+  virtual void mouseMoveEvent(QMouseEvent *);
+  virtual void wheelEvent(QWheelEvent *);
+
+private:
+  QOpenGLContext* m_context;
+  QTime m_timer;
+
+  size_t m_numSamples;
+  float m_flowRate;
+
+  glm::mat4 m_viewMatrix;
+  glm::mat4 m_projMatrix;
+
+  void Init();
+  void InitGLEW();
+  void InitRenderer();
+  void InitShaders();
+  void InitFBO();
+  void InitMesh();
+  void InitResources();
 };
 
 #endif // VISWINDOW_H

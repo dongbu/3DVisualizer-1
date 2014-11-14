@@ -1,5 +1,6 @@
 TARGET = vis
 TEMPLATE = app
+QT += opengl
 
 QMAKE_CXXFLAGS += -std=c++11 -MMD
 
@@ -34,10 +35,8 @@ LIBS += -lglib-2.0
 
 HEADERS += \
     src/config.h \
-    src/viswindow.h \
-    src/dvrwindow.h
+    src/viswindow.h
 
 SOURCES += \
     src/main.cpp \
-    src/viswindow.cpp \
-    src/dvrwindow.cpp
+    src/viswindow.cpp

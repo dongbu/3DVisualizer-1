@@ -29,6 +29,7 @@ public:
    */
   virtual int init() = 0;
   virtual void update() = 0;
+  virtual void resize(int w, int h) = 0;
   virtual void keypress(int key, int press) = 0;
   virtual void mousebutton(int button, int press, int x, int y) = 0;
   virtual void mousemove(int x, int y) = 0;

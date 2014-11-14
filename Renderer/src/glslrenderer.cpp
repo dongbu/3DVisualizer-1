@@ -44,6 +44,11 @@ void GLSLRenderer::update()
     return;
 }
 
+void GLSLRenderer::resize(int w, int h)
+{
+
+}
+
 void GLSLRenderer::keypress(int key, int press)
 {
 }
