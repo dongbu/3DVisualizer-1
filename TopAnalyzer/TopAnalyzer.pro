@@ -42,7 +42,8 @@ HEADERS += \
     src/simplification.h \
     src/topanalyzer.h \
     src/topdata.h \
-    src/topmesh.h
+    src/topmesh.h \
+    src/topsearch.hpp
 
 SOURCES += \
     src/alphamanager.cpp \

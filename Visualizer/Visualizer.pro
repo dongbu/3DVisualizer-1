@@ -1,6 +1,7 @@
 TARGET = vis
 TEMPLATE = app
 QT += opengl
+QT += widgets
 
 QMAKE_CXXFLAGS += -std=c++11 -MMD
 
@@ -40,3 +41,5 @@ HEADERS += \
 SOURCES += \
     src/main.cpp \
     src/viswindow.cpp
+
+FORMS +=

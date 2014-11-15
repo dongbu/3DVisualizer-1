@@ -20,7 +20,8 @@ void DFS(ctBranch* root_branch, Fn&& fn, Args&&... args)
     ctBranch* branch = stack.top();
     stack.pop();
 
-    std::bind(std::forward<Fn>(fn), branch, std::forward<Args>(args)...)();
+    auto bound_fn = std::bind(std::forward<Fn>(fn), branch, std::forward<Args>(args)...);
+    bound_fn();
 
     for(ctBranch* c = branch->children.head; c != NULL; c = c->nextChild) {
       stack.push(c);
@@ -42,7 +43,8 @@ void BFS(ctBranch* root_branch, Fn&& fn, Args&&... args)
     ctBranch* branch = queue.front();
     queue.pop();
 
-    std::bind(std::forward<Fn>(fn), branch, std::forward<Args>(args)...)();
+    auto bound_fn = std::bind(std::forward<Fn>(fn), branch, std::forward<Args>(args)...);
+    bound_fn();
 
     for(ctBranch* c = branch->children.head; c != NULL; c = c->nextChild) {
       queue.push(c);

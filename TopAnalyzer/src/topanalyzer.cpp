@@ -12,7 +12,7 @@
 extern "C"
 {
 #include <tourtre.h>
-};
+}
 
 static knl::Dataset* CreateAlphaDataset(knl::Dataset& dataset, ctBranch** branch_map)
 {
@@ -115,13 +115,16 @@ DEPRECATED static TFunction* CreateOpTF(ctBranch* root_branch, size_t rows)
 
 static ctBranch* BranchAlloc(void*)
 {
-  return (ctBranch*) calloc(1, sizeof(ctBranch));
+  ctBranch* b = (ctBranch*) calloc(1, sizeof(ctBranch));
+  b->data = (FeatureSet*) calloc(1, sizeof(FeatureSet));
+  ((FeatureSet*) b->data)->min_intensity = 4096;
+  return b;
 }
 
 static void BranchFree(ctBranch* b, void*)
 {
   if(b->data != NULL) {
-    //memset(b->data, 0, sizeof(FeatureSet));
+    memset(b->data, 0, sizeof(FeatureSet));
     free(b->data);
     b->data = NULL;
   }
@@ -133,7 +136,7 @@ static void BranchFree(ctBranch* b, void*)
     parent_data->num_children--;
   }
 
-  //memset(b, 0, sizeof(ctBranch));
+  memset(b, 0, sizeof(ctBranch));
   free(b);
   b = NULL;
 }
@@ -165,12 +168,10 @@ void TopAnalyzer::AnalyzeDataset(knl::Dataset* data, double flow_rate, std::stri
   b = tbb::tick_count::now();
   std::cout << "\tGraph created in " << (b - a).seconds() << " seconds" << std::endl;
 
-
   ctContext* ctx = ct_init(topd.size, &(order.front()), std_value, std_neighbors, &mesh);
   ct_vertexFunc(ctx, &vertex_proc);
   ct_arcMergeFunc(ctx, &arc_merge_proc);
   ct_priorityFunc(ctx, &arc_priority_proc);
-
   ct_branchAllocator(ctx, &BranchAlloc, &BranchFree);
 
   a = tbb::tick_count::now();
@@ -180,7 +181,7 @@ void TopAnalyzer::AnalyzeDataset(knl::Dataset* data, double flow_rate, std::stri
   b = tbb::tick_count::now();
   std::cout << "\tSweep and merge + decompose + branch map in " << (b - a).seconds() << " seconds" << std::endl;
 
-  zero_branches(root_branch);
+  //zero_branches(root_branch);
   size_t max_depth = 0;
   calc_branch_depth(root_branch, &max_depth, 0);
 
@@ -202,20 +203,17 @@ void TopAnalyzer::AnalyzeDataset(knl::Dataset* data, double flow_rate, std::stri
   std::cout << "\tSimplification in " << (b - a).seconds() << " seconds" << std::endl;
   std::cout << "\t" << count_branches(root_branch) << " branches after the simplification." << std::endl;
 
-  rebuild_branch_map(root_branch, branch_map, topd.size);
+  rebuild_branch_map(root_branch, branch_map);
   calc_branch_features(branch_map, &topd);
-  int last_label = label_branches(root_branch);
-
+  label_branches(root_branch);
   calc_branch_num_children(root_branch);
 
   max_depth = 0;
   calc_branch_depth(root_branch, &max_depth, 0);
-  /*std::cout << count_branches(root_branch) << " branches after simplification." << std::endl;
-  std::cout << "Tree depth = " << max_depth << std::endl;*/
   normalize_features(root_branch);
 
   a = tbb::tick_count::now();
-  calc_residue_flow(root_branch, 1.f / (double) max_depth, flow_rate, &topd);
+  calc_residue_flow(root_branch, 1.f / static_cast<double>(max_depth), flow_rate, &topd);
   b = tbb::tick_count::now();
   std::cout << "\tResidue flow in " << (b - a).seconds() << " seconds" << std::endl;
 
