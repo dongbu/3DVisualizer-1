@@ -91,28 +91,28 @@ void calc_branch_num_children(ctBranch* root_branch)
   if(root_branch == NULL) return;
 
   DFS(root_branch, &calc_branch_num_children_cb);
-//  if(root_branch->data == NULL)
-//    root_branch->data = (FeatureSet*) calloc(1, sizeof(FeatureSet));
+  //  if(root_branch->data == NULL)
+  //    root_branch->data = (FeatureSet*) calloc(1, sizeof(FeatureSet));
 
-//  std::queue<ctBranch*> branch_queue;
-//  branch_queue.push(root_branch);
+  //  std::queue<ctBranch*> branch_queue;
+  //  branch_queue.push(root_branch);
 
-//  do {
-//    ctBranch* curr_branch = branch_queue.front();
-//    branch_queue.pop();
+  //  do {
+  //    ctBranch* curr_branch = branch_queue.front();
+  //    branch_queue.pop();
 
-//    if(curr_branch->data == NULL)
-//      curr_branch->data = (FeatureSet*) calloc(1, sizeof(FeatureSet));
+  //    if(curr_branch->data == NULL)
+  //      curr_branch->data = (FeatureSet*) calloc(1, sizeof(FeatureSet));
 
-//    FeatureSet* branch_data = (FeatureSet*) curr_branch->data;
-//    for(ctBranch* c = curr_branch->children.head; c != NULL; c = c->nextChild) {
-//      FeatureSet* c_data = (FeatureSet*) c->data;
-//      if(!c_data->remove) {
-//        branch_data->num_children++;
-//        branch_queue.push(c);
-//      }
-//    }
-//  } while(!branch_queue.empty());
+  //    FeatureSet* branch_data = (FeatureSet*) curr_branch->data;
+  //    for(ctBranch* c = curr_branch->children.head; c != NULL; c = c->nextChild) {
+  //      FeatureSet* c_data = (FeatureSet*) c->data;
+  //      if(!c_data->remove) {
+  //        branch_data->num_children++;
+  //        branch_queue.push(c);
+  //      }
+  //    }
+  //  } while(!branch_queue.empty());
 }
 
 void calc_centroid(ctBranch* branch, top::Dataset* topd)
@@ -190,31 +190,6 @@ void normalize_features(ctBranch* root_branch)
   root_data->norm_v = root_data->norm_p = root_data->norm_hv = 1.0;
 
   BFS(root_branch, &normalize_features_cb);
-
-//  std::queue<ctBranch*> branch_queue;
-//  branch_queue.push(root_branch);
-
-//  do {
-//    ctBranch* curr_branch = branch_queue.front();
-//    branch_queue.pop();
-
-//    FeatureSet* max_features = find_max_features_children(curr_branch);
-
-//    for(ctBranch* c = curr_branch->children.head; c != NULL; c = c->nextChild) {
-//      FeatureSet* c_data = (FeatureSet*) c->data;
-//      if(!c_data->remove) {
-//        branch_queue.push(c);
-//        c_data->norm_v = max_features->v != 0? (double) c_data->v / max_features->v : 0;
-//        c_data->norm_p = max_features->p != 0? (double) c_data->p / max_features->p : 0;
-//        c_data->norm_hv = max_features->hv != 0? (double) c_data->hv / max_features->hv : 0;
-//      }
-//    }
-
-//    free(max_features);
-//    max_features = NULL;
-
-//  } while(!branch_queue.empty());
-
 }
 
 void label_branches_cb(ctBranch* root_branch, int* last_label)
@@ -230,24 +205,6 @@ int label_branches(ctBranch* root_branch)
 
   int curr_label = 0;
   BFS(root_branch, &label_branches_cb, &curr_label);
-//  std::queue<ctBranch*> branch_queue;
-//  branch_queue.push(root_branch);
-
-//  int curr_label = 0;
-//  do {
-//    ctBranch* curr_branch = branch_queue.front();
-//    branch_queue.pop();
-
-//    FeatureSet* branch_data = (FeatureSet*) curr_branch->data;
-//    branch_data->label = curr_label++;
-
-//    for(ctBranch* c = curr_branch->children.head; c != NULL; c = c->nextChild) {
-//      FeatureSet* c_data = (FeatureSet*) c->data;
-//      if(!c_data->remove)
-//        branch_queue.push(c);
-//    }
-
-//  } while(!branch_queue.empty());
 
   return curr_label;
 }
@@ -279,20 +236,6 @@ double calc_avg_importance(ctBranch* root_branch, double (*importance_measure)(c
 
   double avg_importance = 0.0;
   DFS(root_branch, &calc_avg_importance_cb, importance_measure, &avg_importance);
-//  std::queue<ctBranch*> branch_queue;
-//  branch_queue.push(root_branch);
-
-//  do {
-//    ctBranch* curr_branch = branch_queue.front();
-//    branch_queue.pop();
-
-//    double branch_importance = importance_measure(curr_branch);
-//    avg_importance += branch_importance;
-
-//    for(ctBranch* c = curr_branch->children.head; c != NULL; c = c->nextChild) {
-//      branch_queue.push(c);
-//    }
-//  } while(!branch_queue.empty());
 
   return avg_importance / count_branches(root_branch);
 }
@@ -452,7 +395,6 @@ void calc_residue_flow(ctBranch* root_branch, double alpha_d, double rate_Q, top
       //for(int i = 0; i < 256; i++)
       //  std::cout << branch_data->alpha[i] << " ";
       //std::cout << "\n\n";
-
     }
 
     for(ctBranch* c = curr_branch->children.head; c != NULL; c = c->nextChild) {
@@ -519,6 +461,22 @@ double calc_alpha_sum(ctBranch* b) {
   return sum;
 }
 
+void calc_saddle_min_max_cb(ctBranch* branch, top::Dataset* data)
+{
+  FeatureSet* fs = static_cast<FeatureSet*>(branch->data);
+
+  for(ctBranch* c = branch->children.head; c != NULL; c = c->nextChild) {
+    if(fs->num_children != 0) {
+      if(data->data->Get(c->saddle) < fs->c_s_min) {
+        fs->c_s_min = data->data->Get(c->saddle);
+      }
+      if (data->data->Get(c->saddle) > fs->c_s_max){
+        fs->c_s_max = data->data->Get(c->saddle);
+      }
+    }
+  }
+}
+
 void calc_saddle_min_max(ctBranch* root_branch, top::Dataset* data)
 {
   if(root_branch == NULL) return;
@@ -526,69 +484,19 @@ void calc_saddle_min_max(ctBranch* root_branch, top::Dataset* data)
   if(root_branch->data == NULL)
     root_branch->data = (FeatureSet*) calloc(1, sizeof(FeatureSet));
 
-  std::queue<ctBranch*> branch_queue;
-  branch_queue.push(root_branch);
-
-  do {
-    ctBranch* curr_branch = branch_queue.front();
-    branch_queue.pop();
-
-    if(curr_branch->data == NULL)
-      curr_branch->data = (FeatureSet*) calloc(1, sizeof(FeatureSet));
-
-    FeatureSet* branch_data = (FeatureSet*) curr_branch->data;
-    for(ctBranch* c = curr_branch->children.head; c != NULL; c = c->nextChild) {
-      FeatureSet* c_data = (FeatureSet*) c->data;
-      if(!c_data->remove) {
-        if(branch_data->num_children != 0) {
-          if(data->data->Get(c->saddle) < branch_data->c_s_min) {
-            branch_data->c_s_min = data->data->Get(c->saddle);
-          }
-          if (data->data->Get(c->saddle) > branch_data->c_s_max){
-            branch_data->c_s_max = data->data->Get(c->saddle);
-          }
-        }
-        branch_queue.push(c);
-      }
-    }
-    if(!branch_data->remove && branch_data->num_children != 0) {
-      std::cout << "nc: " << branch_data->num_children << " min: " << branch_data->c_s_min << " max: " << branch_data->c_s_max << std::endl;
-    }
-  } while(!branch_queue.empty());
+  BFS(root_branch, &calc_saddle_min_max_cb, data);
 }
 
-void calc_vertices_branch(ctBranch* root_branch, ctBranch** branch_map, size_t map_size)
+void calc_vertices_branch(ctBranch** branch_map, size_t map_size)
 {
-  if(!branch_map || map_size == 0) {
+  if(!branch_map || map_size == 0)
     return;
-  }
 
   //Here we insert the addresses of the vertices in each branch's vector.
   for(size_t i = 0; i < map_size; i++) {
-    FeatureSet* branch_data = (FeatureSet*) branch_map[i]->data;
+    FeatureSet* branch_data = static_cast<FeatureSet*>(branch_map[i]->data);
     branch_data->vertices.push_back(i);
   }
-
-  //Now we sort the vertices in each branch. This makes it easier to merge the
-  //vectors during the simplification.
-  /*std::queue<ctBranch*> branch_queue;
-  branch_queue.push(root_branch);
-
-  do {
-    ctBranch* curr_branch = branch_queue.front();
-    branch_queue.pop();
-
-    FeatureSet* branch_data = (FeatureSet*) curr_branch->data;
-
-    if(!branch_data->vertices.empty()) {
-      std::sort(branch_data->vertices.begin(), branch_data->vertices.end(), std::less<size_t>());
-    }
-
-    for(ctBranch* c = curr_branch->children.head; c != NULL; c = c->nextChild) {
-      branch_queue.push(c);
-    }
-
-  } while(!branch_queue.empty());*/
 }
 
 void rebuild_branch_map_cb(ctBranch* branch, ctBranch** branch_map)
@@ -607,22 +515,4 @@ void rebuild_branch_map(ctBranch* root_branch, ctBranch** branch_map)
   }
 
   BFS(root_branch, &rebuild_branch_map_cb, branch_map);
-//  std::queue<ctBranch*> branch_queue;
-//  branch_queue.push(root_branch);
-
-//  do {
-//    ctBranch* curr_branch = branch_queue.front();
-//    branch_queue.pop();
-
-//    FeatureSet* branch_data = (FeatureSet*) curr_branch->data;
-
-//    for(size_t i = 0; i < branch_data->vertices.size(); i++) {
-//      branch_map[branch_data->vertices[i]] = curr_branch;
-//    }
-
-//    for(ctBranch* c = curr_branch->children.head; c != NULL; c = c->nextChild) {
-//      branch_queue.push(c);
-//    }
-
-//  } while(!branch_queue.empty());
 }

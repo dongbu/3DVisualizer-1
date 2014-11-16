@@ -39,7 +39,7 @@ int label_branches(ctBranch*);
  */
 void zero_branches(ctBranch*);
 size_t save_vertex_branch_volume(ctBranch**, std::string, size_t, size_t, size_t);
-void calc_vertices_branch(ctBranch*, ctBranch**, size_t);
+void calc_vertices_branch(ctBranch**, size_t);
 void rebuild_branch_map(ctBranch*, ctBranch**);
 
 //Functions - @Netto
