@@ -17,6 +17,17 @@ class VisWindow : public QWindow
 public:
   VisWindow(QScreen* screen = 0, int w = 640, int h = 480);
 
+public slots:
+  size_t GetNumSamples()
+  {
+    return m_numSamples;
+  }
+
+  void SetNumSamples(size_t num)
+  {
+    m_numSamples = num;
+  }
+
 protected slots:
   void draw();
 

@@ -24,8 +24,8 @@ static void cb_drawcube_idx(size_t)
 
 VisWindow::VisWindow(QScreen* screen, int w, int h) :
   QWindow(screen),
-  m_numSamples(256),
-  m_flowRate(300.f)
+  m_numSamples(512),
+  m_flowRate(150.f)
 {
   setSurfaceType(OpenGLSurface);
 
@@ -111,17 +111,27 @@ void VisWindow::keyPressEvent(QKeyEvent* e)
 }
 
 void VisWindow::keyReleaseEvent(QKeyEvent*)
-{
-
-}
+{}
 
 void VisWindow::mousePressEvent(QMouseEvent* e)
 {
-  RendererManager::GetInstance()->GetCurrent()->mousebutton(e->button(), 1, e->x(), e->y());
+  if(e->button() == Qt::LeftButton) {
+    SetNumSamples(128);
+    Shader* tmp = TinyGL::GetInstance()->getShader(SPASS_KEY);
+    tmp->bind();
+    tmp->setUniform1f("u_fNumSamples", static_cast<float>(GetNumSamples()));
+    Shader::Unbind();
+    RendererManager::GetInstance()->GetCurrent()->mousebutton(e->button(), 1, e->x(), e->y());
+  }
 }
 
 void VisWindow::mouseReleaseEvent(QMouseEvent* e)
 {
+  SetNumSamples(512);
+  Shader* tmp = TinyGL::GetInstance()->getShader(SPASS_KEY);
+  tmp->bind();
+  tmp->setUniform1f("u_fNumSamples", static_cast<float>(GetNumSamples()));
+  Shader::Unbind();
   RendererManager::GetInstance()->GetCurrent()->mousebutton(e->button(), 0, e->x(), e->y());
 }
 
