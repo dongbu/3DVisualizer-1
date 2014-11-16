@@ -166,36 +166,54 @@ FeatureSet* find_max_features_children(ctBranch* root_branch)
   return max_features;
 }
 
+void normalize_features_cb(ctBranch* branch)
+{
+  FeatureSet* max = find_max_features_children(branch);
+  for(ctBranch* c = branch->children.head; c != NULL; c = c->nextChild) {
+    FeatureSet* c_data = static_cast<FeatureSet*>(c->data);
+    if(!c_data->remove) {
+      c_data->norm_v = max->v != 0 ? static_cast<double>(c_data->v / max->v) : 0;
+      c_data->norm_p = max->p != 0 ? static_cast<double>(c_data->p / max->p) : 0;
+      c_data->norm_hv = max->hv != 0 ? static_cast<double>(c_data->hv / max->hv) : 0;
+    }
+  }
+
+  free(max);
+  max = NULL;
+}
+
 void normalize_features(ctBranch* root_branch)
 {
   if(root_branch == NULL) return;
 
-  std::queue<ctBranch*> branch_queue;
-  branch_queue.push(root_branch);
-
   FeatureSet* root_data = (FeatureSet*) root_branch->data;
   root_data->norm_v = root_data->norm_p = root_data->norm_hv = 1.0;
 
-  do {
-    ctBranch* curr_branch = branch_queue.front();
-    branch_queue.pop();
+  BFS(root_branch, &normalize_features_cb);
 
-    FeatureSet* max_features = find_max_features_children(curr_branch);
+//  std::queue<ctBranch*> branch_queue;
+//  branch_queue.push(root_branch);
 
-    for(ctBranch* c = curr_branch->children.head; c != NULL; c = c->nextChild) {
-      FeatureSet* c_data = (FeatureSet*) c->data;
-      if(!c_data->remove) {
-        branch_queue.push(c);
-        c_data->norm_v = max_features->v != 0? (double) c_data->v / max_features->v : 0;
-        c_data->norm_p = max_features->p != 0? (double) c_data->p / max_features->p : 0;
-        c_data->norm_hv = max_features->hv != 0? (double) c_data->hv / max_features->hv : 0;
-      }
-    }
+//  do {
+//    ctBranch* curr_branch = branch_queue.front();
+//    branch_queue.pop();
 
-    free(max_features);
-    max_features = NULL;
+//    FeatureSet* max_features = find_max_features_children(curr_branch);
 
-  } while(!branch_queue.empty());
+//    for(ctBranch* c = curr_branch->children.head; c != NULL; c = c->nextChild) {
+//      FeatureSet* c_data = (FeatureSet*) c->data;
+//      if(!c_data->remove) {
+//        branch_queue.push(c);
+//        c_data->norm_v = max_features->v != 0? (double) c_data->v / max_features->v : 0;
+//        c_data->norm_p = max_features->p != 0? (double) c_data->p / max_features->p : 0;
+//        c_data->norm_hv = max_features->hv != 0? (double) c_data->hv / max_features->hv : 0;
+//      }
+//    }
+
+//    free(max_features);
+//    max_features = NULL;
+
+//  } while(!branch_queue.empty());
 
 }
 
