@@ -61,10 +61,12 @@ LIBS += -L$$OUT_PWD/.. -lrenderer
 
 HEADERS += \
     src/config.h \
-    src/viswindow.h
+    src/viswindow.h \
+    src/viswidget.h
 
 SOURCES += \
     src/main.cpp \
-    src/viswindow.cpp
+    src/viswindow.cpp \
+    src/viswidget.cpp
 
 FORMS +=

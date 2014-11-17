@@ -1,8 +1,7 @@
 #include <iostream>
 #include <cstdio>
 #include <GL/glew.h>
-#define QT_NO_OPENGL_ES_2
-#include <QGuiApplication>
+#include <QApplication>
 
 #include "config.h"
 #include "logger.h"
@@ -18,8 +17,9 @@ int main(int argc, char** argv)
 {
   Logger::GetInstance()->setLogStream(&std::cout);
 
-  QGuiApplication app(argc, argv);
+  QApplication app(argc, argv);
   VisWindow win(0, WINDOW_W, WINDOW_H);
+  win.setWindowTitle("3D Visualizer");
   win.show();
 
   return app.exec();
