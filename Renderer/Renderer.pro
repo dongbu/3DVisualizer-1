@@ -1,15 +1,32 @@
 TARGET = renderer
 TEMPLATE = lib
-CONFIG += staticlib
+CONFIG += staticlib c++11
 
-QMAKE_CXXFLAGS += -std=c++11 -MMD
+win32 {
+    CONFIG(release, debug|release) {
+      QMAKE_CXXFLAGS += /O2
+    }
 
-CONFIG(release, debug|release) {
-  QMAKE_CXXFLAGS += -g0 -O2
+    CONFIG(debug, debug|release) {
+      QMAKE_CXXFLAGS += /Od
+    }
+
+    INCLUDEPATH += ../../glew/include
+    INCLUDEPATH += ../../glm
+    INCLUDEPATH += ../../tinyxml
+    INCLUDEPATH += ../../tbb/include
 }
 
-CONFIG(debug, debug|release) {
-  QMAKE_CXXFLAGS += -g3 -O0 -pg
+unix {
+    QMAKE_CXXFLAGS += -MMD
+
+    CONFIG(release, debug|release) {
+      QMAKE_CXXFLAGS += -g0 -O2
+    }
+
+    CONFIG(debug, debug|release) {
+      QMAKE_CXXFLAGS += -g3 -O0 -pg
+    }
 }
 
 INCLUDEPATH += ../Kernel/src

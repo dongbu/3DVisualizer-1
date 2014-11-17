@@ -7,6 +7,7 @@
 //
 
 #include "arcball.h"
+#include <algorithm>
 
 /**
  * Constructor.

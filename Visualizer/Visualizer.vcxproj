@@ -11,13 +11,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\dvrwindow.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\viswindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\config.h" />
-    <ClInclude Include="src\dvrwindow.h" />
     <ClInclude Include="src\viswindow.h" />
   </ItemGroup>
   <ItemGroup>
@@ -66,7 +64,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../Kernel/src;../TinyGL/src;../TopAnalyzer/src;../Renderer/src;../../iup/include;../../Bolt/include;../../tbb/include;../../glfw/include;../../glm;../../glew/include;../../tinyxml</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Kernel/src;../TinyGL/src;../TopAnalyzer/src;../Renderer/src;../../Bolt/include;../../tbb/include;../../glfw/include;../../glm;../../glew/include;../../tinyxml;C:\Qt\5.3\msvc2012_opengl\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PreprocessorDefinitions>WIN32;_MBCS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -87,7 +85,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../Kernel/src;../TinyGL/src;../TopAnalyzer/src;../Renderer/src;../../iup/include;../../Bolt/include;../../tbb/include;../../glfw/include;../../glm;../../glew/include;../../tinyxml</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Kernel/src;../TinyGL/src;../TopAnalyzer/src;../Renderer/src;../../Bolt/include;../../tbb/include;../../glfw/include;../../glm;../../glew/include;../../tinyxml;C:\Qt\5.3\msvc2012_opengl\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PreprocessorDefinitions>WIN32;_MBCS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>

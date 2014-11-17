@@ -6,6 +6,25 @@
 #define GLM_FORCE_RADIANS
 #include <glm/gtx/transform.hpp>
 
+Mesh* Mesh::CreateMesh(MeshType t)
+{
+  Mesh* m = new Mesh();
+  switch(t) {
+  case AXIS:
+    break;
+  case QUAD:
+    break;
+  case CUBE:
+    break;
+  case SPHERE:
+    break;
+  case GRID:
+  default:
+    break;
+  }
+  return m;
+}
+
 Mesh::Mesh()
 {
   glGenVertexArrays(1, &m_vao);

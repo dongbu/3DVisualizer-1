@@ -6,6 +6,15 @@
 #include <vector>
 #include "bufferobject.h"
 
+enum MeshType
+{
+  AXIS,
+  QUAD,
+  CUBE,
+  SPHERE,
+  GRID
+};
+
 /**
  * class Mesh
  * This class is an abstraction of an mesh. It holds only the basic information
@@ -30,6 +39,8 @@ public:
 
   void attachBuffer(BufferObject* buff);
   void draw();
+
+  static Mesh* CreateMesh(MeshType);
 
   inline void setDrawCb(void(*drawCb)(size_t))
   {

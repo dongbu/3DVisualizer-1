@@ -3,16 +3,6 @@
 
 #include <GL/glew.h>
 
-#ifdef WIN32
-  #include <iup.h>
-  #include <iupgl.h>
-  #include <iupkey.h>
-#else
-  #include <iup/iup.h>
-  #include <iup/iupgl.h>
-  #include <iup/iupkey.h>
-#endif
-
 #include "renderer.h"
 #include "arcball.h"
 

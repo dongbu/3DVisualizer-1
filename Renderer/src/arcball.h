@@ -12,11 +12,6 @@
 #include <iostream>
 
 #include <GL/glew.h>
-#ifdef WIN32
-#include <iup.h>
-#else
-#include <iup/iup.h>
-#endif
 
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdio>
 #include <GL/glew.h>
+#define QT_NO_OPENGL_ES_2
 #include <QGuiApplication>
 
 #include "config.h"

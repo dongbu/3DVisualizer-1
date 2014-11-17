@@ -197,8 +197,8 @@ void VisWindow::InitShaders()
   float screen_sz[2] = {static_cast<float>(width()), static_cast<float>(height())};
   glm::mat4 modelMatrix = TinyGL::GetInstance()->getMesh("proxy_cube")->m_modelMatrix;
 
-  Shader* fpass = new Shader(std::string(RESOURCE_PATH) + std::string("/shaders/FPass.vs"),
-                             std::string(RESOURCE_PATH) + std::string("/shaders/FPass.fs"));
+  Shader* fpass = new Shader(std::string("shaders/FPass.vs"),
+                             std::string("shaders/FPass.fs"));
   fpass->bind();
   fpass->bindFragDataLoc("fColor", 0);
   fpass->setUniformMatrix("u_mView", m_viewMatrix);
@@ -217,8 +217,8 @@ void VisWindow::InitShaders()
   spass->setUniform1i("u_sBackFaces", 2);
   spass->setUniform1f("u_fNumSamples", (float)g_numSamples);*/
 
-  Shader* spass = new Shader(std::string(RESOURCE_PATH) + std::string("/shaders/SPass.vs"),
-                             std::string(RESOURCE_PATH) + std::string("/shaders/SPassMultiOp.fs"));
+  Shader* spass = new Shader(std::string("shaders/SPass.vs"),
+                             std::string("shaders/SPassMultiOp.fs"));
 
   spass->bind();
   spass->bindFragDataLoc("fColor", 0);

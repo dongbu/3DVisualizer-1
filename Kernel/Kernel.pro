@@ -1,6 +1,6 @@
 TARGET = viskernel
 TEMPLATE = lib
-CONFIG += staticlib
+CONFIG += staticlib c++11
 
 win32 {
     CONFIG(release, debug|release) {
@@ -15,7 +15,7 @@ win32 {
     INCLUDEPATH += ../../tinyxml
 }
 unix {
-    QMAKE_CXXFLAGS += -std=c++11 -MMD
+    QMAKE_CXXFLAGS += -MMD
 
     CONFIG(release, debug|release) {
       QMAKE_CXXFLAGS += -g0 -O2
