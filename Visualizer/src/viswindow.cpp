@@ -29,7 +29,7 @@ void VisWindow::draw()
 {
 //  m_context->makeCurrent(this);
 //  RendererManager::GetInstance()->GetCurrent()->draw();
-  //  m_context->swapBuffers(this);
+//  m_context->swapBuffers(this);
 }
 
 void VisWindow::mousePressEvent(QMouseEvent*)
@@ -43,6 +43,11 @@ void VisWindow::mouseReleaseEvent(QMouseEvent*)
 }
 
 void VisWindow::mouseMoveEvent(QMouseEvent*)
+{
+
+}
+
+void VisWindow::wheelEvent(QWheelEvent*)
 {
 
 }

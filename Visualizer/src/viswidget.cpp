@@ -84,6 +84,16 @@ void VisWidget::resizeEvent(QResizeEvent*)
     RendererManager::GetInstance()->GetCurrent()->resize(width(), height());
 }
 
+void VisWidget::closeEvent(QCloseEvent*)
+{
+
+}
+
+void VisWidget::moveEvent(QMoveEvent*)
+{
+
+}
+
 void VisWidget::keyPressEvent(QKeyEvent* e)
 {
   switch(e->key()) {

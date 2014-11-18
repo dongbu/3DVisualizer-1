@@ -37,13 +37,17 @@ protected:
   virtual void initializeGL();
   virtual void paintGL();
 
-  virtual void resizeEvent(QResizeEvent *);
-  virtual void keyPressEvent(QKeyEvent *);
-  virtual void keyReleaseEvent(QKeyEvent *);
   virtual void mousePressEvent(QMouseEvent *);
   virtual void mouseReleaseEvent(QMouseEvent *);
   virtual void mouseMoveEvent(QMouseEvent *);
   virtual void wheelEvent(QWheelEvent *);
+
+  virtual void keyPressEvent(QKeyEvent *);
+  virtual void keyReleaseEvent(QKeyEvent *);
+
+  virtual void moveEvent(QMoveEvent *); // reduce sampling.
+  virtual void resizeEvent(QResizeEvent *); //stop animation.
+  virtual void closeEvent(QCloseEvent *); //free everything.
 
 private:
   QTimer* m_timer;
