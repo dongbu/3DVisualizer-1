@@ -8,7 +8,7 @@
 #include <GL/glew.h>
 #include <QCoreApplication>
 #include <QKeyEvent>
-#include <QOpenGLContext>
+#include <QMenuBar>
 #include <QTimer>
 #include <QMainWindow>
 #include <QApplication>
@@ -24,6 +24,7 @@ VisWindow::VisWindow(QWidget* parent, int w, int h) :
 
   resize(w, h);
   create();
+  createInterface();
 
   m_renderWidget = new VisWidget(format, this);
   setCentralWidget(m_renderWidget);
@@ -76,22 +77,41 @@ void VisWindow::keyPressEvent(QKeyEvent* e)
 }
 
 void VisWindow::keyReleaseEvent(QKeyEvent*)
-{
-
-}
+{}
 
 void VisWindow::moveEvent(QMoveEvent*)
-{
-
-}
+{}
 
 void VisWindow::resizeEvent(QResizeEvent*)
+{}
+
+void VisWindow::closeEvent(QCloseEvent* )
+{}
+
+void VisWindow::loadDataset()
+{}
+
+void VisWindow::loadAlphaDataset()
+{}
+
+void VisWindow::loadColorTFunction()
+{}
+
+void VisWindow::saveAlphaDataset()
+{}
+
+void VisWindow::analyzeDataset()
+{}
+
+void VisWindow::setNumSamples()
+{}
+
+void VisWindow::setRootDataDir()
+{}
+
+void VisWindow::createInterface()
 {
-
-}
-
-void VisWindow::closeEvent(QCloseEvent*)
-{
-
+  m_file = new QMenu("File", this);
+  menuBar()->addMenu(m_file);
 }
 

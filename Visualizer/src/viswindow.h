@@ -4,7 +4,7 @@
 #include <GL/glew.h>
 #include <QMainWindow>
 #include <QTime>
-#include <QMenuBar>
+#include <QAction>
 #include <QMenu>
 #include <QMouseEvent>
 
@@ -37,8 +37,18 @@ protected slots:
 
   void saveAlphaDataset();
 
+  void analyzeDataset();
+  void setNumSamples();
+  void setRootDataDir();
+
 private:
   VisWidget* m_renderWidget;
+
+  QMenu* m_file;
+  QAction* m_loadDataAction;
+  QAction* m_saveAlphaAction;
+
+  void createInterface();
 };
 
 #endif // VISWINDOW_H
