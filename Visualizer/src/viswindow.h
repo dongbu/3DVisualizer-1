@@ -6,6 +6,7 @@
 #include <QTime>
 #include <QMenuBar>
 #include <QMenu>
+#include <QMouseEvent>
 
 class VisWidget;
 
@@ -18,6 +19,18 @@ public:
 
 protected slots:
   void draw();
+
+protected:
+  virtual void mousePressEvent(QMouseEvent *);
+  virtual void mouseReleaseEvent(QMouseEvent *);
+  virtual void mouseMoveEvent(QMouseEvent *);
+
+  virtual void keyPressEvent(QKeyEvent *);
+  virtual void keyReleaseEvent(QKeyEvent *);
+
+  virtual void moveEvent(QMoveEvent *); // reduce sampling.
+  virtual void resizeEvent(QResizeEvent *); //stop animation.
+  virtual void closeEvent(QCloseEvent *); //free everything.
 
 private:
   VisWidget* m_renderWidget;

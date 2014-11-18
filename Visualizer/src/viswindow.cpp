@@ -29,6 +29,46 @@ void VisWindow::draw()
 {
 //  m_context->makeCurrent(this);
 //  RendererManager::GetInstance()->GetCurrent()->draw();
-//  m_context->swapBuffers(this);
+  //  m_context->swapBuffers(this);
+}
+
+void VisWindow::mousePressEvent(QMouseEvent*)
+{
+
+}
+
+void VisWindow::mouseReleaseEvent(QMouseEvent*)
+{
+
+}
+
+void VisWindow::mouseMoveEvent(QMouseEvent*)
+{
+
+}
+
+void VisWindow::keyPressEvent(QKeyEvent*)
+{
+
+}
+
+void VisWindow::keyReleaseEvent(QKeyEvent*)
+{
+
+}
+
+void VisWindow::moveEvent(QMoveEvent*)
+{
+
+}
+
+void VisWindow::resizeEvent(QResizeEvent*)
+{
+
+}
+
+void VisWindow::closeEvent(QCloseEvent*)
+{
+
 }
 
