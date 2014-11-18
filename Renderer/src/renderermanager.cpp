@@ -27,7 +27,7 @@ void RendererManager::setActive(std::string key)
 
   m_activeKey = key;
 
-  //TODO:SetActive here somehow.
+  //TODO: SetActive here somehow.
 }
 
 Renderer* RendererManager::get(std::string key)

@@ -10,7 +10,6 @@ using namespace knl;
 bool DatasetManager::init(std::string path)
 {
   m_dataPath = path;
-
   TiXmlDocument metafile(path + std::string("metafile.xml"));
   bool load_ok = metafile.LoadFile();
 
