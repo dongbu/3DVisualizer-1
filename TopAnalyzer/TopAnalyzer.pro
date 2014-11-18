@@ -2,6 +2,16 @@ TARGET = contourtree
 TEMPLATE = lib
 CONFIG += staticlib c++11
 
+INCLUDEPATH += ../Kernel/src
+INCLUDEPATH += ../TinyGL/src
+INCLUDEPATH += ../../libtourtre/include
+
+DEPENDPATH += ../Kernel/src
+DEPENDPATH += ../TinyGL/src
+DEPENDPATH += ../../libtourtre/include
+
+DESTDIR = $$OUT_PWD/../
+
 win32 {
     CONFIG(release, debug|release) {
       QMAKE_CXXFLAGS += /O2
@@ -15,6 +25,11 @@ win32 {
     INCLUDEPATH += ../../glm
     INCLUDEPATH += ../../tinyxml
     INCLUDEPATH += ../../tbb/include
+
+    DEPENDPATH += ../../glew/include
+    DEPENDPATH += ../../glm
+    DEPENDPATH += ../../tinyxml
+    DEPENDPATH += ../../tbb/include
 }
 
 unix {
@@ -28,12 +43,6 @@ unix {
       QMAKE_CXXFLAGS += -g3 -O0 -pg
     }
 }
-
-INCLUDEPATH += ../Kernel/src
-INCLUDEPATH += ../TinyGL/src
-INCLUDEPATH += ../../libtourtre/include
-
-DESTDIR = $$OUT_PWD/../
 
 HEADERS += \
     src/alphamanager.h \

@@ -3,6 +3,19 @@ TEMPLATE = app
 QT += core gui opengl widgets
 CONFIG += qt c++11 app_bundle
 
+INCLUDEPATH += ../Kernel/src
+INCLUDEPATH += ../TinyGL/src
+INCLUDEPATH += ../TopAnalyzer/src
+INCLUDEPATH += ../Renderer/src
+INCLUDEPATH += ../../libtourtre/include
+
+DESTDIR = $$OUT_PWD/../
+
+LIBS += -L$$OUT_PWD/.. -lviskernel
+LIBS += -L$$OUT_PWD/.. -ltinygl
+LIBS += -L$$OUT_PWD/.. -lcontourtree
+LIBS += -L$$OUT_PWD/.. -lrenderer
+
 win32 {
     INCLUDEPATH += $$PWD/../../glew/include
     INCLUDEPATH += $$PWD/../../glm
@@ -21,7 +34,6 @@ win32 {
         LIBS += -L$$PWD/../../libtourtre/Release -ltourtre
         LIBS += -L$$PWD/../../tinyxml/vc12/ReleasetinyxmlSTL -ltinyxmlSTL
     }
-
 }
 
 unix {
@@ -35,25 +47,8 @@ unix {
       QMAKE_CXXFLAGS += -g3 -O0 -pg
     }
 
-    LIBS += -lGLEW -lGL
-    LIBS += -ltbb -ltbbmalloc
-    LIBS += -ltourtre
-    LIBS += -ltinyxml
-    LIBS += -lm
+    LIBS += -ltinyxml -ltourtre -lGLEW -lGL -ltbb -ltbbmalloc -lm
 }
-
-INCLUDEPATH += ../Kernel/src
-INCLUDEPATH += ../TinyGL/src
-INCLUDEPATH += ../TopAnalyzer/src
-INCLUDEPATH += ../Renderer/src
-INCLUDEPATH += ../../libtourtre/include
-
-DESTDIR = $$OUT_PWD/../
-
-LIBS += -L$$OUT_PWD/.. -lviskernel
-LIBS += -L$$OUT_PWD/.. -ltinygl
-LIBS += -L$$OUT_PWD/.. -lcontourtree
-LIBS += -L$$OUT_PWD/.. -lrenderer
 
 #LIBS += -liup -liupgl -lXmu -lXt -lX11
 #LIBS += -lgtk-x11-2.0 -lgdk-x11-2.0 -lgdk_pixbuf-2.0 -lpango-1.0 -lgobject-2.0

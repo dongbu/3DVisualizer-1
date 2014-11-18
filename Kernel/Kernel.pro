@@ -2,6 +2,8 @@ TARGET = viskernel
 TEMPLATE = lib
 CONFIG += staticlib c++11
 
+DESTDIR = $$OUT_PWD/../
+
 win32 {
     CONFIG(release, debug|release) {
       QMAKE_CXXFLAGS += /O2
@@ -13,6 +15,9 @@ win32 {
 
     INCLUDEPATH += ../../glew/include
     INCLUDEPATH += ../../tinyxml
+
+    DEPENDPATH += ../../glew/include
+    DEPENDPATH += ../../tinyxml
 }
 unix {
     QMAKE_CXXFLAGS += -MMD
@@ -25,8 +30,6 @@ unix {
       QMAKE_CXXFLAGS += -g3 -O0 -pg
     }
 }
-
-DESTDIR = $$OUT_PWD/../
 
 HEADERS += \
     src/datahandler.h \

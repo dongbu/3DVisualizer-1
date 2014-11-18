@@ -2,6 +2,11 @@ TARGET = tinygl
 TEMPLATE = lib
 CONFIG += staticlib c++11
 
+INCLUDEPATH += ../Kernel/src
+DEPENDPATH += ../Kernel/src
+
+DESTDIR = $$OUT_PWD/../
+
 win32 {
     CONFIG(release, debug|release) {
       QMAKE_CXXFLAGS += /O2
@@ -27,10 +32,6 @@ unix {
       QMAKE_CXXFLAGS += -g3 -O0 -pg
     }
 }
-
-INCLUDEPATH += ../Kernel/src
-
-DESTDIR = $$OUT_PWD/../
 
 HEADERS += \
     src/axis.h \
