@@ -17,14 +17,11 @@ class VisWindow : public QMainWindow
 public:
   VisWindow(QWidget *parent = 0, int w = 640, int h = 480);
 
-protected slots:
-  void draw();
-
 protected:
-  virtual void mousePressEvent(QMouseEvent *);
-  virtual void mouseReleaseEvent(QMouseEvent *);
-  virtual void mouseMoveEvent(QMouseEvent *);
-  virtual void wheelEvent(QWheelEvent *);
+//  virtual void mousePressEvent(QMouseEvent *);
+//  virtual void mouseReleaseEvent(QMouseEvent *);
+//  virtual void mouseMoveEvent(QMouseEvent *);
+//  virtual void wheelEvent(QWheelEvent *);
 
   virtual void keyPressEvent(QKeyEvent *);
   virtual void keyReleaseEvent(QKeyEvent *);

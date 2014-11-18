@@ -20,19 +20,24 @@ win32 {
     INCLUDEPATH += $$PWD/../../glew/include
     INCLUDEPATH += $$PWD/../../glm
 
-    LIBS += -L$$PWD/../../tbb/lib/ia32/vc12 -ltbb
-    LIBS += -L$$PWD/../../tbb/lib/ia32/vc12 -ltbbmalloc
     LIBS += -lopengl32
 
-    debug {
-        LIBS += -L$$PWD/../../glew/lib -lglew32d
-        LIBS += -L$$PWD/../../libtourtre/Debug -ltourtre
-        LIBS += -L$$PWD/../../tinyxml/vc12/DebugtinyxmlSTL -ltinyxmlSTL
-    }
-    release {
+    CONFIG(release, debug|release) {
+        QMAKE_CXXFLAGS += /O2
         LIBS += -L$$PWD/../../glew/lib -lglew32
         LIBS += -L$$PWD/../../libtourtre/Release -ltourtre
         LIBS += -L$$PWD/../../tinyxml/vc12/ReleasetinyxmlSTL -ltinyxmlSTL
+        LIBS += -L$$PWD/../../tbb/lib/ia32/vc12 -ltbb
+        LIBS += -L$$PWD/../../tbb/lib/ia32/vc12 -ltbbmalloc
+    }
+
+    CONFIG(debug, debug|release) {
+        QMAKE_CXXFLAGS += /Od
+        LIBS += -L$$PWD/../../glew/lib -lglew32d
+        LIBS += -L$$PWD/../../libtourtre/Debug -ltourtre
+        LIBS += -L$$PWD/../../tinyxml/vc12/DebugtinyxmlSTL -ltinyxmlSTL
+        LIBS += -L$$PWD/../../tbb/lib/ia32/vc12 -ltbb_debug
+        LIBS += -L$$PWD/../../tbb/lib/ia32/vc12 -ltbbmalloc_debug
     }
 }
 

@@ -15,7 +15,7 @@ GLSLRenderer::GLSLRenderer(size_t w, size_t h) :
   Updating(false);
 
 #ifdef WIN32
-  m_arcball = new Arcball(GetWidth(), GetHeight(), 0.5);
+  m_arcball = new Arcball(GetWidth(), GetHeight(), 0.8);
 #else
   m_arcball = new Arcball(GetWidth(), GetHeight(), 0.05);
 #endif

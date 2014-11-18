@@ -19,7 +19,6 @@ public:
     return m_initCalled;
   }
 
-public slots:
   size_t GetNumSamples()
   {
     return m_numSamples;
@@ -28,6 +27,11 @@ public slots:
   void SetNumSamples(size_t num)
   {
     m_numSamples = num;
+  }
+
+  float GetFlowRate()
+  {
+    return m_flowRate;
   }
 
 protected slots:
