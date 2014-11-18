@@ -30,6 +30,13 @@ protected:
   virtual void resizeEvent(QResizeEvent *); //stop animation.
   virtual void closeEvent(QCloseEvent *); //free everything.
 
+protected slots:
+  void loadDataset();
+  void loadAlphaDataset();
+  void loadColorTFunction();
+
+  void saveAlphaDataset();
+
 private:
   VisWidget* m_renderWidget;
 };
