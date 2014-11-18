@@ -75,15 +75,15 @@ void VisWidget::initializeGL()
 void VisWidget::paintGL()
 {
   if(IsInitialized()) {
-    RendererManager::GetInstance()->GetCurrent()->update();
-    RendererManager::GetInstance()->GetCurrent()->draw();
+    RendererManager::instance()->getCurrent()->update();
+    RendererManager::instance()->getCurrent()->draw();
   }
 }
 
 void VisWidget::resizeEvent(QResizeEvent*)
 {
   if(IsInitialized())
-    RendererManager::GetInstance()->GetCurrent()->resize(width(), height());
+    RendererManager::instance()->getCurrent()->resize(width(), height());
 }
 
 void VisWidget::closeEvent(QCloseEvent*)
@@ -149,27 +149,27 @@ void VisWidget::mousePressEvent(QMouseEvent* e)
 {
   if(e->button() == Qt::LeftButton) {
     SetNumSamples(128);
-    Shader* tmp = TinyGL::GetInstance()->getShader(SPASS_KEY);
+    Shader* tmp = TinyGL::instance()->getShader(SPASS_KEY);
     tmp->bind();
     tmp->setUniform1f("u_fNumSamples", static_cast<float>(GetNumSamples()));
     Shader::Unbind();
-    RendererManager::GetInstance()->GetCurrent()->mousebutton(e->button(), 1, e->x(), e->y());
+    RendererManager::instance()->getCurrent()->mousebutton(e->button(), 1, e->x(), e->y());
   }
 }
 
 void VisWidget::mouseReleaseEvent(QMouseEvent* e)
 {
   SetNumSamples(512);
-  Shader* tmp = TinyGL::GetInstance()->getShader(SPASS_KEY);
+  Shader* tmp = TinyGL::instance()->getShader(SPASS_KEY);
   tmp->bind();
   tmp->setUniform1f("u_fNumSamples", static_cast<float>(GetNumSamples()));
   Shader::Unbind();
-  RendererManager::GetInstance()->GetCurrent()->mousebutton(e->button(), 0, e->x(), e->y());
+  RendererManager::instance()->getCurrent()->mousebutton(e->button(), 0, e->x(), e->y());
 }
 
 void VisWidget::mouseMoveEvent(QMouseEvent* e)
 {
-  RendererManager::GetInstance()->GetCurrent()->mousemove(e->x(), e->y());
+  RendererManager::instance()->getCurrent()->mousemove(e->x(), e->y());
 }
 
 void VisWidget::wheelEvent(QWheelEvent*)
@@ -189,16 +189,16 @@ void VisWidget::InitRenderer()
 {
   GLSLRenderer* rend = new GLSLRenderer(width(), height());
   rend->init();
-  rend->Updating(true);
+  rend->updating(true);
 
-  RendererManager::GetInstance()->Add("glslrenderer", rend);
-  RendererManager::GetInstance()->SetActive("glslrenderer");
+  RendererManager::instance()->add("glslrenderer", rend);
+  RendererManager::instance()->setActive("glslrenderer");
 }
 
 void VisWidget::InitShaders()
 {
   float screen_sz[2] = {static_cast<float>(width()), static_cast<float>(height())};
-  glm::mat4 modelMatrix = TinyGL::GetInstance()->getMesh("proxy_cube")->m_modelMatrix;
+  glm::mat4 modelMatrix = TinyGL::instance()->getMesh("proxy_cube")->m_modelMatrix;
 
   Shader* fpass = new Shader(std::string("shaders/FPass.vs"),
                              std::string("shaders/FPass.fs"));
@@ -237,8 +237,8 @@ void VisWidget::InitShaders()
 
   Shader::Unbind();
 
-  TinyGL::GetInstance()->addResource(SHADER, FPASS_KEY, fpass);
-  TinyGL::GetInstance()->addResource(SHADER, SPASS_KEY, spass);
+  TinyGL::instance()->addResource(SHADER, FPASS_KEY, fpass);
+  TinyGL::instance()->addResource(SHADER, SPASS_KEY, spass);
 }
 
 void VisWidget::InitFBO()
@@ -273,7 +273,7 @@ void VisWidget::InitFBO()
   glDrawBuffers(1, draw_buff);
 
   FramebufferObject::unbind();
-  TinyGL::GetInstance()->addResource(FRAMEBUFFER, FBO_KEY, fbo);
+  TinyGL::instance()->addResource(FRAMEBUFFER, FBO_KEY, fbo);
 
 }
 
@@ -283,7 +283,7 @@ void VisWidget::InitMesh()
   cube->m_modelMatrix = glm::mat4(1);
   cube->setDrawCb(cb_drawcube_idx);
 
-  TinyGL::GetInstance()->addResource(MESH, "proxy_cube", cube);
+  TinyGL::instance()->addResource(MESH, "proxy_cube", cube);
 }
 
 void VisWidget::InitResources()
@@ -296,22 +296,22 @@ void VisWidget::InitResources()
   m_projMatrix = glm::ortho(-0.8f, 0.8f, -0.8f, 0.8f, 1.f, 5.f);
 
 #ifdef WIN32
-  DatasetManager::GetInstance()->Init("C:/Users/schardong/Pictures/datasets/");
+  DatasetManager::instance()->init("C:/Users/schardong/Pictures/datasets/");
 #else
   DatasetManager::GetInstance()->Init("/home/guilherme/Pictures/datasets/");
 #endif
-  DatasetManager::GetInstance()->SetActive("nucleon", GL_TEXTURE1);
+  DatasetManager::instance()->setActive("nucleon", GL_TEXTURE1);
 
 #ifdef WIN32
-  TFManager::GetInstance()->Init("C:/Users/schardong/Pictures/datasets/transfer-functions/");
+  TFManager::instance()->init("C:/Users/schardong/Pictures/datasets/transfer-functions/");
 #else
   TFManager::GetInstance()->Init("/home/guilherme/Pictures/datasets/transfer-functions/");
 #endif
-  TFManager::GetInstance()->SetActive("tff1", GL_TEXTURE3);
+  TFManager::instance()->setActive("tff1", GL_TEXTURE3);
 
-  TopAnalyzer::GetInstance()->AnalyzeCurrDataset(m_flowRate,
-    DatasetManager::GetInstance()->GetCurrentKey());
+  TopAnalyzer::instance()->AnalyzeCurrDataset(m_flowRate,
+    DatasetManager::instance()->getCurrentKey());
 
-  AlphaManager::GetInstance()->SetActive(DatasetManager::GetInstance()->GetCurrentKey(),
+  AlphaManager::instance()->SetActive(DatasetManager::instance()->getCurrentKey(),
     GL_TEXTURE2);
 }

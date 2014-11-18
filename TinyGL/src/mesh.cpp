@@ -6,24 +6,29 @@
 #define GLM_FORCE_RADIANS
 #include <glm/gtx/transform.hpp>
 
-Mesh* Mesh::CreateMesh(MeshType t)
-{
-  Mesh* m = new Mesh();
-  switch(t) {
-  case AXIS:
-    break;
-  case QUAD:
-    break;
-  case CUBE:
-    break;
-  case SPHERE:
-    break;
-  case GRID:
-  default:
-    break;
-  }
-  return m;
-}
+//static Mesh* createCube(vertex_type vt);
+
+//Mesh* Mesh::CreateMesh(mesh_type mt, vertex_type vt)
+//{
+//  switch(mt) {
+//  case AXIS:
+//    return createCube(vt);
+//    break;
+//  case QUAD:
+//    return createCube(vt);
+//    break;
+//  case CUBE:
+//    return createCube(vt);
+//    break;
+//  case SPHERE:
+//    return createCube(vt);
+//    break;
+//  case GRID:
+//  default:
+//    return createCube(vt);
+//    break;
+//  }
+//}
 
 Mesh::Mesh()
 {
@@ -50,3 +55,13 @@ void Mesh::draw()
   m_drawCb(m_numPoints);
   glBindVertexArray(0);
 }
+
+//Mesh* createCube(vertex_type vt)
+//{
+//  switch(vt) {
+//  default:
+//    break;
+//  }
+
+//  return NULL;
+//}

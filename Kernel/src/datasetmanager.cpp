@@ -7,7 +7,7 @@
 
 using namespace knl;
 
-bool DatasetManager::Init(std::string path)
+bool DatasetManager::init(std::string path)
 {
   m_dataPath = path;
 
@@ -33,16 +33,16 @@ bool DatasetManager::Init(std::string path)
     std::istringstream(data_child->FirstChild("slices")->FirstChild()->Value()) >> d->slices;
     std::istringstream(data_child->FirstChild("bytes_elem")->FirstChild()->Value()) >> d->bytes_elem;
 
-    Add(data_child->FirstChild("name")->FirstChild()->Value(), d);
+    add(data_child->FirstChild("name")->FirstChild()->Value(), d);
   }
 
   return true;
 }
 
-bool DatasetManager::Add(std::string key, Dataset* data)
+bool DatasetManager::add(std::string key, Dataset* data)
 {
   if(key.empty() || data == NULL) {
-    Logger::GetInstance()->error("Dataset::Add invalid parameters.");
+    Logger::instance()->error("Dataset::Add invalid parameters.");
     return false;
   }
 
@@ -50,7 +50,7 @@ bool DatasetManager::Add(std::string key, Dataset* data)
   return true;
 }
 
-void DatasetManager::SetActive(std::string key, GLenum tex_unit)
+void DatasetManager::setActive(std::string key, GLenum tex_unit)
 {
   if(m_activeKey == key) return;
 
@@ -59,14 +59,14 @@ void DatasetManager::SetActive(std::string key, GLenum tex_unit)
   if(it == m_datasetMap.end()) return;
 
   Dataset* data = it->second;
-  if(!data->IsLoaded()) {
-    if(!data->Load(m_dataPath + it->first + ".raw")) {
-      Logger::GetInstance()->error("Failed to load dataset " + key);
+  if(!data->isLoaded()) {
+    if(!data->load(m_dataPath + it->first + ".raw")) {
+      Logger::instance()->error("Failed to load dataset " + key);
     }
   }
-  if(!data->IsUploaded()) {
-    if(!data->UploadToGPU()) {
-      Logger::GetInstance()->error("Failed to upload dataset " + key);
+  if(!data->isUploaded()) {
+    if(!data->upload()) {
+      Logger::instance()->error("Failed to upload dataset " + key);
     }
   }
 
@@ -74,19 +74,19 @@ void DatasetManager::SetActive(std::string key, GLenum tex_unit)
   m_activeKey = key;
 }
 
-Dataset* DatasetManager::Get(std::string key)
+Dataset* DatasetManager::get(std::string key)
 {
   assert(!key.empty());
   assert(m_datasetMap.find(key) != m_datasetMap.end());
   return m_datasetMap[key];
 }
 
-Dataset* DatasetManager::GetCurrent()
+Dataset* DatasetManager::getCurrent()
 {
-  return Get(m_activeKey);
+  return get(m_activeKey);
 }
 
-void DatasetManager::FreeResources()
+void DatasetManager::freeResources()
 {
   for(auto it = m_datasetMap.begin(); it != m_datasetMap.end(); it++) {
     if(it->second->tex_id != 0)

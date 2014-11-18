@@ -17,7 +17,7 @@ extern "C"
 static knl::Dataset* CreateAlphaDataset(knl::Dataset& dataset, ctBranch** branch_map)
 {
   if(branch_map == NULL) {
-    Logger::GetInstance()->error("knl::Dataset* CreateAlphaDataset - branch_map is NULL. Returning now.");
+    Logger::instance()->error("knl::Dataset* CreateAlphaDataset - branch_map is NULL. Returning now.");
     return NULL;
   }
 
@@ -34,20 +34,20 @@ static knl::Dataset* CreateAlphaDataset(knl::Dataset& dataset, ctBranch** branch
   for(size_t i = 0; i < num_elements; i++) {
     FeatureSet* branch_data = (FeatureSet*) branch_map[i]->data;
 
-    size_t data_val = dataset.Get(i);
+    size_t data_val = dataset.get(i);
 
     *alpha_ptr = (GLfloat) branch_data->alpha[data_val];
     alpha_ptr++;
   }
 
-  alpha_map->Loaded(true);
+  alpha_map->loaded(true);
   return alpha_map;
 }
 
 DEPRECATED static knl::Dataset* CreateVTBMap(ctBranch** vtb_map, size_t dim[], size_t last_label)
 {
   if(vtb_map == NULL) {
-    Logger::GetInstance()->error("knl::Dataset* CreateVTBMap -> invalid vertex-branch map.");
+    Logger::instance()->error("knl::Dataset* CreateVTBMap -> invalid vertex-branch map.");
     return NULL;
   }
 
@@ -74,7 +74,7 @@ DEPRECATED static knl::Dataset* CreateVTBMap(ctBranch** vtb_map, size_t dim[], s
 DEPRECATED static TFunction* CreateOpTF(ctBranch* root_branch, size_t rows)
 {
   if(root_branch == NULL || rows == 0) {
-    Logger::GetInstance()->error("TFunction* CreateOpTF -> invalid parameter(s).");
+    Logger::instance()->error("TFunction* CreateOpTF -> invalid parameter(s).");
     return NULL;
   }
 
@@ -82,7 +82,7 @@ DEPRECATED static TFunction* CreateOpTF(ctBranch* root_branch, size_t rows)
   tf->rows = rows;
   tf->num_channels = 1;
   tf->bytes_elem = sizeof(GLubyte);
-  tf->data = calloc(tf->GetWidth() * rows * tf->num_channels, sizeof(GLubyte));
+  tf->data = calloc(tf->width() * rows * tf->num_channels, sizeof(GLubyte));
 
   std::queue<ctBranch*> b_queue;
   b_queue.push(root_branch);
@@ -143,12 +143,12 @@ static void BranchFree(ctBranch* b, void*)
 
 void TopAnalyzer::Init()
 {
-  Logger::GetInstance()->warn("TopAnalyzer::Init() - Not implemented.");
+  Logger::instance()->warn("TopAnalyzer::Init() - Not implemented.");
 }
 
 void TopAnalyzer::AnalyzeCurrDataset(double flow_rate, std::string key)
 {
-  knl::Dataset* data = DatasetManager::GetInstance()->GetCurrent();
+  knl::Dataset* data = DatasetManager::instance()->getCurrent();
   AnalyzeDataset(data, flow_rate, key);
 }
 
@@ -197,7 +197,7 @@ void TopAnalyzer::AnalyzeDataset(knl::Dataset* data, double flow_rate, std::stri
   calc_vertices_branch(branch_map, topd.size);
 
   a = tbb::tick_count::now();
-  topSimplifyTree(ctx, root_branch, branch_map, topd, &std_avg_importance, avg_importance / 10);
+  topSimplifyTree(ctx, root_branch, branch_map, topd, &std_avg_importance, avg_importance);
   //  topSimplifyTreeZhou(ctx, root_branch, branch_map, topd, &std_avg_importance, avg_importance / 1000);
   b = tbb::tick_count::now();
   std::cout << "\tSimplification in " << (b - a).seconds() << " seconds" << std::endl;
@@ -222,7 +222,7 @@ void TopAnalyzer::AnalyzeDataset(knl::Dataset* data, double flow_rate, std::stri
   b = tbb::tick_count::now();
   std::cout << "\tAlpha map in " << (b - a).seconds() << " seconds" << std::endl;
 
-  AlphaManager::GetInstance()->Add(key, alpha_map);
+  AlphaManager::instance()->Add(key, alpha_map);
 
   delete alpha_map;
 

@@ -11,11 +11,11 @@ GLSLRenderer::GLSLRenderer(size_t w, size_t h) :
   Renderer(w, h)
 {
   m_type = RendererType::GLSL;
-  Initialized(false);
-  Updating(false);
+  initialized(false);
+  updating(false);
 
 #ifdef WIN32
-  m_arcball = new Arcball(GetWidth(), GetHeight(), 0.8);
+  m_arcball = new Arcball(width(), height(), 0.8);
 #else
   m_arcball = new Arcball(GetWidth(), GetHeight(), 0.05);
 #endif
@@ -23,8 +23,8 @@ GLSLRenderer::GLSLRenderer(size_t w, size_t h) :
 
 GLSLRenderer::~GLSLRenderer()
 {
-  Updating(false);
-  Initialized(false);
+  updating(false);
+  initialized(false);
 
   delete m_arcball;
   m_arcball = nullptr;
@@ -35,13 +35,13 @@ int GLSLRenderer::init()
   m_eye = glm::vec3(0, 0, 3.5);
   m_viewMatrix = glm::lookAt(m_eye, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
   m_projMatrix = glm::ortho(-0.8f, 0.8f, -0.8f, 0.8f, 1.f, 5.f);
-  Initialized(true);
+  initialized(true);
   return 0;
 }
 
 void GLSLRenderer::update()
 {
-  if(!IsUpdating() || !IsInitialized())
+  if(!isUpdating() || !isInitialized())
     return;
 }
 
@@ -66,10 +66,10 @@ void GLSLRenderer::mousewheel(float, int, int)
 
 void GLSLRenderer::draw()
 {
-  if(!IsUpdating() || !IsInitialized())
+  if(!isUpdating() || !isInitialized())
     return;
 
-  TinyGL* gl_ptr = TinyGL::GetInstance();
+  TinyGL* gl_ptr = TinyGL::instance();
   Mesh* m = gl_ptr->getMesh("proxy_cube");
   Shader* fpass = gl_ptr->getShader(FPASS_KEY);
   Shader* spass = gl_ptr->getShader(SPASS_KEY);
@@ -83,21 +83,21 @@ void GLSLRenderer::draw()
 
   //First pass
   fbo->bind(GL_FRAMEBUFFER);
-  glViewport(0, 0, GetWidth(), GetHeight());
+  glViewport(0, 0, width(), height());
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glCullFace(GL_FRONT);
   m->draw();
 
   FramebufferObject::unbind();
-  glViewport(0, 0, GetWidth(), GetHeight());
+  glViewport(0, 0, width(), height());
 
   //Second pass
   spass->bind();
   spass->setUniformMatrix("u_mView", rot);
 
-  DatasetManager::GetInstance()->GetCurrent()->bind(GL_TEXTURE1);
-  AlphaManager::GetInstance()->GetCurrent()->bind(GL_TEXTURE2);
-  TFManager::GetInstance()->GetCurrent()->bind(GL_TEXTURE3);
+  DatasetManager::instance()->getCurrent()->bind(GL_TEXTURE1);
+  AlphaManager::instance()->GetCurrent()->bind(GL_TEXTURE2);
+  TFManager::instance()->getCurrent()->bind(GL_TEXTURE3);
 
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, fbo->getAttachmentId(GL_COLOR_ATTACHMENT0));

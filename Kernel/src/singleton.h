@@ -7,7 +7,7 @@
 template <class T>
 class Singleton {
 public:
-	inline static T* GetInstance()
+  inline static T* instance()
 	{
 		if (!m_instance)
 			m_instance = new T;
@@ -15,7 +15,7 @@ public:
 		return m_instance;
 	}
 
-	inline static void DestroyInstance()
+  inline static void destroy()
 	{
 		if (!m_instance)
 			return;

@@ -5,7 +5,7 @@
 
 #include <tinyxml.h>
 
-bool TFManager::Init(std::string path)
+bool TFManager::init(std::string path)
 {
   m_tfPath = path;
 
@@ -39,16 +39,16 @@ bool TFManager::Init(std::string path)
     std::istringstream(data_child->FirstChild("rows")->FirstChild()->Value()) >> tf->rows;
     std::istringstream(data_child->FirstChild("bytes_elem")->FirstChild()->Value()) >> tf->bytes_elem;
 
-    Add(data_child->FirstChild("name")->FirstChild()->Value(), tf);
+    add(data_child->FirstChild("name")->FirstChild()->Value(), tf);
   }
 
   return true;
 }
 
-bool TFManager::Add(std::string key, TFunction* tf)
+bool TFManager::add(std::string key, TFunction* tf)
 {
   if(key.empty() || tf == NULL) {
-    Logger::GetInstance()->error("TFManager::Add invalid parameters.");
+    Logger::instance()->error("TFManager::Add invalid parameters.");
     return false;
   }
 
@@ -56,7 +56,7 @@ bool TFManager::Add(std::string key, TFunction* tf)
   return true;
 }
 
-void TFManager::SetActive(std::string key, GLenum tex_unit)
+void TFManager::setActive(std::string key, GLenum tex_unit)
 {
   if(key.empty() || m_activeKey == key) return;
 
@@ -65,14 +65,14 @@ void TFManager::SetActive(std::string key, GLenum tex_unit)
   if(it == m_funcMap.end()) return;
 
   TFunction* tf = it->second;
-  if(!tf->IsLoaded()) {
-    if(!tf->Load(m_tfPath + it->first + ".raw")) {
-      Logger::GetInstance()->error("Failed to load transfer function " + key);
+  if(!tf->isLoaded()) {
+    if(!tf->load(m_tfPath + it->first + ".raw")) {
+      Logger::instance()->error("Failed to load transfer function " + key);
     }
   }
-  if(!tf->IsUploaded()) {
-    if(!tf->UploadToGPU()) {
-      Logger::GetInstance()->error("Failed to upload transfer function " + key);
+  if(!tf->isUploaded()) {
+    if(!tf->upload()) {
+      Logger::instance()->error("Failed to upload transfer function " + key);
     }
   }
 
@@ -80,19 +80,19 @@ void TFManager::SetActive(std::string key, GLenum tex_unit)
   m_activeKey = key;
 }
 
-TFunction* TFManager::Get(std::string key)
+TFunction* TFManager::get(std::string key)
 {
   assert(!key.empty());
   assert(m_funcMap.find(key) != m_funcMap.end());
   return m_funcMap[key];
 }
 
-TFunction* TFManager::GetCurrent()
+TFunction* TFManager::getCurrent()
 {
-  return Get(m_activeKey);
+  return get(m_activeKey);
 }
 
-void TFManager::FreeResources()
+void TFManager::freeResources()
 {
   for(auto it = m_funcMap.begin(); it != m_funcMap.end(); it++) {
     if(it->second->tex_id != 0)

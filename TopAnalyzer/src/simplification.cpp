@@ -18,7 +18,7 @@ static void merge_branches(ctBranch* a, ctBranch* b, top::Dataset* data)
 
   a_d->v += b_d->v;
   a_d->hv += b_d->hv;
-  a_d->p = std::abs((long) (data->data->Get(a->extremum) - data->data->Get(a->saddle)));
+  a_d->p = std::abs((long) (data->data->get(a->extremum) - data->data->get(a->saddle)));
 
   size_t sz = a_d->vertices.size();
   a_d->vertices.resize(sz + b_d->vertices.size());
@@ -159,8 +159,8 @@ public:
     for(int i = range.begin(); i != range.end(); i++) {
       FeatureSet* bmap_data = (FeatureSet*) branch_map[i]->data;
       if(bmap_data->label == rem_data->label) {
-        size_t saddle = top_data.data->Get(to_remove->saddle);
-        top_data.data->Set(i, saddle);
+        size_t saddle = top_data.data->get(to_remove->saddle);
+        top_data.data->set(i, saddle);
       }
     }
   }

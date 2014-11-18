@@ -10,12 +10,12 @@ class TFManager : public Singleton<TFManager>
 {
   friend class Singleton<TFManager>;
 public:
-  bool Init(std::string path);
-  bool Add(std::string key, TFunction* tf);
-  void SetActive(std::string key, GLenum tex_unit = GL_TEXTURE0);
-  TFunction* Get(std::string key);
-  TFunction* GetCurrent();
-  void FreeResources();
+  bool init(std::string path);
+  bool add(std::string key, TFunction* tf);
+  void setActive(std::string key, GLenum tex_unit = GL_TEXTURE0);
+  TFunction* get(std::string key);
+  TFunction* getCurrent();
+  void freeResources();
 
 private:
   std::map<std::string, TFunction*> m_funcMap;

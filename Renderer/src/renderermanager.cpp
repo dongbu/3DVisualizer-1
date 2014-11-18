@@ -1,15 +1,15 @@
 #include "renderermanager.h"
 #include "logger.h"
 
-bool RendererManager::Init()
+bool RendererManager::init()
 {
   return false;
 }
 
-bool RendererManager::Add(std::string key, Renderer* r)
+bool RendererManager::add(std::string key, Renderer* r)
 {
   if(key.empty() || r == NULL) {
-    Logger::GetInstance()->error("RendererManager::Add invalid parameters");
+    Logger::instance()->error("RendererManager::Add invalid parameters");
     return false;
   }
 
@@ -17,7 +17,7 @@ bool RendererManager::Add(std::string key, Renderer* r)
   return false;
 }
 
-void RendererManager::SetActive(std::string key)
+void RendererManager::setActive(std::string key)
 {
   if(key.empty() || m_activeKey == key) return;
 
@@ -30,19 +30,19 @@ void RendererManager::SetActive(std::string key)
   //TODO:SetActive here somehow.
 }
 
-Renderer* RendererManager::Get(std::string key)
+Renderer* RendererManager::get(std::string key)
 {
   assert(!key.empty());
   assert(m_rendererMap.find(key) != m_rendererMap.end());
   return m_rendererMap[key];
 }
 
-Renderer* RendererManager::GetCurrent()
+Renderer* RendererManager::getCurrent()
 {
-  return Get(m_activeKey);
+  return get(m_activeKey);
 }
 
-void RendererManager::FreeResources()
+void RendererManager::freeResources()
 {
   for(auto it = m_rendererMap.begin(); it != m_rendererMap.end(); it++) {
     delete it->second;

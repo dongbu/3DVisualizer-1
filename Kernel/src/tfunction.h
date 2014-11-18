@@ -17,18 +17,18 @@ public:
   TFunction(TFunction& rhs);
   ~TFunction();
 
-  bool IsLoaded() { return is_loaded; }
-  bool IsUploaded() { return is_uploaded; }
+  bool isLoaded() { return is_loaded; }
+  bool isUploaded() { return is_uploaded; }
 
-  void Loaded(bool l) { is_loaded = l; }
-  void Uploaded(bool u) { is_uploaded = u; }
+  void loaded(bool l) { is_loaded = l; }
+  void uploaded(bool u) { is_uploaded = u; }
 
-  bool Load(std::string path);
-  bool UploadToGPU();
+  bool load(std::string path);
+  bool upload();
 
-  bool Is1D() { return rows == 1; }
+  bool is1D() { return rows == 1; }
 
-  size_t GetWidth()
+  size_t width()
   {
     return bytes_elem == sizeof(GLubyte) ? 256 : 4096;
   }

@@ -13,14 +13,14 @@ class Renderer
 public:
   Renderer(int w = 640, int h = 480)
   {
-    SetWidth(w);
-    SetHeight(h);
+    setWidth(w);
+    setHeight(h);
   }
 
   virtual ~Renderer()
   {
-    Initialized(false);
-    Updating(false);
+    initialized(false);
+    updating(false);
   }
 
   /**
@@ -36,37 +36,37 @@ public:
   virtual void mousewheel(float dist, int x, int y) = 0;
   virtual void draw() = 0;
 
-  bool IsInitialized()
+  bool isInitialized()
   {
     return m_initialized;
   }
 
-  bool IsUpdating()
+  bool isUpdating()
   {
     return m_updating;
   }
 
-  int GetWidth()
+  int width()
   {
     return m_width;
   }
 
-  int GetHeight()
+  int height()
   {
     return m_height;
   }
 
-  void SetWidth(int w)
+  void setWidth(int w)
   {
     m_width = w;
   }
 
-  void SetHeight(int h)
+  void setHeight(int h)
   {
     m_height = h;
   }
 
-  void Updating(bool u)
+  void updating(bool u)
   {
     m_updating = u;
   }
@@ -76,7 +76,7 @@ protected:
   int m_height;
   RendererType m_type;
 
-  void Initialized(bool i)
+  void initialized(bool i)
   {
     m_initialized = i;
   }

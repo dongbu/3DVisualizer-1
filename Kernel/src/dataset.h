@@ -22,20 +22,20 @@ namespace knl
     Dataset(Dataset& rhs);
     virtual ~Dataset();
 
-    bool IsLoaded() { return is_loaded; }
-    bool IsUploaded() { return is_uploaded; }
+    bool isLoaded() { return is_loaded; }
+    bool isUploaded() { return is_uploaded; }
 
-    void Loaded(bool l) { is_loaded = l; }
-    void Uploaded(bool u) { is_uploaded = u; }
+    void loaded(bool l) { is_loaded = l; }
+    void uploaded(bool u) { is_uploaded = u; }
 
-    virtual bool Load(std::string path);
-    virtual bool UploadToGPU();
+    virtual bool load(std::string path);
+    virtual bool upload();
 
     virtual void bind(GLenum tex_unit = GL_TEXTURE0);
 
-    static Dataset* CreatePyroclasticVolume(size_t sz, float r);
+    static Dataset* createPyroclasticVolume(size_t sz, float r);
 
-    virtual size_t Get(size_t idx)
+    virtual size_t get(size_t idx)
     {
       if(bytes_elem == sizeof(GLushort)) {
         unsigned short* ptr = (unsigned short*) data + idx;
@@ -49,7 +49,7 @@ namespace knl
       }
     }
 
-    virtual void Set(size_t idx, size_t val)
+    virtual void set(size_t idx, size_t val)
     {
       if(bytes_elem == sizeof(GLushort)) {
         GLushort* ptr = (GLushort*) data + idx;
@@ -65,19 +65,19 @@ namespace knl
 
     size_t operator()(int idx)
     {
-      return Get(idx);
+      return get(idx);
     }
 
     size_t operator()(int i, int j, int k)
     {
-      return Get(ToLinear(i, j, k));
+      return get(linearAddr(i, j, k));
     }
 
   private:
     bool is_uploaded;
     bool is_loaded;
 
-    inline size_t ToLinear(int i, int j, int k)
+    inline size_t linearAddr(int i, int j, int k)
     {
       return (k * height + j) * width + i;
     }

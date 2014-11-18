@@ -13,7 +13,7 @@
 namespace knl
 {
 
-  Dataset* Dataset::CreatePyroclasticVolume(size_t sz, float r)
+  Dataset* Dataset::createPyroclasticVolume(size_t sz, float r)
   {
     Dataset* dataset = new Dataset;
     dataset->width = dataset->height = dataset->slices = sz;
@@ -41,8 +41,8 @@ namespace knl
       }
     }
 
-    dataset->Loaded(true);
-    dataset->Uploaded(false);
+    dataset->loaded(true);
+    dataset->uploaded(false);
 
     return dataset;
   }
@@ -62,8 +62,8 @@ namespace knl
     slices = rhs.slices;
     bytes_elem = rhs.bytes_elem;
     tex_id = rhs.tex_id;
-    is_loaded = rhs.IsLoaded();
-    is_uploaded = rhs.IsUploaded();
+    is_loaded = rhs.isLoaded();
+    is_uploaded = rhs.isUploaded();
 
     if(rhs.data == NULL) {
       data = NULL;
@@ -81,8 +81,8 @@ namespace knl
       data = NULL;
     }
     width = height = slices = bytes_elem = 0;
-    Loaded(false);
-    Uploaded(false);
+    loaded(false);
+    uploaded(false);
 
     /*if(!tex_id) {
       glDeleteTextures(1, &tex_id);
@@ -90,34 +90,34 @@ namespace knl
     }*/
   }
 
-  bool Dataset::Load(std::string path)
+  bool Dataset::load(std::string path)
   {
     assert(!path.empty());
-    if(IsLoaded()) {
+    if(isLoaded()) {
       memset(data, 0, width * height * slices * bytes_elem);
       free(data);
       data = NULL;
-      Loaded(false);
+      loaded(false);
     }
-    if(IsUploaded()) {
-      Uploaded(false);
+    if(isUploaded()) {
+      uploaded(false);
     }
 
     data = calloc(width * height * slices, bytes_elem);
-    Loaded(data::LoadBinary(path, width * height * slices, bytes_elem, data));
-    return IsLoaded();
+    loaded(data::LoadBinary(path, width * height * slices, bytes_elem, data));
+    return isLoaded();
   }
 
-  bool Dataset::UploadToGPU()
+  bool Dataset::upload()
   {
     assert(width != 0 && height != 0 && slices != 0 && bytes_elem != 0 && data != NULL);
     if(tex_id == 0)
       tex_id = knl::data::transfer::Alloc3DTex(width, height, slices, bytes_elem);
 
     assert(tex_id != 0);
-    Uploaded(knl::data::transfer::Upload3DData(width, height, slices, bytes_elem, data, tex_id));
+    uploaded(knl::data::transfer::Upload3DData(width, height, slices, bytes_elem, data, tex_id));
 
-    return IsUploaded();
+    return isUploaded();
   }
 
   void Dataset::bind(GLenum tex_unit)

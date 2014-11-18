@@ -15,7 +15,7 @@
 
 int main(int argc, char** argv)
 {
-  Logger::GetInstance()->setLogStream(&std::cout);
+  Logger::instance()->setLogStream(&std::cout);
 
   QApplication app(argc, argv);
   VisWindow win(0, WINDOW_W, WINDOW_H);

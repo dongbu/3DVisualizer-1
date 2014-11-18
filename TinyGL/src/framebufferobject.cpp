@@ -34,25 +34,25 @@ void FramebufferObject::checkStatus()
   GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
   switch (fboStatus) {
   case GL_FRAMEBUFFER_UNDEFINED:
-    Logger::GetInstance()->error("FBO undefined");
+    Logger::instance()->error("FBO undefined");
     break;
   case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-    Logger::GetInstance()->error("FBO incomplete attachment");
+    Logger::instance()->error("FBO incomplete attachment");
     break;
   case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-    Logger::GetInstance()->error("FBO missing attachment");
+    Logger::instance()->error("FBO missing attachment");
     break;
   case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
-    Logger::GetInstance()->error("FBO incomplete draw buffer");
+    Logger::instance()->error("FBO incomplete draw buffer");
     break;
   case GL_FRAMEBUFFER_UNSUPPORTED:
-    Logger::GetInstance()->error("FBO unsupported");
+    Logger::instance()->error("FBO unsupported");
     break;
   case GL_FRAMEBUFFER_COMPLETE:
-    Logger::GetInstance()->log("FBO created successfully");
+    Logger::instance()->log("FBO created successfully");
     break;
   default:
-    Logger::GetInstance()->error("FBO undefined problem");
+    Logger::instance()->error("FBO undefined problem");
   }
   
   glBindFramebuffer(GL_FRAMEBUFFER, curr_fbo);

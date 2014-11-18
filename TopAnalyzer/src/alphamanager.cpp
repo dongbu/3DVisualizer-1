@@ -38,7 +38,7 @@ bool AlphaManager::Init(std::string path)
 bool AlphaManager::Add(std::string key, Dataset* alpha_map)
 {
   if(key.empty() || alpha_map == NULL) {
-    Logger::GetInstance()->error("AlphaManager::Add - invalid parameters. Returning now.");
+    Logger::instance()->error("AlphaManager::Add - invalid parameters. Returning now.");
     return false;
   }
 
@@ -55,14 +55,14 @@ void AlphaManager::SetActive(std::string key, GLenum tex_unit)
   if(it == m_alphaMap.end()) return;
 
   Dataset* data = it->second;
-  if(!data->IsLoaded()) {
-    if(!data->Load(m_alphaPath + it->first + ".raw")) {
-      Logger::GetInstance()->error("Failed to load alpha map " + key);
+  if(!data->isLoaded()) {
+    if(!data->load(m_alphaPath + it->first + ".raw")) {
+      Logger::instance()->error("Failed to load alpha map " + key);
     }
   }
-  if(!data->IsUploaded()) {
-    if(!data->UploadToGPU()) {
-      Logger::GetInstance()->error("Failed to upload alpha map " + key);
+  if(!data->isUploaded()) {
+    if(!data->upload()) {
+      Logger::instance()->error("Failed to upload alpha map " + key);
     }
   }
 

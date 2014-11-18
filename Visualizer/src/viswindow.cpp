@@ -36,41 +36,41 @@ void VisWindow::keyPressEvent(QKeyEvent* e)
     QApplication::instance()->quit();
     break;
   case Qt::Key_Space:
-    TopAnalyzer::GetInstance()->AnalyzeCurrDataset(m_renderWidget->GetFlowRate(), DatasetManager::GetInstance()->GetCurrentKey());
-    AlphaManager::GetInstance()->SetActive(DatasetManager::GetInstance()->GetCurrentKey(), GL_TEXTURE2);
+    TopAnalyzer::instance()->AnalyzeCurrDataset(m_renderWidget->GetFlowRate(), DatasetManager::instance()->getCurrentKey());
+    AlphaManager::instance()->SetActive(DatasetManager::instance()->getCurrentKey(), GL_TEXTURE2);
     break;
   case Qt::Key_1:
-    TFManager::GetInstance()->SetActive("tff1", GL_TEXTURE3);
+    TFManager::instance()->setActive("tff1", GL_TEXTURE3);
     break;
   case Qt::Key_2:
-    TFManager::GetInstance()->SetActive("tff2", GL_TEXTURE3);
+    TFManager::instance()->setActive("tff2", GL_TEXTURE3);
     break;
   case Qt::Key_F1:
-    DatasetManager::GetInstance()->SetActive("neghip", GL_TEXTURE1);
+    DatasetManager::instance()->setActive("neghip", GL_TEXTURE1);
     break;
   case Qt::Key_F2:
-    DatasetManager::GetInstance()->SetActive("bonsai", GL_TEXTURE1);
+    DatasetManager::instance()->setActive("bonsai", GL_TEXTURE1);
     break;
   case Qt::Key_F3:
-    DatasetManager::GetInstance()->SetActive("nucleon", GL_TEXTURE1);
+    DatasetManager::instance()->setActive("nucleon", GL_TEXTURE1);
     break;
   case Qt::Key_F4:
-    DatasetManager::GetInstance()->SetActive("silicium", GL_TEXTURE1);
+    DatasetManager::instance()->setActive("silicium", GL_TEXTURE1);
     break;
   case Qt::Key_F5:
-    DatasetManager::GetInstance()->SetActive("fuel", GL_TEXTURE1);
+    DatasetManager::instance()->setActive("fuel", GL_TEXTURE1);
     break;
   case Qt::Key_F6:
-    DatasetManager::GetInstance()->SetActive("BostonTeapot", GL_TEXTURE1);
+    DatasetManager::instance()->setActive("BostonTeapot", GL_TEXTURE1);
     break;
   case Qt::Key_F7:
-    DatasetManager::GetInstance()->SetActive("lobster", GL_TEXTURE1);
+    DatasetManager::instance()->setActive("lobster", GL_TEXTURE1);
     break;
   case Qt::Key_F8:
-    DatasetManager::GetInstance()->SetActive("foot", GL_TEXTURE1);
+    DatasetManager::instance()->setActive("foot", GL_TEXTURE1);
     break;
   case Qt::Key_F9:
-    DatasetManager::GetInstance()->SetActive("CT-Knee", GL_TEXTURE1);
+    DatasetManager::instance()->setActive("CT-Knee", GL_TEXTURE1);
     break;
   }
 }

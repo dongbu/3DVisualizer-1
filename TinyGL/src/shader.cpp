@@ -53,7 +53,7 @@ Shader::Shader(std::string vertName,
     glGetProgramiv(m_nProgId, GL_INFO_LOG_LENGTH, &len);
     char* msg = (char*)calloc(len, sizeof(char));
     glGetProgramInfoLog(m_nProgId, len, 0, msg);
-    Logger::GetInstance()->error(msg);
+    Logger::instance()->error(msg);
     free(msg);
   }
 }
@@ -270,7 +270,7 @@ GLuint Shader::compile(GLuint shaderType, const char* shaderCode)
   glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
 
   if (!compiled) {
-    Logger::GetInstance()->error(m_sVertPath + " " + m_sFragPath + " " + m_sGeomPath + " " + m_sTessControlPath + " " + m_sTessEvalPath + "\n  " + getShaderInfoLog(shader));
+    Logger::instance()->error(m_sVertPath + " " + m_sFragPath + " " + m_sGeomPath + " " + m_sTessControlPath + " " + m_sTessEvalPath + "\n  " + getShaderInfoLog(shader));
     return false;
   }
 

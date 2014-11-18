@@ -24,13 +24,13 @@ TFunction::TFunction(TFunction& rhs)
   bytes_elem = rhs.bytes_elem;
   tex_id = rhs.tex_id;
   num_channels = rhs.num_channels;
-  is_loaded = rhs.IsLoaded();
-  is_uploaded = rhs.IsUploaded();
+  is_loaded = rhs.isLoaded();
+  is_uploaded = rhs.isUploaded();
 
   if(rhs.data == NULL) {
     data = NULL;
   } else {
-    size_t sz = GetWidth() * rows * num_channels;
+    size_t sz = width() * rows * num_channels;
     data = calloc(sz, sizeof(GLubyte));
     memcpy(data, rhs.data, sz * sizeof(GLubyte));
   }
@@ -39,14 +39,14 @@ TFunction::TFunction(TFunction& rhs)
 TFunction::~TFunction()
 {
   if(data != NULL) {
-    memset(data, 0, GetWidth() * rows * num_channels * sizeof(GLubyte));
+    memset(data, 0, width() * rows * num_channels * sizeof(GLubyte));
     free(data);
     data = NULL;
   }
 
   num_channels = rows = bytes_elem = 0;
-  Loaded(false);
-  Uploaded(false);
+  loaded(false);
+  uploaded(false);
 
   /*if(!tex_id) {
     glDeleteTextures(1, &tex_id);
@@ -54,51 +54,51 @@ TFunction::~TFunction()
   }*/
 }
 
-bool TFunction::Load(std::string path)
+bool TFunction::load(std::string path)
 {
   assert(!path.empty());
-  if(IsLoaded()) {
-    memset(data, 0, GetWidth() * rows * num_channels * sizeof(GLubyte));
+  if(isLoaded()) {
+    memset(data, 0, width() * rows * num_channels * sizeof(GLubyte));
     free(data);
     data = NULL;
-    Loaded(false);
+    loaded(false);
   }
-  if(IsUploaded()) {
-    Uploaded(false);
+  if(isUploaded()) {
+    uploaded(false);
   }
-  size_t sz = GetWidth() * rows * num_channels;
+  size_t sz = width() * rows * num_channels;
   data = calloc(sz, sizeof(GLubyte));
-  Loaded(data::LoadBinary(path, sz, sizeof(GLubyte), data));
+  loaded(data::LoadBinary(path, sz, sizeof(GLubyte), data));
 
-  return IsLoaded();
+  return isLoaded();
 }
 
-bool TFunction::UploadToGPU()
+bool TFunction::upload()
 {
   assert(rows != 0 && num_channels != 0 && bytes_elem != 0 && data != NULL);
   if(tex_id == 0) {
-    if(Is1D()) {
-      tex_id = data::transfer::Alloc1DTex(GetWidth(), num_channels);
+    if(is1D()) {
+      tex_id = data::transfer::Alloc1DTex(width(), num_channels);
     } else {
-      tex_id = data::transfer::Alloc2DTex(GetWidth(), rows, num_channels);
+      tex_id = data::transfer::Alloc2DTex(width(), rows, num_channels);
     }
   }
 
   assert(tex_id != 0);
-  if(Is1D()) {
-    Uploaded(data::transfer::Upload1DData(GetWidth(), num_channels, data, tex_id));
+  if(is1D()) {
+    uploaded(data::transfer::Upload1DData(width(), num_channels, data, tex_id));
   } else {
-    Uploaded(data::transfer::Upload2DData(GetWidth(), rows, num_channels, data, tex_id));
+    uploaded(data::transfer::Upload2DData(width(), rows, num_channels, data, tex_id));
   }
 
-  return IsUploaded();
+  return isUploaded();
 }
 
 void TFunction::bind(GLenum tex_unit)
 {
   GLenum target;
   
-  if(Is1D())
+  if(is1D())
     target = GL_TEXTURE_1D;
   else
     target = GL_TEXTURE_2D;

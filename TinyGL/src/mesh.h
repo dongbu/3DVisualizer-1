@@ -6,14 +6,18 @@
 #include <vector>
 #include "bufferobject.h"
 
-enum MeshType
-{
-  AXIS,
-  QUAD,
-  CUBE,
-  SPHERE,
-  GRID
-};
+//enum mesh_type
+//{
+//  AXIS,
+//  QUAD,
+//  CUBE,
+//  SPHERE,
+//  GRID
+//};
+
+//enum vertex_type
+//{
+//};
 
 /**
  * class Mesh
@@ -40,7 +44,7 @@ public:
   void attachBuffer(BufferObject* buff);
   void draw();
 
-  static Mesh* CreateMesh(MeshType);
+//  static Mesh* CreateMesh(mesh_type, vertex_type);
 
   inline void setDrawCb(void(*drawCb)(size_t))
   {

@@ -12,14 +12,14 @@ class RendererManager : public Singleton<RendererManager>
   friend class Singleton<RendererManager>;
 
 public:
-  bool Init();
-  bool Add(std::string key, Renderer* r);
-  void SetActive(std::string key);
-  Renderer* Get(std::string key);
-  Renderer* GetCurrent();
-  void FreeResources();
+  bool init();
+  bool add(std::string key, Renderer* r);
+  void setActive(std::string key);
+  Renderer* get(std::string key);
+  Renderer* getCurrent();
+  void freeResources();
 
-  std::string GetCurrentKey()
+  std::string getCurrentKey()
   {
     return m_activeKey;
   }

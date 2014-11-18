@@ -18,11 +18,11 @@ namespace top
   Dataset::Dataset(knl::Dataset& rhs)
   {
     size = rhs.width * rhs.height * rhs.slices;
-    minValue = maxValue = rhs.Get(0);
+    minValue = maxValue = rhs.get(0);
     data = new knl::Dataset(rhs);
 
     for(size_t i = 0; i < size; i++) {
-      size_t val = rhs.Get(i);
+      size_t val = rhs.get(i);
       if(val > maxValue)
         maxValue = val;
       if(val < minValue)

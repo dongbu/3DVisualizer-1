@@ -23,7 +23,7 @@ namespace top
 
     size_t Get(int idx)
     {
-      return data->Get(idx);
+      return data->get(idx);
     }
 
     size_t convertIndex( size_t i, size_t j, size_t k )

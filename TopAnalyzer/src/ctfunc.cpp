@@ -31,7 +31,7 @@ size_t count_branches(ctBranch* b)
 
 size_t calc_persistence_branch(ctBranch* b, top::Dataset* data)
 {
-  return std::abs((long) (data->data->Get(b->extremum) - data->data->Get(b->saddle)));
+  return std::abs((long) (data->data->get(b->extremum) - data->data->get(b->saddle)));
 }
 
 void calc_branch_depth(ctBranch* b, size_t* max_depth, size_t depth)
@@ -62,17 +62,17 @@ void calc_branch_features(ctBranch** b_map, top::Dataset* data)
 
     FeatureSet* branch_data = (FeatureSet*) b_map[i]->data;
     branch_data->v++;
-    branch_data->hv += data->data->Get(i);
+    branch_data->hv += data->data->get(i);
     branch_data->p = calc_persistence_branch(b_map[i], data);
     branch_data->porosity = 300.0;
 
     branch_data->c_s_min = 10000.0; //since maximum value is 255
     branch_data->c_s_max = 0;
 
-    if(branch_data->min_intensity > data->data->Get(i))
-      branch_data->min_intensity = data->data->Get(i);
-    else if(branch_data->max_intensity < data->data->Get(i))
-      branch_data->max_intensity = data->data->Get(i);
+    if(branch_data->min_intensity > data->data->get(i))
+      branch_data->min_intensity = data->data->get(i);
+    else if(branch_data->max_intensity < data->data->get(i))
+      branch_data->max_intensity = data->data->get(i);
   }
 }
 
@@ -445,7 +445,7 @@ double calc_gsd(ctBranch* b, top::Dataset* data) {
   if(b->parent != NULL) {
     FeatureSet* parent = (FeatureSet*) b->parent->data;
     if(parent->num_children > 1)
-      return (((double) data->data->Get(b->saddle)) - parent->c_s_min) / (parent->c_s_max - parent->c_s_min);
+      return (((double) data->data->get(b->saddle)) - parent->c_s_min) / (parent->c_s_max - parent->c_s_min);
   }
   return 1.0;
 }
@@ -467,11 +467,11 @@ void calc_saddle_min_max_cb(ctBranch* branch, top::Dataset* data)
 
   for(ctBranch* c = branch->children.head; c != NULL; c = c->nextChild) {
     if(fs->num_children != 0) {
-      if(data->data->Get(c->saddle) < fs->c_s_min) {
-        fs->c_s_min = data->data->Get(c->saddle);
+      if(data->data->get(c->saddle) < fs->c_s_min) {
+        fs->c_s_min = data->data->get(c->saddle);
       }
-      if (data->data->Get(c->saddle) > fs->c_s_max){
-        fs->c_s_max = data->data->Get(c->saddle);
+      if (data->data->get(c->saddle) > fs->c_s_max){
+        fs->c_s_max = data->data->get(c->saddle);
       }
     }
   }

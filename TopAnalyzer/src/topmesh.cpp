@@ -16,9 +16,9 @@ namespace top
     AscendingOrder(top::Dataset* d ) : data(d) {}
 
     bool operator()(const size_t & a, const size_t & b) const {
-      if(data->data->Get(a) == data->data->Get(b))
+      if(data->data->get(a) == data->data->get(b))
         return a < b;
-      return data->data->Get(a) < data->data->Get(b);
+      return data->data->get(a) < data->data->get(b);
     }
   };
 
