@@ -12,6 +12,8 @@
 #include <QTimer>
 #include <QMainWindow>
 #include <QApplication>
+#include <QToolBar>
+#include <QStatusBar>
 
 VisWindow::VisWindow(QWidget* parent, int w, int h) :
   QMainWindow(parent)
@@ -22,7 +24,7 @@ VisWindow::VisWindow(QWidget* parent, int w, int h) :
   format.setSamples(4);
   format.setProfile(QGLFormat::CoreProfile);
 
-  resize(w, h);
+  resize(w, h + 40);
   create();
   createInterface();
 
@@ -37,7 +39,7 @@ void VisWindow::keyPressEvent(QKeyEvent* e)
     QApplication::instance()->quit();
     break;
   case Qt::Key_Space:
-    TopAnalyzer::instance()->AnalyzeCurrDataset(m_renderWidget->GetFlowRate(), DatasetManager::instance()->getCurrentKey());
+    TopAnalyzer::instance()->AnalyzeCurrDataset(m_renderWidget->getFlowRate(), DatasetManager::instance()->getCurrentKey());
     AlphaManager::instance()->SetActive(DatasetManager::instance()->getCurrentKey(), GL_TEXTURE2);
     break;
   case Qt::Key_1:
@@ -88,6 +90,11 @@ void VisWindow::resizeEvent(QResizeEvent*)
 void VisWindow::closeEvent(QCloseEvent* )
 {}
 
+void VisWindow::quit()
+{
+
+}
+
 void VisWindow::loadDataset()
 {}
 
@@ -112,6 +119,36 @@ void VisWindow::setRootDataDir()
 void VisWindow::createInterface()
 {
   m_file = new QMenu("File", this);
+
+  m_quit = new QAction("Exit", this);
+  connect(m_quit, SIGNAL(triggered()), this, SLOT(quit()));
+
+  m_file->addAction(m_quit);
+
   menuBar()->addMenu(m_file);
+
+  //TOOLBAR
+  QToolBar* toolbar = new QToolBar;
+  toolbar->setMovable(false);
+
+  m_analyze = new QAction("Analyze dataset", this);
+  connect(m_analyze, SIGNAL(triggered()), this, SLOT(analyzeDataset()));
+
+  m_setNumSamples = new QAction("Change number of samples", this);
+  connect(m_setNumSamples, SIGNAL(triggered()), this, SLOT(setNumSamples()));
+
+  m_setRootDir = new QAction("Set root directory", this);
+  connect(m_setRootDir, SIGNAL(triggered()), this, SLOT(setRootDataDir()));
+
+  toolbar->addAction(m_analyze);
+  toolbar->addAction(m_setNumSamples);
+  toolbar->addAction(m_setRootDir);
+
+  addToolBar(toolbar);
+
+  //STATUSBAR
+  QStatusBar* statusbar = new QStatusBar;
+
+  setStatusBar(statusbar);
 }
 

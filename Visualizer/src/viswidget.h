@@ -14,24 +14,29 @@ public:
   explicit VisWidget(const QGLFormat& format, QWidget *parent);
   virtual ~VisWidget();
 
-  bool IsInitialized()
+  bool isInitialized()
   {
     return m_initCalled;
   }
 
-  size_t GetNumSamples()
+  size_t getNumSamples()
   {
     return m_numSamples;
   }
 
-  void SetNumSamples(size_t num)
+  void setNumSamples(size_t num)
   {
     m_numSamples = num;
   }
 
-  float GetFlowRate()
+  float getFlowRate()
   {
     return m_flowRate;
+  }
+
+  void setFlowRate(float flow)
+  {
+    m_flowRate = flow;
   }
 
 protected slots:
@@ -71,7 +76,7 @@ private:
   void InitMesh();
   void InitResources();
 
-  void Initialized(bool i)
+  void initialized(bool i)
   {
     m_initCalled = i;
   }

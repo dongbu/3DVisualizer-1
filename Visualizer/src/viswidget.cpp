@@ -28,19 +28,19 @@ VisWidget::VisWidget(const QGLFormat& format, QWidget *parent) :
 {
   m_timer = new QTimer(this);
   connect(m_timer, SIGNAL(timeout()), this, SLOT(update()));
-  Initialized(false);
+  initialized(false);
 }
 
 VisWidget::~VisWidget()
 {
   m_timer->stop();
   delete m_timer;
-  Initialized(false);
+  initialized(false);
 }
 
 void VisWidget::update()
 {
-  if(IsInitialized()) {
+  if(isInitialized()) {
     paintGL();
     updateGL();
   }
@@ -68,13 +68,13 @@ void VisWidget::initializeGL()
   InitMesh();
   InitFBO();
   InitShaders();
-  Initialized(true);
+  initialized(true);
   m_timer->start(16);
 }
 
 void VisWidget::paintGL()
 {
-  if(IsInitialized()) {
+  if(isInitialized()) {
     RendererManager::instance()->getCurrent()->update();
     RendererManager::instance()->getCurrent()->draw();
   }
@@ -82,7 +82,7 @@ void VisWidget::paintGL()
 
 void VisWidget::resizeEvent(QResizeEvent*)
 {
-  if(IsInitialized())
+  if(isInitialized())
     RendererManager::instance()->getCurrent()->resize(width(), height());
 }
 
@@ -148,10 +148,10 @@ void VisWidget::keyReleaseEvent(QKeyEvent*)
 void VisWidget::mousePressEvent(QMouseEvent* e)
 {
   if(e->button() == Qt::LeftButton) {
-    SetNumSamples(128);
+    setNumSamples(128);
     Shader* tmp = TinyGL::instance()->getShader(SPASS_KEY);
     tmp->bind();
-    tmp->setUniform1f("u_fNumSamples", static_cast<float>(GetNumSamples()));
+    tmp->setUniform1f("u_fNumSamples", static_cast<float>(getNumSamples()));
     Shader::Unbind();
     RendererManager::instance()->getCurrent()->mousebutton(e->button(), 1, e->x(), e->y());
   }
@@ -159,10 +159,10 @@ void VisWidget::mousePressEvent(QMouseEvent* e)
 
 void VisWidget::mouseReleaseEvent(QMouseEvent* e)
 {
-  SetNumSamples(512);
+  setNumSamples(512);
   Shader* tmp = TinyGL::instance()->getShader(SPASS_KEY);
   tmp->bind();
-  tmp->setUniform1f("u_fNumSamples", static_cast<float>(GetNumSamples()));
+  tmp->setUniform1f("u_fNumSamples", static_cast<float>(getNumSamples()));
   Shader::Unbind();
   RendererManager::instance()->getCurrent()->mousebutton(e->button(), 0, e->x(), e->y());
 }
@@ -298,14 +298,14 @@ void VisWidget::InitResources()
 #ifdef WIN32
   DatasetManager::instance()->init("C:/Users/schardong/Pictures/datasets/");
 #else
-  DatasetManager::GetInstance()->Init("/home/guilherme/Pictures/datasets/");
+  DatasetManager::instance()->init("/home/guilherme/Pictures/datasets/");
 #endif
   DatasetManager::instance()->setActive("nucleon", GL_TEXTURE1);
 
 #ifdef WIN32
   TFManager::instance()->init("C:/Users/schardong/Pictures/datasets/transfer-functions/");
 #else
-  TFManager::GetInstance()->Init("/home/guilherme/Pictures/datasets/transfer-functions/");
+  TFManager::instance()->init("/home/guilherme/Pictures/datasets/transfer-functions/");
 #endif
   TFManager::instance()->setActive("tff1", GL_TEXTURE3);
 

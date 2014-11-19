@@ -31,6 +31,7 @@ protected:
   virtual void closeEvent(QCloseEvent *); //free everything.
 
 protected slots:
+  void quit();
   void loadDataset();
   void loadAlphaDataset();
   void loadColorTFunction();
@@ -47,6 +48,11 @@ private:
   QMenu* m_file;
   QAction* m_loadDataAction;
   QAction* m_saveAlphaAction;
+  QAction* m_quit;
+
+  QAction* m_analyze;
+  QAction* m_setNumSamples;
+  QAction* m_setRootDir;
 
   void createInterface();
 };
