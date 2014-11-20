@@ -39,8 +39,7 @@ public:
     m_flowRate = flow;
   }
 
-protected slots:
-  virtual void update();
+public slots:
 
 protected:
   virtual void initializeGL();
@@ -57,6 +56,9 @@ protected:
   virtual void moveEvent(QMoveEvent *); // reduce sampling.
   virtual void resizeEvent(QResizeEvent *); //stop animation.
   virtual void closeEvent(QCloseEvent *); //free everything.
+
+protected slots:
+  virtual void update();
 
 private:
   QTimer* m_timer;

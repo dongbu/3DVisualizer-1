@@ -2,9 +2,6 @@ TODOs:
   -Pass the type of vertex attributes to each mesh of the TinyGL lib. Or Manually create the buffers and attach them to the mesh later;
   -Make the use of a transfer function optional (pass a uniform parameter to the shader). This can be used to render a dataset when no TF is selected;
   -Make a topological visualizer. Find the coordinates of the contour tree vertices and plot them;
-  -Create a base Manager class, since the Dataset, TFunction and Alpha managers have almost the same code.
-    -Too many f***** linker errors!
-  -Create a set of standard Depth First Search and Breadth First Search functions and pass the callbacks to them to calculate a branch feature set, etc.
   -Parametrize the Create*DTex and Upload*DTex functions to have just one Create and one Upload function.
 
 IDEAS:

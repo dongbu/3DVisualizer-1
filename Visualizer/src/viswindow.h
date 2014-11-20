@@ -7,6 +7,7 @@
 #include <QAction>
 #include <QMenu>
 #include <QMouseEvent>
+#include <QLabel>
 
 class VisWidget;
 
@@ -22,6 +23,8 @@ protected:
 //  virtual void mouseReleaseEvent(QMouseEvent *);
 //  virtual void mouseMoveEvent(QMouseEvent *);
 //  virtual void wheelEvent(QWheelEvent *);
+
+  void contextMenuEvent(QContextMenuEvent *);
 
   virtual void keyPressEvent(QKeyEvent *);
   virtual void keyReleaseEvent(QKeyEvent *);
@@ -54,7 +57,11 @@ private:
   QAction* m_setNumSamples;
   QAction* m_setRootDir;
 
+  QLabel* m_statusLabel;
+
   void createInterface();
+  void createMenus();
+  void createStatusBar();
 };
 
 #endif // VISWINDOW_H

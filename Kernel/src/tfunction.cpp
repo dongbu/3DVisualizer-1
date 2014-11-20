@@ -48,10 +48,10 @@ TFunction::~TFunction()
   loaded(false);
   uploaded(false);
 
-  /*if(!tex_id) {
+  if(!tex_id) {
     glDeleteTextures(1, &tex_id);
     tex_id = 0;
-  }*/
+  }
 }
 
 bool TFunction::load(std::string path)

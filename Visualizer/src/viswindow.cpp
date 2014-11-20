@@ -32,6 +32,13 @@ VisWindow::VisWindow(QWidget* parent, int w, int h) :
   setCentralWidget(m_renderWidget);
 }
 
+void VisWindow::contextMenuEvent(QContextMenuEvent* e)
+{
+  QMenu tmp(this);
+  tmp.addAction(m_quit);
+  tmp.exec(e->globalPos());
+}
+
 void VisWindow::keyPressEvent(QKeyEvent* e)
 {
   switch(e->key()) {
@@ -91,9 +98,7 @@ void VisWindow::closeEvent(QCloseEvent* )
 {}
 
 void VisWindow::quit()
-{
-
-}
+{}
 
 void VisWindow::loadDataset()
 {}
@@ -118,6 +123,31 @@ void VisWindow::setRootDataDir()
 
 void VisWindow::createInterface()
 {
+  createMenus();
+
+  //TOOLBAR
+//  QToolBar* toolbar = new QToolBar;
+//  toolbar->setMovable(false);
+
+//  m_analyze = new QAction("Analyze dataset", this);
+//  connect(m_analyze, SIGNAL(triggered()), this, SLOT(analyzeDataset()));
+
+//  m_setNumSamples = new QAction("Change number of samples", this);
+//  connect(m_setNumSamples, SIGNAL(triggered()), this, SLOT(setNumSamples()));
+
+//  m_setRootDir = new QAction("Set root directory", this);
+//  connect(m_setRootDir, SIGNAL(triggered()), this, SLOT(setRootDataDir()));
+
+//  toolbar->addAction(m_analyze);
+//  toolbar->addAction(m_setNumSamples);
+//  toolbar->addAction(m_setRootDir);
+
+//  addToolBar(toolbar);
+  createStatusBar();
+}
+
+void VisWindow::createMenus()
+{
   m_file = new QMenu("File", this);
 
   m_quit = new QAction("Exit", this);
@@ -126,28 +156,13 @@ void VisWindow::createInterface()
   m_file->addAction(m_quit);
 
   menuBar()->addMenu(m_file);
+}
 
-  //TOOLBAR
-  QToolBar* toolbar = new QToolBar;
-  toolbar->setMovable(false);
-
-  m_analyze = new QAction("Analyze dataset", this);
-  connect(m_analyze, SIGNAL(triggered()), this, SLOT(analyzeDataset()));
-
-  m_setNumSamples = new QAction("Change number of samples", this);
-  connect(m_setNumSamples, SIGNAL(triggered()), this, SLOT(setNumSamples()));
-
-  m_setRootDir = new QAction("Set root directory", this);
-  connect(m_setRootDir, SIGNAL(triggered()), this, SLOT(setRootDataDir()));
-
-  toolbar->addAction(m_analyze);
-  toolbar->addAction(m_setNumSamples);
-  toolbar->addAction(m_setRootDir);
-
-  addToolBar(toolbar);
-
-  //STATUSBAR
+void VisWindow::createStatusBar()
+{
   QStatusBar* statusbar = new QStatusBar;
+
+  statusbar->showMessage("This is a message on the status bar.");
 
   setStatusBar(statusbar);
 }
