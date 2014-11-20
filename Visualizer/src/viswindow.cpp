@@ -35,7 +35,13 @@ VisWindow::VisWindow(QWidget* parent, int w, int h) :
 void VisWindow::contextMenuEvent(QContextMenuEvent* e)
 {
   QMenu tmp(this);
-  tmp.addAction(m_quit);
+  tmp.addAction(m_analyzeAction);
+  tmp.addAction(m_setNumSamplesAction);
+  tmp.addAction(m_setFlowRateAction);
+  //FIXME: Test if a valid alpha dataset was generated. If true, then add
+  // the options below.
+  tmp.addAction(m_saveAlphaAction);
+  tmp.addAction(m_loadAlphaAction);
   tmp.exec(e->globalPos());
 }
 
@@ -121,6 +127,9 @@ void VisWindow::setNumSamples()
 void VisWindow::setRootDataDir()
 {}
 
+void VisWindow::setFlowRate()
+{}
+
 void VisWindow::createInterface()
 {
   createMenus();
@@ -148,14 +157,47 @@ void VisWindow::createInterface()
 
 void VisWindow::createMenus()
 {
-  m_file = new QMenu("File", this);
+  m_fileMenu = new QMenu("File", this);
+  m_editMenu = new QMenu("Edit", this);
+  m_helpMenu = new QMenu("Help", this);
 
-  m_quit = new QAction("Exit", this);
-  connect(m_quit, SIGNAL(triggered()), this, SLOT(quit()));
+  m_loadMetafileAction = new QAction("Load metafile", this);
+  connect(m_loadMetafileAction, SIGNAL(triggered()), this, SLOT(setRootDataDir()));
 
-  m_file->addAction(m_quit);
+  m_loadDatasetAction = new QAction("Load dataset", this);
+  connect(m_loadDatasetAction, SIGNAL(triggered()), this, SLOT(loadDataset()));
 
-  menuBar()->addMenu(m_file);
+  m_loadAlphaAction = new QAction("Load alpha map", this);
+  connect(m_loadAlphaAction, SIGNAL(triggered()), this, SLOT(loadAlphaDataset()));
+
+  m_saveAlphaAction = new QAction("Save alpha map", this);
+  connect(m_saveAlphaAction, SIGNAL(triggered()), this, SLOT(saveAlphaDataset()));
+
+  m_quitAction = new QAction("Exit", this);
+  connect(m_quitAction, SIGNAL(triggered()), this, SLOT(quit()));
+
+  m_analyzeAction = new QAction("Analyze dataset", this);
+  connect(m_analyzeAction, SIGNAL(triggered()), this, SLOT(analyzeDataset()));
+
+  m_setNumSamplesAction = new QAction("Edit sampling rate", this);
+  connect(m_setNumSamplesAction, SIGNAL(triggered()), this, SLOT(setNumSamples()));
+
+  m_setFlowRateAction = new QAction("Edit flow rate", this);
+  connect(m_setFlowRateAction, SIGNAL(triggered()), this, SLOT(setFlowRate()));
+
+  m_fileMenu->addAction(m_loadMetafileAction);
+  m_fileMenu->addAction(m_loadDatasetAction);
+  m_fileMenu->addAction(m_loadAlphaAction);
+  m_fileMenu->addAction(m_saveAlphaAction);
+  m_fileMenu->addAction(m_quitAction);
+
+  m_editMenu->addAction(m_analyzeAction);
+  m_editMenu->addAction(m_setNumSamplesAction);
+  m_editMenu->addAction(m_setFlowRateAction);
+
+  menuBar()->addMenu(m_fileMenu);
+  menuBar()->addMenu(m_editMenu);
+  menuBar()->addMenu(m_helpMenu);
 }
 
 void VisWindow::createStatusBar()

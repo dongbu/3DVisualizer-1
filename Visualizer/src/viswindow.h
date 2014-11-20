@@ -34,30 +34,33 @@ protected:
   virtual void closeEvent(QCloseEvent *); //free everything.
 
 protected slots:
-  void quit();
   void loadDataset();
   void loadAlphaDataset();
-  void loadColorTFunction();
-
   void saveAlphaDataset();
+  void loadColorTFunction();
+  void quit();
 
   void analyzeDataset();
   void setNumSamples();
   void setRootDataDir();
+  void setFlowRate();
 
 private:
   VisWidget* m_renderWidget;
 
-  QMenu* m_file;
-  QAction* m_loadDataAction;
+  QMenu* m_fileMenu;
+  QMenu* m_editMenu;
+  QMenu* m_helpMenu;
+
+  QAction* m_loadMetafileAction;
+  QAction* m_loadDatasetAction;
   QAction* m_saveAlphaAction;
-  QAction* m_quit;
+  QAction* m_loadAlphaAction;
+  QAction* m_quitAction;
 
-  QAction* m_analyze;
-  QAction* m_setNumSamples;
-  QAction* m_setRootDir;
-
-  QLabel* m_statusLabel;
+  QAction* m_analyzeAction;
+  QAction* m_setNumSamplesAction;
+  QAction* m_setFlowRateAction;
 
   void createInterface();
   void createMenus();
