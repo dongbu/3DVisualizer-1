@@ -16,11 +16,8 @@ bool DatasetManager::init(std::string path)
   if(!load_ok) return false;
 
   TiXmlNode* node = NULL;
-  //TiXmlElement* elem = NULL;
-//  TiXmlElement* data_elem = NULL;
 
   node = metafile.FirstChild("datasets");
-//  data_elem = node->ToElement();
 
   for(TiXmlNode* data_child = node->FirstChild();
       data_child != NULL;
@@ -49,28 +46,29 @@ bool DatasetManager::add(std::string key, Dataset* data)
   return true;
 }
 
-void DatasetManager::setActive(std::string key, GLenum tex_unit)
+bool DatasetManager::setActive(std::string key, GLenum tex_unit)
 {
-  if(m_activeKey == key) return;
+  if(m_activeKey == key) return true;
 
   std::map<std::string, Dataset*>::iterator it = m_datasetMap.find(key);
 
-  if(it == m_datasetMap.end()) return;
+  if(it == m_datasetMap.end()) return false;
 
   Dataset* data = it->second;
-  if(!data->isLoaded()) {
+  if(!data->isLoaded())
     if(!data->load(m_dataPath + it->first + ".raw")) {
       Logger::instance()->error("Failed to load dataset " + key);
+      return false;
     }
-  }
-  if(!data->isUploaded()) {
+  if(!data->isUploaded())
     if(!data->upload()) {
       Logger::instance()->error("Failed to upload dataset " + key);
+      return false;
     }
-  }
 
   data->bind(tex_unit);
   m_activeKey = key;
+  return true;
 }
 
 Dataset* DatasetManager::get(std::string key)

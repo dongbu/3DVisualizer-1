@@ -5,6 +5,7 @@
 #include "alphamanager.h"
 #include "topanalyzer.h"
 
+#include <iostream>
 #include <GL/glew.h>
 #include <QCoreApplication>
 #include <QKeyEvent>
@@ -14,8 +15,9 @@
 #include <QApplication>
 #include <QToolBar>
 #include <QStatusBar>
+#include <QFileDialog>
 
-VisWindow::VisWindow(QWidget* parent, int w, int h) :
+VisWindow::VisWindow(QWidget* parent, int w, int h, std::string path) :
   QMainWindow(parent)
 {
   QGLFormat format;
@@ -30,6 +32,15 @@ VisWindow::VisWindow(QWidget* parent, int w, int h) :
 
   m_renderWidget = new VisWidget(format, this);
   setCentralWidget(m_renderWidget);
+
+  while(path.empty()) {
+    QString qpath = QFileDialog::getExistingDirectory(this,
+                                                     "Load Metafile",
+                                                     QDir::home().absolutePath());
+
+    path = qpath.toStdString();
+    m_renderWidget->loadMetafile(path, DATASET);
+  }
 }
 
 void VisWindow::contextMenuEvent(QContextMenuEvent* e)
@@ -107,7 +118,16 @@ void VisWindow::quit()
 {}
 
 void VisWindow::loadDataset()
-{}
+{
+  using std::vector;
+  using std::string;
+  using std::cout;
+  using std::endl;
+
+  vector<string> vec = DatasetManager::instance()->getKeys();
+  m_renderWidget->loadDataset(vec[0]);
+  m_renderWidget->startTimer(16);
+}
 
 void VisWindow::loadAlphaDataset()
 {}
@@ -124,34 +144,12 @@ void VisWindow::analyzeDataset()
 void VisWindow::setNumSamples()
 {}
 
-void VisWindow::setRootDataDir()
-{}
-
 void VisWindow::setFlowRate()
 {}
 
 void VisWindow::createInterface()
 {
   createMenus();
-
-  //TOOLBAR
-//  QToolBar* toolbar = new QToolBar;
-//  toolbar->setMovable(false);
-
-//  m_analyze = new QAction("Analyze dataset", this);
-//  connect(m_analyze, SIGNAL(triggered()), this, SLOT(analyzeDataset()));
-
-//  m_setNumSamples = new QAction("Change number of samples", this);
-//  connect(m_setNumSamples, SIGNAL(triggered()), this, SLOT(setNumSamples()));
-
-//  m_setRootDir = new QAction("Set root directory", this);
-//  connect(m_setRootDir, SIGNAL(triggered()), this, SLOT(setRootDataDir()));
-
-//  toolbar->addAction(m_analyze);
-//  toolbar->addAction(m_setNumSamples);
-//  toolbar->addAction(m_setRootDir);
-
-//  addToolBar(toolbar);
   createStatusBar();
 }
 
@@ -160,9 +158,6 @@ void VisWindow::createMenus()
   m_fileMenu = new QMenu("File", this);
   m_editMenu = new QMenu("Edit", this);
   m_helpMenu = new QMenu("Help", this);
-
-  m_loadMetafileAction = new QAction("Load metafile", this);
-  connect(m_loadMetafileAction, SIGNAL(triggered()), this, SLOT(setRootDataDir()));
 
   m_loadDatasetAction = new QAction("Load dataset", this);
   connect(m_loadDatasetAction, SIGNAL(triggered()), this, SLOT(loadDataset()));
@@ -185,7 +180,6 @@ void VisWindow::createMenus()
   m_setFlowRateAction = new QAction("Edit flow rate", this);
   connect(m_setFlowRateAction, SIGNAL(triggered()), this, SLOT(setFlowRate()));
 
-  m_fileMenu->addAction(m_loadMetafileAction);
   m_fileMenu->addAction(m_loadDatasetAction);
   m_fileMenu->addAction(m_loadAlphaAction);
   m_fileMenu->addAction(m_saveAlphaAction);

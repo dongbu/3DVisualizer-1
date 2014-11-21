@@ -7,6 +7,13 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 
+enum DatasetType
+{
+  DATASET,
+  COLORTF,
+  ALPHATF,
+};
+
 class VisWidget : public QGLWidget
 {
   Q_OBJECT
@@ -17,6 +24,16 @@ public:
   bool isInitialized()
   {
     return m_initCalled;
+  }
+
+  bool isDatasetLoaded()
+  {
+    return m_datasetLoaded;
+  }
+
+  bool isMetafileLoaded()
+  {
+    return m_metafileLoaded;
   }
 
   size_t getNumSamples()
@@ -40,6 +57,15 @@ public:
   }
 
 public slots:
+  void startTimer(int msec);
+  void stopTimer();
+
+  bool loadMetafile(std::string path, DatasetType tp);
+  bool loadDataset(std::string key);
+  bool loadColorTF(std::string key);
+  bool loadAlphaTF(std::string key);
+
+  bool saveAlphaTF(std::string key);
 
 protected:
   virtual void initializeGL();
@@ -65,22 +91,23 @@ private:
   size_t m_numSamples;
   float m_flowRate;
 
-  glm::mat4 m_viewMatrix;
-  glm::mat4 m_projMatrix;
-
   bool m_initCalled;
-
-  void Init();
-  void InitGLEW();
-  void InitRenderer();
-  void InitShaders();
-  void InitFBO();
-  void InitMesh();
-  void InitResources();
+  bool m_metafileLoaded;
+  bool m_datasetLoaded;
 
   void initialized(bool i)
   {
     m_initCalled = i;
+  }
+
+  void data_loaded(bool l)
+  {
+    m_datasetLoaded = l;
+  }
+
+  void metafile_loaded(bool l)
+  {
+    m_metafileLoaded = l;
   }
 };
 

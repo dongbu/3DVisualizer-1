@@ -16,7 +16,10 @@ class VisWindow : public QMainWindow
   Q_OBJECT
 
 public:
-  VisWindow(QWidget *parent = 0, int w = 640, int h = 480);
+  VisWindow(QWidget *parent = 0,
+            int w = 640,
+            int h = 480,
+            std::string path = "");
 
 protected:
 //  virtual void mousePressEvent(QMouseEvent *);
@@ -35,6 +38,7 @@ protected:
 
 protected slots:
   void loadDataset();
+
   void loadAlphaDataset();
   void saveAlphaDataset();
   void loadColorTFunction();
@@ -42,7 +46,6 @@ protected slots:
 
   void analyzeDataset();
   void setNumSamples();
-  void setRootDataDir();
   void setFlowRate();
 
 private:
