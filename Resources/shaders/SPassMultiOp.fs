@@ -31,9 +31,7 @@ vec4 composite(Ray ray, vec3 step)
     float alpha = texture(u_sAlphaMap, currPos).r;
     vec3 color = texture(u_sColorTFunction, density).rgb;
 
-    //vec4 colorSample = vec4(vec3(density), alpha);
     vec4 colorSample = vec4(color, alpha);
-    //vec4 colorSample = vec4(density);
 
     colorSample = abs(colorSample);
     colorSample.a = clamp(colorSample.a, 0.f, 1.f);
@@ -59,7 +57,4 @@ void main(void)
   vec3 step = ray.direction * sqrt(3.f) / u_fNumSamples;
   
   fColor = composite(ray, step);
-  //fColor = vec4(exitPoint, 1.f);
-  //fColor = vec4(vEntryPoint, 1) ;
-
 }

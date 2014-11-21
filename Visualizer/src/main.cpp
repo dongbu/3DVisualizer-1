@@ -21,7 +21,7 @@
 // TODO Create a base Manager class. Search for template inheritance, it may solve earlier issues.
 // FIXME When the user changes de active dataset, load a standard alpha function (or no function at all).
 // FIXME Make the rendering run in a separate thread.
-// FIXME Renderer specific stuff (shaders, FBO, meshes) are to be initialized in the renderer, not the widget.
+// FIXME After loading the metafile and the dataset, the program must be able to render something. Even if the color TF and the alpha map are not loaded.
 
 int main(int argc, char** argv)
 {

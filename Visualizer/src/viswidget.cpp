@@ -110,7 +110,6 @@ void VisWidget::initializeGL()
 
   RendererManager::instance()->add("glslrenderer", rend);
   RendererManager::instance()->setActive("glslrenderer");
-  //InitResources();
   initialized(true);
 }
 
