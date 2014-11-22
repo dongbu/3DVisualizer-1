@@ -222,7 +222,7 @@ void TopAnalyzer::AnalyzeDataset(knl::Dataset* data, double flow_rate, std::stri
   b = tbb::tick_count::now();
   std::cout << "\tAlpha map in " << (b - a).seconds() << " seconds" << std::endl;
 
-  AlphaManager::instance()->Add(key, alpha_map);
+  AlphaManager::instance()->add(key, alpha_map);
 
   delete alpha_map;
 

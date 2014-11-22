@@ -26,14 +26,19 @@ public:
     return m_initCalled;
   }
 
+  bool isMetafileLoaded()
+  {
+    return m_metafileLoaded;
+  }
+
   bool isDatasetLoaded()
   {
     return m_datasetLoaded;
   }
 
-  bool isMetafileLoaded()
+  bool isAlphaLoaded()
   {
-    return m_metafileLoaded;
+    return m_alphaLoaded;
   }
 
   size_t getNumSamples()
@@ -94,20 +99,26 @@ private:
   bool m_initCalled;
   bool m_metafileLoaded;
   bool m_datasetLoaded;
+  bool m_alphaLoaded;
 
   void initialized(bool i)
   {
     m_initCalled = i;
   }
 
-  void data_loaded(bool l)
+  void metafileLoaded(bool l)
+  {
+    m_metafileLoaded = l;
+  }
+
+  void dataLoaded(bool l)
   {
     m_datasetLoaded = l;
   }
 
-  void metafile_loaded(bool l)
+  void alphaLoaded(bool l)
   {
-    m_metafileLoaded = l;
+    m_alphaLoaded = l;
   }
 };
 

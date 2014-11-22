@@ -3,7 +3,7 @@
 #include <GL/glew.h>
 #include <QApplication>
 
-#include "config.h"
+#include "visconfig.h"
 #include "logger.h"
 #include "viswindow.h"
 

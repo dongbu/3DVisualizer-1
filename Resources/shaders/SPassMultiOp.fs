@@ -10,6 +10,9 @@ uniform sampler1D u_sColorTFunction;
 uniform vec2 u_vScreenSize;
 uniform float u_fNumSamples;
 
+uniform bool u_bHasAlphaMap;
+uniform bool u_bHasColorMap;
+
 in vec3 vEntryPoint;
 in vec4 vExitPoint;
 
@@ -26,10 +29,18 @@ vec4 composite(Ray ray, vec3 step)
   vec4 colorAcc = vec4(0.f);
   float lenAcc = 0.f;
 
-  for(int i = 0; i < u_fNumSamples; i++, currPos += step, lenAcc += length(step)) {
+  for(int i = 0; i < u_fNumSamples; ++i, currPos += step, lenAcc += length(step)) {
     float density = texture(u_sDensityMap, currPos).r;
-    float alpha = texture(u_sAlphaMap, currPos).r;
-    vec3 color = texture(u_sColorTFunction, density).rgb;
+    float alpha = density;
+    vec3 color = vec3(density);
+
+    if(u_bHasAlphaMap)
+      alpha = texture(u_sAlphaMap, currPos).r;
+    if(u_bHasColorMap)
+      color = texture(u_sColorTFunction, density).rgb;
+
+    //float alpha = texture(u_sAlphaMap, currPos).r;
+    //vec3 color = texture(u_sColorTFunction, density).rgb;
 
     vec4 colorSample = vec4(color, alpha);
 

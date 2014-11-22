@@ -11,12 +11,12 @@ class AlphaManager : public Singleton<AlphaManager>
   friend class Singleton<AlphaManager>;
 
 public:
-  bool Init(std::string path);
-  bool Add(std::string key, knl::Dataset* alpha_map);
-  void SetActive(std::string key, GLenum tex_unit = GL_TEXTURE0);
-  knl::Dataset* Get(std::string key);
-  knl::Dataset* GetCurrent();
-  void FreeResources();
+  bool init(std::string path);
+  bool add(std::string key, knl::Dataset* alpha_map);
+  bool setActive(std::string key, GLenum tex_unit = GL_TEXTURE0);
+  knl::Dataset* get(std::string key);
+  knl::Dataset* getCurrent();
+  void freeResources();
 
 private:
   std::map<std::string, knl::Dataset*> m_alphaMap;

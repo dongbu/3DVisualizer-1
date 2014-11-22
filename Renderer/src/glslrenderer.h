@@ -31,6 +31,26 @@ public:
     m_numSamples = n;
   }
 
+  bool isUsingAlphaMap()
+  {
+    return m_usingAlphaMap;
+  }
+
+  void setUsingAlphaMap(bool b)
+  {
+    m_usingAlphaMap = b;
+  }
+
+  bool isUsingColorMap()
+  {
+    return m_usingColorMap;
+  }
+
+  void setUsingColorMap(bool b)
+  {
+    m_usingColorMap = b;
+  }
+
   Arcball* m_arcball;
   glm::mat4 m_viewMatrix;
   glm::mat4 m_projMatrix;
@@ -39,6 +59,8 @@ public:
 private:
 
   size_t m_numSamples;
+  bool m_usingAlphaMap;
+  bool m_usingColorMap;
 
   void initFBO();
   void initMesh();

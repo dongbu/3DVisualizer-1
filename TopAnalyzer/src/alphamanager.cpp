@@ -7,7 +7,7 @@
 
 using namespace knl;
 
-bool AlphaManager::Init(std::string path)
+bool AlphaManager::init(std::string path)
 {
   m_alphaPath = path;
 
@@ -29,13 +29,13 @@ bool AlphaManager::Init(std::string path)
     std::istringstream(data_child->FirstChild("height")->FirstChild()->Value()) >> d->height;
     std::istringstream(data_child->FirstChild("slices")->FirstChild()->Value()) >> d->slices;
 
-    Add(data_child->FirstChild("name")->FirstChild()->Value(), d);
+    add(data_child->FirstChild("name")->FirstChild()->Value(), d);
   }
 
   return true;
 }
 
-bool AlphaManager::Add(std::string key, Dataset* alpha_map)
+bool AlphaManager::add(std::string key, Dataset* alpha_map)
 {
   if(key.empty() || alpha_map == NULL) {
     Logger::instance()->error("AlphaManager::Add - invalid parameters. Returning now.");
@@ -46,43 +46,46 @@ bool AlphaManager::Add(std::string key, Dataset* alpha_map)
   return true;
 }
 
-void AlphaManager::SetActive(std::string key, GLenum tex_unit)
+bool AlphaManager::setActive(std::string key, GLenum tex_unit)
 {
-  if(key.empty() || m_activeKey == key) return;
+  if(key.empty() || m_activeKey == key) return true;
 
   std::map<std::string, Dataset*>::iterator it = m_alphaMap.find(key);
 
-  if(it == m_alphaMap.end()) return;
+  if(it == m_alphaMap.end()) return false;
 
   Dataset* data = it->second;
   if(!data->isLoaded()) {
     if(!data->load(m_alphaPath + it->first + ".raw")) {
       Logger::instance()->error("Failed to load alpha map " + key);
+      return false;
     }
   }
   if(!data->isUploaded()) {
     if(!data->upload()) {
       Logger::instance()->error("Failed to upload alpha map " + key);
+      return false;
     }
   }
 
   data->bind(tex_unit);
   m_activeKey = key;
+  return true;
 }
 
-Dataset* AlphaManager::Get(std::string key)
+Dataset* AlphaManager::get(std::string key)
 {
   assert(!key.empty());
   assert(m_alphaMap.find(key) != m_alphaMap.end());
   return m_alphaMap[key];
 }
 
-Dataset* AlphaManager::GetCurrent()
+Dataset* AlphaManager::getCurrent()
 {
-  return Get(m_activeKey);
+  return get(m_activeKey);
 }
 
-void AlphaManager::FreeResources()
+void AlphaManager::freeResources()
 {
   for(auto it = m_alphaMap.begin(); it != m_alphaMap.end(); it++) {
     if(it->second->tex_id != 0)

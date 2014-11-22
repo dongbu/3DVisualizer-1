@@ -56,28 +56,31 @@ bool TFManager::add(std::string key, TFunction* tf)
   return true;
 }
 
-void TFManager::setActive(std::string key, GLenum tex_unit)
+bool TFManager::setActive(std::string key, GLenum tex_unit)
 {
-  if(key.empty() || m_activeKey == key) return;
+  if(key.empty() || m_activeKey == key) return true;
 
   std::map<std::string, TFunction*>::iterator it = m_funcMap.find(key);
 
-  if(it == m_funcMap.end()) return;
+  if(it == m_funcMap.end()) return false;
 
   TFunction* tf = it->second;
   if(!tf->isLoaded()) {
     if(!tf->load(m_tfPath + it->first + ".raw")) {
       Logger::instance()->error("Failed to load transfer function " + key);
+      return false;
     }
   }
   if(!tf->isUploaded()) {
     if(!tf->upload()) {
       Logger::instance()->error("Failed to upload transfer function " + key);
+      return false;
     }
   }
 
   tf->bind(tex_unit);
   m_activeKey = key;
+  return true;
 }
 
 TFunction* TFManager::get(std::string key)

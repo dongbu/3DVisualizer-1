@@ -64,7 +64,7 @@ void VisWindow::keyPressEvent(QKeyEvent* e)
     break;
   case Qt::Key_Space:
     TopAnalyzer::instance()->AnalyzeCurrDataset(m_renderWidget->getFlowRate(), DatasetManager::instance()->getCurrentKey());
-    AlphaManager::instance()->SetActive(DatasetManager::instance()->getCurrentKey(), GL_TEXTURE2);
+    AlphaManager::instance()->setActive(DatasetManager::instance()->getCurrentKey(), GL_TEXTURE2);
     break;
   case Qt::Key_1:
     TFManager::instance()->setActive("tff1", GL_TEXTURE3);

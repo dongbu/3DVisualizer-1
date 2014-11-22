@@ -24,8 +24,8 @@ VisWidget::VisWidget(const QGLFormat& format, QWidget *parent) :
   m_timer = new QTimer(this);
   connect(m_timer, SIGNAL(timeout()), this, SLOT(update()));
   initialized(false);
-  data_loaded(false);
-  metafile_loaded(false);
+  dataLoaded(false);
+  metafileLoaded(false);
 }
 
 VisWidget::~VisWidget()
@@ -33,8 +33,8 @@ VisWidget::~VisWidget()
   m_timer->stop();
   delete m_timer;
   initialized(false);
-  data_loaded(false);
-  metafile_loaded(false);
+  dataLoaded(false);
+  metafileLoaded(false);
 }
 
 void VisWidget::startTimer(int msec)
@@ -54,7 +54,7 @@ bool VisWidget::loadMetafile(std::string path, DatasetType tp)
   bool ret = DatasetManager::instance()->init(new_path);
   ret &= TFManager::instance()->init(new_path + "transfer-functions/");
 
-  metafile_loaded(ret);
+  metafileLoaded(ret);
 
   return isMetafileLoaded();
 }
@@ -66,7 +66,9 @@ bool VisWidget::loadColorTF(std::string key)
 
 bool VisWidget::loadAlphaTF(std::string key)
 {
-return false;
+  alphaLoaded(AlphaManager::instance()->setActive(key, GL_TEXTURE2));
+  ((GLSLRenderer*) RendererManager::instance()->getCurrent())->setUsingAlphaMap(isAlphaLoaded());
+  return isAlphaLoaded();
 }
 
 bool VisWidget::saveAlphaTF(std::string key)
@@ -76,7 +78,7 @@ return false;
 
 bool VisWidget::loadDataset(std::string key)
 {
-  data_loaded(DatasetManager::instance()->setActive(key));
+  dataLoaded(DatasetManager::instance()->setActive(key));
   return isDatasetLoaded();
 }
 

@@ -22,6 +22,8 @@ GLSLRenderer::GLSLRenderer(size_t w, size_t h, size_t numSamples) :
   m_type = RendererType::GLSL;
   initialized(false);
   updating(false);
+  setUsingAlphaMap(false);
+  setUsingColorMap(false);
 
 #ifdef WIN32
   m_arcball = new Arcball(width(), height(), 0.85);
@@ -60,10 +62,10 @@ void GLSLRenderer::update()
     return;
 }
 
-void GLSLRenderer::resize(int w, int h)
+void GLSLRenderer::resize(int, int)
 {}
 
-void GLSLRenderer::keypress(int key, int press)
+void GLSLRenderer::keypress(int, int)
 {}
 
 void GLSLRenderer::mousebutton(int button, int pressed, int, int)
@@ -111,8 +113,10 @@ void GLSLRenderer::draw()
   spass->setUniformMatrix("u_mView", rot);
 
   DatasetManager::instance()->getCurrent()->bind(GL_TEXTURE1);
-  AlphaManager::instance()->GetCurrent()->bind(GL_TEXTURE2);
-  TFManager::instance()->getCurrent()->bind(GL_TEXTURE3);
+  if(isUsingAlphaMap())
+    AlphaManager::instance()->getCurrent()->bind(GL_TEXTURE2);
+  if(isUsingColorMap())
+    TFManager::instance()->getCurrent()->bind(GL_TEXTURE3);
 
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, fbo->getAttachmentId(GL_COLOR_ATTACHMENT0));

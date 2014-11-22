@@ -12,7 +12,7 @@ class TFManager : public Singleton<TFManager>
 public:
   bool init(std::string path);
   bool add(std::string key, TFunction* tf);
-  void setActive(std::string key, GLenum tex_unit = GL_TEXTURE0);
+  bool setActive(std::string key, GLenum tex_unit = GL_TEXTURE0);
   TFunction* get(std::string key);
   TFunction* getCurrent();
   void freeResources();

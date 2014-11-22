@@ -55,16 +55,18 @@ bool DatasetManager::setActive(std::string key, GLenum tex_unit)
   if(it == m_datasetMap.end()) return false;
 
   Dataset* data = it->second;
-  if(!data->isLoaded())
+  if(!data->isLoaded()) {
     if(!data->load(m_dataPath + it->first + ".raw")) {
       Logger::instance()->error("Failed to load dataset " + key);
       return false;
     }
-  if(!data->isUploaded())
+  }
+  if(!data->isUploaded()) {
     if(!data->upload()) {
       Logger::instance()->error("Failed to upload dataset " + key);
       return false;
     }
+  }
 
   data->bind(tex_unit);
   m_activeKey = key;

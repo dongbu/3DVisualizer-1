@@ -60,9 +60,9 @@ unix {
 #LIBS += -lglib-2.0
 
 HEADERS += \
-    src/config.h \
     src/viswindow.h \
-    src/viswidget.h
+    src/viswidget.h \
+    src/visconfig.h
 
 SOURCES += \
     src/main.cpp \
