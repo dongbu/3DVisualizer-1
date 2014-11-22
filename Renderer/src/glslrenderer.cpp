@@ -6,6 +6,8 @@
 #include "datasetmanager.h"
 #include "tfmanager.h"
 #include "cube.h"
+#include "shader.h"
+#include "mesh.h"
 #include "config.h"
 
 static void cb_drawcube_idx(size_t)
