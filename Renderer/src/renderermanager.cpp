@@ -9,7 +9,7 @@ bool RendererManager::init()
 bool RendererManager::add(std::string key, Renderer* r)
 {
   if(key.empty() || r == NULL) {
-    Logger::instance()->error("RendererManager::Add invalid parameters");
+    Logger::getInstance()->error("RendererManager::Add invalid parameters");
     return false;
   }
 

@@ -17,7 +17,7 @@ extern "C"
 static knl::Dataset* CreateAlphaDataset(knl::Dataset& dataset, ctBranch** branch_map)
 {
   if(branch_map == NULL) {
-    Logger::instance()->error("knl::Dataset* CreateAlphaDataset - branch_map is NULL. Returning now.");
+    Logger::getInstance()->error("knl::Dataset* CreateAlphaDataset - branch_map is NULL. Returning now.");
     return NULL;
   }
 
@@ -47,7 +47,7 @@ static knl::Dataset* CreateAlphaDataset(knl::Dataset& dataset, ctBranch** branch
 DEPRECATED static knl::Dataset* CreateVTBMap(ctBranch** vtb_map, size_t dim[], size_t last_label)
 {
   if(vtb_map == NULL) {
-    Logger::instance()->error("knl::Dataset* CreateVTBMap -> invalid vertex-branch map.");
+    Logger::getInstance()->error("knl::Dataset* CreateVTBMap -> invalid vertex-branch map.");
     return NULL;
   }
 
@@ -74,7 +74,7 @@ DEPRECATED static knl::Dataset* CreateVTBMap(ctBranch** vtb_map, size_t dim[], s
 DEPRECATED static TFunction* CreateOpTF(ctBranch* root_branch, size_t rows)
 {
   if(root_branch == NULL || rows == 0) {
-    Logger::instance()->error("TFunction* CreateOpTF -> invalid parameter(s).");
+    Logger::getInstance()->error("TFunction* CreateOpTF -> invalid parameter(s).");
     return NULL;
   }
 
@@ -143,12 +143,12 @@ static void BranchFree(ctBranch* b, void*)
 
 void TopAnalyzer::Init()
 {
-  Logger::instance()->warn("TopAnalyzer::Init() - Not implemented.");
+  Logger::getInstance()->warn("TopAnalyzer::Init() - Not implemented.");
 }
 
 void TopAnalyzer::AnalyzeCurrDataset(double flow_rate, std::string key)
 {
-  knl::Dataset* data = DatasetManager::instance()->getCurrent();
+  knl::Dataset* data = DatasetManager::getInstance()->getCurrent();
   AnalyzeDataset(data, flow_rate, key);
 }
 
@@ -222,7 +222,7 @@ void TopAnalyzer::AnalyzeDataset(knl::Dataset* data, double flow_rate, std::stri
   b = tbb::tick_count::now();
   std::cout << "\tAlpha map in " << (b - a).seconds() << " seconds" << std::endl;
 
-  AlphaManager::instance()->add(key, alpha_map);
+  AlphaManager::getInstance()->add(key, alpha_map);
 
   delete alpha_map;
 

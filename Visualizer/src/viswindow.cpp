@@ -1,9 +1,10 @@
 #include "viswindow.h"
-#include "config.h"
+#include "visconfig.h"
 #include "viswidget.h"
 #include "tinygl.h"
 #include "alphamanager.h"
 #include "topanalyzer.h"
+#include "datasetmanager.h"
 
 #include <iostream>
 #include <GL/glew.h>
@@ -16,6 +17,8 @@
 #include <QToolBar>
 #include <QStatusBar>
 #include <QFileDialog>
+#include <QListWidget>
+#include <QListWidgetItem>
 
 VisWindow::VisWindow(QWidget* parent, int w, int h, std::string path) :
   QMainWindow(parent)
@@ -63,41 +66,63 @@ void VisWindow::keyPressEvent(QKeyEvent* e)
     QApplication::instance()->quit();
     break;
   case Qt::Key_Space:
-    TopAnalyzer::instance()->AnalyzeCurrDataset(m_renderWidget->getFlowRate(), DatasetManager::instance()->getCurrentKey());
-    AlphaManager::instance()->setActive(DatasetManager::instance()->getCurrentKey(), GL_TEXTURE2);
+    TopAnalyzer::getInstance()->AnalyzeCurrDataset(m_renderWidget->getFlowRate(), DatasetManager::getInstance()->getCurrentKey());
+    AlphaManager::getInstance()->setActive(DatasetManager::getInstance()->getCurrentKey(), GL_TEXTURE2);
     break;
   case Qt::Key_1:
-    TFManager::instance()->setActive("tff1", GL_TEXTURE3);
+    m_renderWidget->stopTimer();
+    m_renderWidget->loadColorTF("tff1");
+    m_renderWidget->startTimer(16);
     break;
   case Qt::Key_2:
-    TFManager::instance()->setActive("tff2", GL_TEXTURE3);
+    m_renderWidget->stopTimer();
+    m_renderWidget->loadColorTF("tff2");
+    m_renderWidget->startTimer(16);
     break;
   case Qt::Key_F1:
-    DatasetManager::instance()->setActive("neghip", GL_TEXTURE1);
+    m_renderWidget->stopTimer();
+    m_renderWidget->loadDataset("neghip");
+    m_renderWidget->startTimer(16);
     break;
   case Qt::Key_F2:
-    DatasetManager::instance()->setActive("bonsai", GL_TEXTURE1);
+    m_renderWidget->stopTimer();
+    m_renderWidget->loadDataset("bonsai");
+    m_renderWidget->startTimer(16);
     break;
   case Qt::Key_F3:
-    DatasetManager::instance()->setActive("nucleon", GL_TEXTURE1);
+    m_renderWidget->stopTimer();
+    m_renderWidget->loadDataset("nucleon");
+    m_renderWidget->startTimer(16);
     break;
   case Qt::Key_F4:
-    DatasetManager::instance()->setActive("silicium", GL_TEXTURE1);
+    m_renderWidget->stopTimer();
+    m_renderWidget->loadDataset("silicium");
+    m_renderWidget->startTimer(16);
     break;
   case Qt::Key_F5:
-    DatasetManager::instance()->setActive("fuel", GL_TEXTURE1);
+    m_renderWidget->stopTimer();
+    m_renderWidget->loadDataset("fuel");
+    m_renderWidget->startTimer(16);
     break;
   case Qt::Key_F6:
-    DatasetManager::instance()->setActive("BostonTeapot", GL_TEXTURE1);
+    m_renderWidget->stopTimer();
+    m_renderWidget->loadDataset("BostonTeapot");
+    m_renderWidget->startTimer(16);
     break;
   case Qt::Key_F7:
-    DatasetManager::instance()->setActive("lobster", GL_TEXTURE1);
+    m_renderWidget->stopTimer();
+    m_renderWidget->loadDataset("lobster");
+    m_renderWidget->startTimer(16);
     break;
   case Qt::Key_F8:
-    DatasetManager::instance()->setActive("foot", GL_TEXTURE1);
+    m_renderWidget->stopTimer();
+    m_renderWidget->loadDataset("foot");
+    m_renderWidget->startTimer(16);
     break;
   case Qt::Key_F9:
-    DatasetManager::instance()->setActive("CT-Knee", GL_TEXTURE1);
+    m_renderWidget->stopTimer();
+    m_renderWidget->loadDataset("CT-Knee");
+    m_renderWidget->startTimer(16);
     break;
   }
 }
@@ -124,8 +149,20 @@ void VisWindow::loadDataset()
   using std::cout;
   using std::endl;
 
-  vector<string> vec = DatasetManager::instance()->getKeys();
-  m_renderWidget->loadDataset(vec[0]);
+  vector<string> keys = DatasetManager::getInstance()->getKeys();
+  cout << keys.size() << endl;
+  m_renderWidget->stopTimer();
+
+
+//  QListWidget list(this);
+//  for(auto it : keys) {
+//    QListWidgetItem i(list);
+//    list.addItem(i);
+//  }
+
+//  list.e
+
+  m_renderWidget->loadDataset(keys[0]);
   m_renderWidget->startTimer(16);
 }
 

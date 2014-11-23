@@ -38,7 +38,12 @@ public:
 
   bool isAlphaLoaded()
   {
-    return m_alphaLoaded;
+    return m_alphaMapLoaded;
+  }
+
+  bool isColorLoaded()
+  {
+    return m_colorMapLoaded;
   }
 
   size_t getNumSamples()
@@ -99,7 +104,8 @@ private:
   bool m_initCalled;
   bool m_metafileLoaded;
   bool m_datasetLoaded;
-  bool m_alphaLoaded;
+  bool m_alphaMapLoaded;
+  bool m_colorMapLoaded;
 
   void initialized(bool i)
   {
@@ -116,9 +122,14 @@ private:
     m_datasetLoaded = l;
   }
 
-  void alphaLoaded(bool l)
+  void alphaMapLoaded(bool l)
   {
-    m_alphaLoaded = l;
+    m_alphaMapLoaded = l;
+  }
+
+  void colorMapLoaded(bool l)
+  {
+    m_colorMapLoaded = l;
   }
 };
 

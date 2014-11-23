@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <map>
 #include <string>
+
 #include "singleton.h"
 #include "renderer.h"
 

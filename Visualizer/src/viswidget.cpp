@@ -7,7 +7,7 @@
 #include "alphamanager.h"
 #include "renderermanager.h"
 #include "glslrenderer.h"
-#include "config.h"
+#include "visconfig.h"
 
 #include <QApplication>
 #include <QKeyEvent>
@@ -51,8 +51,8 @@ bool VisWidget::loadMetafile(std::string path, DatasetType tp)
 {
   std::string new_path = path + std::string("/");
 
-  bool ret = DatasetManager::instance()->init(new_path);
-  ret &= TFManager::instance()->init(new_path + "transfer-functions/");
+  bool ret = DatasetManager::getInstance()->init(new_path);
+  ret &= TFManager::getInstance()->init(new_path + "transfer-functions/");
 
   metafileLoaded(ret);
 
@@ -61,13 +61,23 @@ bool VisWidget::loadMetafile(std::string path, DatasetType tp)
 
 bool VisWidget::loadColorTF(std::string key)
 {
-  return false;
+  if(!isMetafileLoaded()) {
+    return false;
+  }
+
+  colorMapLoaded(TFManager::getInstance()->setActive(key, GL_TEXTURE3));
+  ((GLSLRenderer*) RendererManager::getInstance()->getCurrent())->setUsingColorMap(isColorLoaded());
+  return isColorLoaded();
 }
 
 bool VisWidget::loadAlphaTF(std::string key)
 {
-  alphaLoaded(AlphaManager::instance()->setActive(key, GL_TEXTURE2));
-  ((GLSLRenderer*) RendererManager::instance()->getCurrent())->setUsingAlphaMap(isAlphaLoaded());
+  if(!isMetafileLoaded()) {
+    return false;
+  }
+
+  alphaMapLoaded(AlphaManager::getInstance()->setActive(key, GL_TEXTURE2));
+  ((GLSLRenderer*) RendererManager::getInstance()->getCurrent())->setUsingAlphaMap(isAlphaLoaded());
   return isAlphaLoaded();
 }
 
@@ -78,7 +88,11 @@ return false;
 
 bool VisWidget::loadDataset(std::string key)
 {
-  dataLoaded(DatasetManager::instance()->setActive(key));
+  if(!isMetafileLoaded()) {
+    return false;
+  }
+
+  dataLoaded(DatasetManager::getInstance()->setActive(key));
   return isDatasetLoaded();
 }
 
@@ -110,23 +124,23 @@ void VisWidget::initializeGL()
   rend->init();
   rend->updating(true);
 
-  RendererManager::instance()->add("glslrenderer", rend);
-  RendererManager::instance()->setActive("glslrenderer");
+  RendererManager::getInstance()->add("glslrenderer", rend);
+  RendererManager::getInstance()->setActive("glslrenderer");
   initialized(true);
 }
 
 void VisWidget::paintGL()
 {
   if(isInitialized() && isDatasetLoaded()) {
-    RendererManager::instance()->getCurrent()->update();
-    RendererManager::instance()->getCurrent()->draw();
+    RendererManager::getInstance()->getCurrent()->update();
+    RendererManager::getInstance()->getCurrent()->draw();
   }
 }
 
 void VisWidget::resizeEvent(QResizeEvent*)
 {
   if(isInitialized())
-    RendererManager::instance()->getCurrent()->resize(width(), height());
+    RendererManager::getInstance()->getCurrent()->resize(width(), height());
 }
 
 void VisWidget::closeEvent(QCloseEvent*)
@@ -144,7 +158,7 @@ void VisWidget::keyReleaseEvent(QKeyEvent*)
 void VisWidget::mousePressEvent(QMouseEvent* e)
 {
   if(e->button() == Qt::LeftButton) {
-    GLSLRenderer* rend = (GLSLRenderer*) RendererManager::instance()->getCurrent();
+    GLSLRenderer* rend = (GLSLRenderer*) RendererManager::getInstance()->getCurrent();
     rend->setNumSamples(128);
     rend->mousebutton(e->button(), 1, e->x(), e->y());
   }
@@ -152,14 +166,14 @@ void VisWidget::mousePressEvent(QMouseEvent* e)
 
 void VisWidget::mouseReleaseEvent(QMouseEvent* e)
 {
-  GLSLRenderer* rend = (GLSLRenderer*) RendererManager::instance()->getCurrent();
+  GLSLRenderer* rend = (GLSLRenderer*) RendererManager::getInstance()->getCurrent();
   rend->setNumSamples(256);
   rend->mousebutton(e->button(), 0, e->x(), e->y());
 }
 
 void VisWidget::mouseMoveEvent(QMouseEvent* e)
 {
-  RendererManager::instance()->getCurrent()->mousemove(e->x(), e->y());
+  RendererManager::getInstance()->getCurrent()->mousemove(e->x(), e->y());
 }
 
 void VisWidget::wheelEvent(QWheelEvent*)

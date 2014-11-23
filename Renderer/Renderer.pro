@@ -1,6 +1,6 @@
 TARGET = renderer
 TEMPLATE = lib
-CONFIG += staticlib c++11
+CONFIG += static c++11
 
 INCLUDEPATH += ../Kernel/src
 INCLUDEPATH += ../TinyGL/src
@@ -48,10 +48,10 @@ unix {
 
 HEADERS += \
     src/arcball.h \
-    src/config.h \
     src/glslrenderer.h \
     src/renderer.h \
-    src/renderermanager.h
+    src/renderermanager.h \
+    src/rendconfig.h
 
 SOURCES += \
     src/arcball.cpp \

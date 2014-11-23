@@ -8,7 +8,7 @@
 #include "cube.h"
 #include "shader.h"
 #include "mesh.h"
-#include "config.h"
+#include "rendconfig.h"
 
 static void cb_drawcube_idx(size_t)
 {
@@ -86,7 +86,7 @@ void GLSLRenderer::draw()
   if(!isUpdating() || !isInitialized())
     return;
 
-  TinyGL* gl_ptr = TinyGL::instance();
+  TinyGL* gl_ptr = TinyGL::getInstance();
   Mesh* m = gl_ptr->getMesh("proxy_cube");
   Shader* fpass = gl_ptr->getShader(FPASS_KEY);
   Shader* spass = gl_ptr->getShader(SPASS_KEY);
@@ -112,11 +112,21 @@ void GLSLRenderer::draw()
   spass->bind();
   spass->setUniformMatrix("u_mView", rot);
 
-  DatasetManager::instance()->getCurrent()->bind(GL_TEXTURE1);
-  if(isUsingAlphaMap())
-    AlphaManager::instance()->getCurrent()->bind(GL_TEXTURE2);
-  if(isUsingColorMap())
-    TFManager::instance()->getCurrent()->bind(GL_TEXTURE3);
+  DatasetManager::getInstance()->getCurrent()->bind(GL_TEXTURE1);
+
+  if(isUsingAlphaMap()) {
+    AlphaManager::getInstance()->getCurrent()->bind(GL_TEXTURE2);
+    spass->setUniform1i("u_bHasAlphaMap", 1);
+  }
+  else
+    spass->setUniform1i("u_bHasAlphaMap", 0);
+
+  if(isUsingColorMap()) {
+    TFManager::getInstance()->getCurrent()->bind(GL_TEXTURE3);
+    spass->setUniform1i("u_bHasColorMap", 1);
+  }
+  else
+    spass->setUniform1i("u_bHasColorMap", 0);
 
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, fbo->getAttachmentId(GL_COLOR_ATTACHMENT0));
@@ -159,7 +169,7 @@ void GLSLRenderer::initFBO()
   glDrawBuffers(1, draw_buff);
 
   FramebufferObject::unbind();
-  TinyGL::instance()->addResource(FRAMEBUFFER, FBO_KEY, fbo);
+  TinyGL::getInstance()->addResource(FRAMEBUFFER, FBO_KEY, fbo);
 }
 
 void GLSLRenderer::initMesh()
@@ -168,13 +178,13 @@ void GLSLRenderer::initMesh()
   cube->m_modelMatrix = glm::mat4(1);
   cube->setDrawCb(cb_drawcube_idx);
 
-  TinyGL::instance()->addResource(MESH, "proxy_cube", cube);
+  TinyGL::getInstance()->addResource(MESH, "proxy_cube", cube);
 }
 
 void GLSLRenderer::initShaders()
 {
   float screen_sz[2] = {static_cast<float>(width()), static_cast<float>(height())};
-  glm::mat4 modelMatrix = TinyGL::instance()->getMesh("proxy_cube")->m_modelMatrix;
+  glm::mat4 modelMatrix = TinyGL::getInstance()->getMesh("proxy_cube")->m_modelMatrix;
 
   Shader* fpass = new Shader(std::string("shaders/FPass.vs"),
                              std::string("shaders/FPass.fs"));
@@ -213,8 +223,8 @@ void GLSLRenderer::initShaders()
 
   Shader::Unbind();
 
-  TinyGL::instance()->addResource(SHADER, FPASS_KEY, fpass);
-  TinyGL::instance()->addResource(SHADER, SPASS_KEY, spass);
+  TinyGL::getInstance()->addResource(SHADER, FPASS_KEY, fpass);
+  TinyGL::getInstance()->addResource(SHADER, SPASS_KEY, spass);
 }
 
 void GLSLRenderer::initGLEW()

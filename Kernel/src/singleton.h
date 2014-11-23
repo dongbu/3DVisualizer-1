@@ -8,7 +8,7 @@ template <class T>
 class Singleton
 {
 public:
-  inline static T* instance()
+  inline static T* getInstance()
   {
     if (!m_instance)
       m_instance = new T;

@@ -1,6 +1,6 @@
 TARGET = contourtree
 TEMPLATE = lib
-CONFIG += staticlib c++11
+CONFIG += static c++11
 
 INCLUDEPATH += ../Kernel/src
 INCLUDEPATH += ../TinyGL/src

@@ -12,9 +12,9 @@ INCLUDEPATH += ../../libtourtre/include
 DESTDIR = $$OUT_PWD/../
 
 LIBS += -L$$OUT_PWD/.. -lrenderer
+LIBS += -L$$OUT_PWD/.. -lcontourtree
 LIBS += -L$$OUT_PWD/.. -lviskernel
 LIBS += -L$$OUT_PWD/.. -ltinygl
-LIBS += -L$$OUT_PWD/.. -lcontourtree
 
 win32 {
     INCLUDEPATH += $$PWD/../../glew/include
@@ -68,5 +68,3 @@ SOURCES += \
     src/main.cpp \
     src/viswindow.cpp \
     src/viswidget.cpp
-
-FORMS +=

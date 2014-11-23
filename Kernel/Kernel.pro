@@ -1,6 +1,6 @@
 TARGET = viskernel
 TEMPLATE = lib
-CONFIG += staticlib c++11
+CONFIG += static c++11
 
 DESTDIR = $$OUT_PWD/../
 
