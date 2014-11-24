@@ -169,11 +169,17 @@ void VisWindow::loadColorTF()
   using std::vector;
   using std::string;
 
-  vector<string> vkeys = TFManager::getInstance()->getKeys();
+  knl::Dataset* data = DatasetManager::getInstance()->getCurrent();
+  TFManager* tfinstance = TFManager::getInstance();
+
+  vector<string> vkeys = tfinstance->getKeys();
   QStringList keys;
 
   for(auto it : vkeys) {
-    keys << QString(it.c_str());
+    TFunction* tf = tfinstance->get(it.c_str());
+    if(tf->bytes_elem == data->bytes_elem) {
+      keys << QString(it.c_str());
+    }
   }
 
   bool ok;
