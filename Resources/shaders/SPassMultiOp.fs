@@ -34,10 +34,12 @@ vec4 composite(Ray ray, vec3 step)
     float alpha = density;
     vec3 color = vec3(density);
 
+    if(u_bHasColorMap) {
+      color = texture(u_sColorTFunction, density).rgb;
+      alpha = texture(u_sColorTFunction, density).a;
+    }
     if(u_bHasAlphaMap)
       alpha = texture(u_sAlphaMap, currPos).r;
-    if(u_bHasColorMap)
-      color = texture(u_sColorTFunction, density).rgb;
 
     //float alpha = texture(u_sAlphaMap, currPos).r;
     //vec3 color = texture(u_sColorTFunction, density).rgb;
