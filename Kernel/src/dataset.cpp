@@ -93,6 +93,7 @@ namespace knl
   bool Dataset::load(std::string path)
   {
     assert(!path.empty());
+
     if(isLoaded()) {
       memset(data, 0, width * height * slices * bytes_elem);
       free(data);
@@ -100,22 +101,34 @@ namespace knl
       loaded(false);
     }
     if(isUploaded()) {
+      //FIXME: Destroy the texture data here.
       uploaded(false);
     }
 
     data = calloc(width * height * slices, bytes_elem);
-    loaded(data::LoadBinary(path, width * height * slices, bytes_elem, data));
+    loaded(io::LoadBinary(path, width * height * slices, bytes_elem, data));
     return isLoaded();
+  }
+
+  bool Dataset::save(std::string path)
+  {
+    assert(!path.empty());
+
+    if(!isLoaded()) {
+      return false;
+    }
+
+    return io::SaveBinary(path, width * height * slices, bytes_elem, data);
   }
 
   bool Dataset::upload()
   {
     assert(width != 0 && height != 0 && slices != 0 && bytes_elem != 0 && data != NULL);
     if(tex_id == 0)
-      tex_id = knl::data::transfer::Alloc3DTex(width, height, slices, bytes_elem);
+      tex_id = knl::io::transfer::Alloc3DTex(width, height, slices, bytes_elem);
 
     assert(tex_id != 0);
-    uploaded(knl::data::transfer::Upload3DData(width, height, slices, bytes_elem, data, tex_id));
+    uploaded(knl::io::transfer::Upload3DData(width, height, slices, bytes_elem, data, tex_id));
 
     return isUploaded();
   }

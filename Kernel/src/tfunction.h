@@ -65,6 +65,14 @@ public:
   bool load(std::string path);
 
   /*!
+   \brief Save the data from a file.
+
+   \param path Full path to the file.
+   \return true if the file was successfully saved, false otherwise.
+  */
+  bool save(std::string path);
+
+  /*!
    \brief Upload the data to the OpenGL device
 
    \return true if the upload was successful, false otherwise.

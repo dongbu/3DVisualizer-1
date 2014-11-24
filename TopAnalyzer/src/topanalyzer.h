@@ -12,7 +12,7 @@ public:
   bool BuildContourTree();
 
   void AnalyzeCurrDataset(double flow_rate, std::string key);
-  void AnalyzeDataset(knl::Dataset* data, double flow_rate, std::string key);
+  void AnalyzeDataset(knl::Dataset* data, double flow_rate, std::string key, std::string data_key);
 };
 
 #endif // TOPANALYZER_H

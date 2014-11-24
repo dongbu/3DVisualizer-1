@@ -10,7 +10,7 @@ namespace knl
   * This namespace contains functions related to loading/saving data from/to
   * the disk.
   */
-  namespace data
+  namespace io
   {
 
     /*!
@@ -24,7 +24,7 @@ namespace knl
      \param data The buffer to hold the data. This buffer must be pre allocated.
      \return bool true if the data was successfully loaded, false otherwise.
     */
-    bool LoadBinary(std::string path, size_t num_elem, size_t bytes_elem, void* data);
+    bool LoadBinary(std::string path, size_t num_elem, size_t bytes_elem, void* io);
 
     /*!
      \brief Save binary data to the disk.
@@ -37,7 +37,7 @@ namespace knl
      \param data The pointer to the data.
      \return bool true if the data was successfully saved, false otherwise.
     */
-    bool SaveBinary(std::string path, size_t num_elem, size_t bytes_elem, void* data);
+    bool SaveBinary(std::string path, size_t num_elem, size_t bytes_elem, void* io);
   }
 
 }

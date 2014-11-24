@@ -68,9 +68,20 @@ bool TFunction::load(std::string path)
   }
   size_t sz = width() * rows * num_channels;
   data = calloc(sz, sizeof(GLubyte));
-  loaded(data::LoadBinary(path, sz, sizeof(GLubyte), data));
+  loaded(io::LoadBinary(path, sz, sizeof(GLubyte), data));
 
   return isLoaded();
+}
+
+bool TFunction::save(std::string path)
+{
+  assert(!path.empty());
+
+  if(!isLoaded()) {
+    return false;
+  }
+
+  return io::SaveBinary(path, width(), sizeof(GLubyte), data);
 }
 
 bool TFunction::upload()
@@ -78,17 +89,17 @@ bool TFunction::upload()
   assert(rows != 0 && num_channels != 0 && bytes_elem != 0 && data != NULL);
   if(tex_id == 0) {
     if(is1D()) {
-      tex_id = data::transfer::Alloc1DTex(width(), num_channels);
+      tex_id = io::transfer::Alloc1DTex(width(), num_channels);
     } else {
-      tex_id = data::transfer::Alloc2DTex(width(), rows, num_channels);
+      tex_id = io::transfer::Alloc2DTex(width(), rows, num_channels);
     }
   }
 
   assert(tex_id != 0);
   if(is1D()) {
-    uploaded(data::transfer::Upload1DData(width(), num_channels, data, tex_id));
+    uploaded(io::transfer::Upload1DData(width(), num_channels, data, tex_id));
   } else {
-    uploaded(data::transfer::Upload2DData(width(), rows, num_channels, data, tex_id));
+    uploaded(io::transfer::Upload2DData(width(), rows, num_channels, data, tex_id));
   }
 
   return isUploaded();

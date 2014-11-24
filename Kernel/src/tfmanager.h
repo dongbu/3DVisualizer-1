@@ -27,6 +27,11 @@ public:
     return v;
   }
 
+  std::string getPath()
+  {
+    return m_tfPath;
+  }
+
 private:
   std::map<std::string, TFunction*> m_funcMap;
   std::string m_activeKey;

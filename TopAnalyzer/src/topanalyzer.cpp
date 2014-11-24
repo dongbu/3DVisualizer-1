@@ -149,10 +149,11 @@ void TopAnalyzer::Init()
 void TopAnalyzer::AnalyzeCurrDataset(double flow_rate, std::string key)
 {
   knl::Dataset* data = DatasetManager::getInstance()->getCurrent();
-  AnalyzeDataset(data, flow_rate, key);
+  std::string data_key = DatasetManager::getInstance()->getCurrentKey();
+  AnalyzeDataset(data, flow_rate, key, data_key);
 }
 
-void TopAnalyzer::AnalyzeDataset(knl::Dataset* data, double flow_rate, std::string key)
+void TopAnalyzer::AnalyzeDataset(knl::Dataset* data, double flow_rate, std::string key, std::string data_key)
 {
   assert(data != NULL);
   tbb::tick_count a;
@@ -222,7 +223,7 @@ void TopAnalyzer::AnalyzeDataset(knl::Dataset* data, double flow_rate, std::stri
   b = tbb::tick_count::now();
   std::cout << "\tAlpha map in " << (b - a).seconds() << " seconds" << std::endl;
 
-  AlphaManager::getInstance()->add(key, alpha_map);
+  AlphaManager::getInstance()->add(key, data_key, alpha_map);
 
   delete alpha_map;
 

@@ -33,6 +33,11 @@ public:
     return v;
   }
 
+  std::string getPath()
+  {
+    return m_dataPath;
+  }
+
 private:
   std::map<std::string, knl::Dataset*> m_datasetMap;
   std::string m_activeKey;

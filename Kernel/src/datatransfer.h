@@ -6,7 +6,7 @@
 
 namespace knl
 {
-  namespace data
+  namespace io
   {
     /**
      * This namespace contains the functions that allocate/transfer the data to the
@@ -77,7 +77,7 @@ namespace knl
        \param tex_id
        \return bool
       */
-      bool Upload1DData(size_t w, size_t num_channels, void* data, GLuint tex_id);
+      bool Upload1DData(size_t w, size_t num_channels, void* io, GLuint tex_id);
 
       /*!
        \brief
@@ -89,7 +89,7 @@ namespace knl
        \param tex_id
        \return bool
       */
-      bool Upload2DData(size_t w, size_t h, size_t num_channels, void* data, GLuint tex_id);
+      bool Upload2DData(size_t w, size_t h, size_t num_channels, void* io, GLuint tex_id);
 
       /*!
        \brief
@@ -102,7 +102,7 @@ namespace knl
        \param tex_id
        \return bool
       */
-      bool Upload3DData(size_t w, size_t h, size_t slices, size_t bytes_elem, void* data, GLuint tex_id);
+      bool Upload3DData(size_t w, size_t h, size_t slices, size_t bytes_elem, void* io, GLuint tex_id);
     }
   }
 }

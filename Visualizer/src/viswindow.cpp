@@ -37,8 +37,8 @@ VisWindow::VisWindow(QWidget* parent, int w, int h, std::string path) :
 
   while(path.empty()) {
     QString qpath = QFileDialog::getExistingDirectory(this,
-                                                     "Load Metafile",
-                                                     QDir::home().absolutePath());
+                                                      "Load Metafile",
+                                                      QDir::home().absolutePath());
 
     path = qpath.toStdString();
     m_renderWidget->loadMetafile(path, DATASET);
@@ -162,7 +162,24 @@ void VisWindow::loadDataset()
 }
 
 void VisWindow::loadAlphaTF()
-{}
+{
+  using std::vector;
+  using std::string;
+
+  vector<string> vkeys = AlphaManager::getInstance()->getKeys();
+  QStringList keys;
+  for(auto it : vkeys) {
+    keys << QString(it.c_str());
+  }
+
+  bool ok;
+  QString key = QInputDialog::getItem(this, tr("Load Alpha Map"), tr("Map:"), keys, 0, false, &ok);
+  if(ok && !key.isEmpty()) {
+    m_renderWidget->stopTimer();
+    m_renderWidget->loadAlphaTF(key.toStdString());
+    m_renderWidget->startTimer(16);
+  }
+}
 
 void VisWindow::loadColorTF()
 {
@@ -177,7 +194,8 @@ void VisWindow::loadColorTF()
 
   for(auto it : vkeys) {
     TFunction* tf = tfinstance->get(it.c_str());
-    if(tf->bytes_elem == data->bytes_elem) {
+    if(tf->bytes_elem == data->bytes_elem &&
+       tf->num_channels > 1) {
       keys << QString(it.c_str());
     }
   }
@@ -193,7 +211,20 @@ void VisWindow::loadColorTF()
 
 void VisWindow::saveAlphaTF()
 {
+  using std::string;
+  using std::vector;
+  using std::cout;
+  using std::endl;
 
+  m_renderWidget->saveAlphaTF(AlphaManager::getInstance()->getCurrentKey(),
+                              DatasetManager::getInstance()->getCurrentKey());
+
+//  bool ok;
+//  QString key = QInputDialog::getText(this, tr("Save alpha map"),
+//                                       tr("Name:"), QLineEdit::Normal,
+//                                       QDir::home().dirName(), &ok);
+//  if (ok && !key.isEmpty())
+//    cout << key.toStdString() << endl;
 }
 
 void VisWindow::analyzeDataset()

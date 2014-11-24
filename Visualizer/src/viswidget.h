@@ -75,7 +75,7 @@ public slots:
   bool loadColorTF(std::string key);
   bool loadAlphaTF(std::string key);
 
-  bool saveAlphaTF(std::string key);
+  bool saveAlphaTF(std::string key, std::string data_key);
 
 protected:
   virtual void initializeGL();

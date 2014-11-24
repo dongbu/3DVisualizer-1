@@ -26,6 +26,8 @@ VisWidget::VisWidget(const QGLFormat& format, QWidget *parent) :
   initialized(false);
   dataLoaded(false);
   metafileLoaded(false);
+  colorMapLoaded(false);
+  alphaMapLoaded(false);
 }
 
 VisWidget::~VisWidget()
@@ -33,8 +35,10 @@ VisWidget::~VisWidget()
   m_timer->stop();
   delete m_timer;
   initialized(false);
-  dataLoaded(false);
   metafileLoaded(false);
+  dataLoaded(false);
+  colorMapLoaded(false);
+  alphaMapLoaded(false);
 }
 
 void VisWidget::startTimer(int msec)
@@ -53,7 +57,7 @@ bool VisWidget::loadMetafile(std::string path, DatasetType tp)
 
   bool ret = DatasetManager::getInstance()->init(new_path);
   ret &= TFManager::getInstance()->init(new_path + "transfer-functions/");
-  //ret &= AlphaManager::getInstance()->init(new_path + "alpha-maps/");
+  ret &= AlphaManager::getInstance()->init(new_path + "alpha-maps/");
 
   metafileLoaded(ret);
 
@@ -82,11 +86,16 @@ bool VisWidget::loadAlphaTF(std::string key)
   return isAlphaLoaded();
 }
 
-bool VisWidget::saveAlphaTF(std::string key)
+bool VisWidget::saveAlphaTF(std::string key, std::string data_key)
 {
-  if(!isMetafileLoaded()) {
+  if(!isMetafileLoaded() || key.empty() || data_key.empty()) {
     return false;
   }
+
+  AlphaManager* ainstance = AlphaManager::getInstance();
+  knl::Dataset* alpha = AlphaManager::getInstance()->get(key);
+  std::string path = ainstance->getPath() + key + ".raw";
+  alpha->save(path);
 
   return false;
 }

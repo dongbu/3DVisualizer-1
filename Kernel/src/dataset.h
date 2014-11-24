@@ -29,6 +29,7 @@ namespace knl
     void uploaded(bool u) { is_uploaded = u; }
 
     virtual bool load(std::string path);
+    virtual bool save(std::string path);
     virtual bool upload();
 
     virtual void bind(GLenum tex_unit = GL_TEXTURE0);

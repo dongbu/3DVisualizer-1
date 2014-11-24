@@ -17,32 +17,38 @@ bool AlphaManager::init(std::string path)
   if(!load_ok) return false;
 
   TiXmlNode* node = NULL;
-  TiXmlElement* elem = NULL;
   TiXmlElement* data_elem = NULL;
 
   node = metafile.FirstChild("alpha-maps");
+  if(node == NULL) return true;
+
   data_elem = node->ToElement();
 
   for(TiXmlNode* data_child = node->FirstChild(); data_child != NULL; data_child = data_child->NextSibling()) {
     Dataset* d = new Dataset;
+
     std::istringstream(data_child->FirstChild("width")->FirstChild()->Value()) >> d->width;
     std::istringstream(data_child->FirstChild("height")->FirstChild()->Value()) >> d->height;
     std::istringstream(data_child->FirstChild("slices")->FirstChild()->Value()) >> d->slices;
+    std::istringstream(data_child->FirstChild("bytes_elem")->FirstChild()->Value()) >> d->bytes_elem;
 
-    add(data_child->FirstChild("name")->FirstChild()->Value(), d);
+    std::string alpha_key = data_child->FirstChild("name")->FirstChild()->Value();
+    std::string data_key = data_child->FirstChild("dataset")->FirstChild()->Value();
+    add(alpha_key, data_key, d);
   }
 
   return true;
 }
 
-bool AlphaManager::add(std::string key, Dataset* alpha_map)
+bool AlphaManager::add(std::string key, std::string data_key, Dataset* alpha_map)
 {
-  if(key.empty() || alpha_map == NULL) {
+  if(key.empty() || data_key.empty() || alpha_map == NULL) {
     Logger::getInstance()->error("AlphaManager::Add - invalid parameters. Returning now.");
     return false;
   }
 
   m_alphaMap[key] = new Dataset(*alpha_map);
+  m_alphaDataMap[key] = data_key;
   return true;
 }
 

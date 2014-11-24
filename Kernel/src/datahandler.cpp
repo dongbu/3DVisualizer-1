@@ -3,7 +3,7 @@
 
 namespace knl
 {
-  namespace data
+  namespace io
   {
     bool LoadBinary(std::string path, size_t num_elem, size_t bytes_elem, void* data)
     {
@@ -28,7 +28,8 @@ namespace knl
 
     bool SaveBinary(std::string path, size_t num_elem, size_t bytes_elem, void* data)
     {
-      assert(!path.empty() && num_elem > 0 && bytes_elem > 0 && data != NULL);
+      assert(!path.empty() && num_elem > 0 && bytes_elem > 0);
+      assert(data != NULL);
       FILE* fp;
 
       if(!(fp = fopen(path.c_str(), "wb+"))) {
