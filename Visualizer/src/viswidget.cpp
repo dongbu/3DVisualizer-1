@@ -39,6 +39,11 @@ VisWidget::~VisWidget()
   dataLoaded(false);
   colorMapLoaded(false);
   alphaMapLoaded(false);
+
+  DatasetManager::getInstance()->freeResources();
+  TFManager::getInstance()->freeResources();
+  AlphaManager::getInstance()->freeResources();
+  RendererManager::getInstance()->freeResources();
 }
 
 void VisWidget::startTimer(int msec)
@@ -60,6 +65,7 @@ bool VisWidget::loadMetafile(std::string path, DatasetType tp)
   ret &= AlphaManager::getInstance()->init(new_path + "alpha-maps/");
 
   metafileLoaded(ret);
+  std::cout << "RET = " <<  ret << std::endl;
 
   return isMetafileLoaded();
 }
@@ -192,28 +198,3 @@ void VisWidget::mouseMoveEvent(QMouseEvent* e)
 
 void VisWidget::wheelEvent(QWheelEvent*)
 {}
-
-//void VisWidget::InitResources()
-//{
-//  using namespace knl;
-
-//#ifdef WIN32
-//  DatasetManager::instance()->init("C:/Users/schardong/Pictures/datasets/");
-//#else
-//  DatasetManager::instance()->init("/home/guilherme/Pictures/datasets/");
-//#endif
-//  DatasetManager::instance()->setActive("nucleon", GL_TEXTURE1);
-
-//#ifdef WIN32
-//  TFManager::instance()->init("C:/Users/schardong/Pictures/datasets/transfer-functions/");
-//#else
-//  TFManager::instance()->init("/home/guilherme/Pictures/datasets/transfer-functions/");
-//#endif
-//  TFManager::instance()->setActive("tff1", GL_TEXTURE3);
-
-//  TopAnalyzer::instance()->AnalyzeCurrDataset(m_flowRate,
-//    DatasetManager::instance()->getCurrentKey());
-
-//  AlphaManager::instance()->SetActive(DatasetManager::instance()->getCurrentKey(),
-//    GL_TEXTURE2);
-//}
