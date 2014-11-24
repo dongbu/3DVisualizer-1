@@ -53,6 +53,7 @@ bool VisWidget::loadMetafile(std::string path, DatasetType tp)
 
   bool ret = DatasetManager::getInstance()->init(new_path);
   ret &= TFManager::getInstance()->init(new_path + "transfer-functions/");
+  //ret &= AlphaManager::getInstance()->init(new_path + "alpha-maps/");
 
   metafileLoaded(ret);
 
@@ -83,7 +84,11 @@ bool VisWidget::loadAlphaTF(std::string key)
 
 bool VisWidget::saveAlphaTF(std::string key)
 {
-return false;
+  if(!isMetafileLoaded()) {
+    return false;
+  }
+
+  return false;
 }
 
 bool VisWidget::loadDataset(std::string key)

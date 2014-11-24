@@ -38,10 +38,10 @@ protected:
 
 protected slots:
   void loadDataset();
+  void loadColorTF();
+  void loadAlphaTF();
+  void saveAlphaTF();
 
-  void loadAlphaDataset();
-  void saveAlphaDataset();
-  void loadColorTFunction();
   void quit();
 
   void analyzeDataset();
@@ -59,6 +59,7 @@ private:
   QAction* m_loadDatasetAction;
   QAction* m_saveAlphaAction;
   QAction* m_loadAlphaAction;
+  QAction* m_loadColorAction;
   QAction* m_quitAction;
 
   QAction* m_analyzeAction;

@@ -17,8 +17,7 @@
 #include <QToolBar>
 #include <QStatusBar>
 #include <QFileDialog>
-#include <QListWidget>
-#include <QListWidgetItem>
+#include <QInputDialog>
 
 VisWindow::VisWindow(QWidget* parent, int w, int h, std::string path) :
   QMainWindow(parent)
@@ -146,37 +145,56 @@ void VisWindow::loadDataset()
 {
   using std::vector;
   using std::string;
-  using std::cout;
-  using std::endl;
 
-  vector<string> keys = DatasetManager::getInstance()->getKeys();
-  cout << keys.size() << endl;
-  m_renderWidget->stopTimer();
+  vector<string> vkeys = DatasetManager::getInstance()->getKeys();
+  QStringList keys;
+  for(auto it : vkeys) {
+    keys << QString(it.c_str());
+  }
 
-
-//  QListWidget list(this);
-//  for(auto it : keys) {
-//    QListWidgetItem i(list);
-//    list.addItem(i);
-//  }
-
-//  list.e
-
-  m_renderWidget->loadDataset(keys[0]);
-  m_renderWidget->startTimer(16);
+  bool ok;
+  QString key = QInputDialog::getItem(this, tr("Load Dataset"), tr("Dataset:"), keys, 0, false, &ok);
+  if(ok && !key.isEmpty()) {
+    m_renderWidget->stopTimer();
+    m_renderWidget->loadDataset(key.toStdString());
+    m_renderWidget->startTimer(16);
+  }
 }
 
-void VisWindow::loadAlphaDataset()
+void VisWindow::loadAlphaTF()
 {}
 
-void VisWindow::loadColorTFunction()
-{}
+void VisWindow::loadColorTF()
+{
+  using std::vector;
+  using std::string;
 
-void VisWindow::saveAlphaDataset()
-{}
+  vector<string> vkeys = TFManager::getInstance()->getKeys();
+  QStringList keys;
+
+  for(auto it : vkeys) {
+    keys << QString(it.c_str());
+  }
+
+  bool ok;
+  QString key = QInputDialog::getItem(this, tr("Load Color Map"), tr("Color Map:"), keys, 0, false, &ok);
+  if(ok && !key.isEmpty()) {
+    m_renderWidget->stopTimer();
+    m_renderWidget->loadColorTF(key.toStdString());
+    m_renderWidget->startTimer(16);
+  }
+}
+
+void VisWindow::saveAlphaTF()
+{
+
+}
 
 void VisWindow::analyzeDataset()
-{}
+{
+  TopAnalyzer::getInstance()->AnalyzeCurrDataset(m_renderWidget->getFlowRate(), DatasetManager::getInstance()->getCurrentKey());
+  AlphaManager::getInstance()->setActive(DatasetManager::getInstance()->getCurrentKey(), GL_TEXTURE2);
+}
 
 void VisWindow::setNumSamples()
 {}
@@ -199,11 +217,14 @@ void VisWindow::createMenus()
   m_loadDatasetAction = new QAction("Load dataset", this);
   connect(m_loadDatasetAction, SIGNAL(triggered()), this, SLOT(loadDataset()));
 
+  m_loadColorAction = new QAction("Load color map", this);
+  connect(m_loadColorAction, SIGNAL(triggered()), this, SLOT(loadColorTF()));
+
   m_loadAlphaAction = new QAction("Load alpha map", this);
-  connect(m_loadAlphaAction, SIGNAL(triggered()), this, SLOT(loadAlphaDataset()));
+  connect(m_loadAlphaAction, SIGNAL(triggered()), this, SLOT(loadAlphaTF()));
 
   m_saveAlphaAction = new QAction("Save alpha map", this);
-  connect(m_saveAlphaAction, SIGNAL(triggered()), this, SLOT(saveAlphaDataset()));
+  connect(m_saveAlphaAction, SIGNAL(triggered()), this, SLOT(saveAlphaTF()));
 
   m_quitAction = new QAction("Exit", this);
   connect(m_quitAction, SIGNAL(triggered()), this, SLOT(quit()));
@@ -218,6 +239,7 @@ void VisWindow::createMenus()
   connect(m_setFlowRateAction, SIGNAL(triggered()), this, SLOT(setFlowRate()));
 
   m_fileMenu->addAction(m_loadDatasetAction);
+  m_fileMenu->addAction(m_loadColorAction);
   m_fileMenu->addAction(m_loadAlphaAction);
   m_fileMenu->addAction(m_saveAlphaAction);
   m_fileMenu->addAction(m_quitAction);

@@ -3,6 +3,8 @@
 
 #include <map>
 #include <string>
+#include <vector>
+
 #include "singleton.h"
 #include "tfunction.h"
 
@@ -16,6 +18,14 @@ public:
   TFunction* get(std::string key);
   TFunction* getCurrent();
   void freeResources();
+
+  std::vector<std::string> getKeys()
+  {
+    std::vector<std::string> v;
+    for(auto it = m_funcMap.begin(); it != m_funcMap.end(); ++it)
+      v.push_back(it->first);
+    return v;
+  }
 
 private:
   std::map<std::string, TFunction*> m_funcMap;

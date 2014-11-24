@@ -20,7 +20,7 @@ bool AlphaManager::init(std::string path)
   TiXmlElement* elem = NULL;
   TiXmlElement* data_elem = NULL;
 
-  node = metafile.FirstChild("datasets");
+  node = metafile.FirstChild("alpha-maps");
   data_elem = node->ToElement();
 
   for(TiXmlNode* data_child = node->FirstChild(); data_child != NULL; data_child = data_child->NextSibling()) {
