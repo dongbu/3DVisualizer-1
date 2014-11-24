@@ -80,6 +80,7 @@ void VisWindow::keyPressEvent(QKeyEvent* e)
     break;
   case Qt::Key_F1:
     m_renderWidget->stopTimer();
+    //DatasetManager::getInstance()->setActive("neghip");
     m_renderWidget->loadDataset("neghip");
     m_renderWidget->startTimer(16);
     break;
@@ -139,14 +140,19 @@ void VisWindow::closeEvent(QCloseEvent* )
 {}
 
 void VisWindow::quit()
-{}
+{
+  delete m_renderWidget;
+}
 
 void VisWindow::loadDataset()
 {
   using std::vector;
   using std::string;
+  using std::cout;
+  using std::endl;
 
   vector<string> vkeys = DatasetManager::getInstance()->getKeys();
+
   QStringList keys;
   for(auto it : vkeys) {
     keys << QString(it.c_str());
