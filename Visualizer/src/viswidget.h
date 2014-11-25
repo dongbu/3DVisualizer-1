@@ -7,13 +7,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 
-enum DatasetType
-{
-  DATASET,
-  COLORTF,
-  ALPHATF,
-};
-
 class VisWidget : public QGLWidget
 {
   Q_OBJECT
@@ -70,12 +63,18 @@ public slots:
   void startTimer(int msec);
   void stopTimer();
 
-  bool loadMetafile(std::string path, DatasetType tp);
+  bool loadMetafile(std::string path);
   bool loadDataset(std::string key);
   bool loadColorTF(std::string key);
   bool loadAlphaTF(std::string key);
 
   bool saveAlphaTF(std::string key, std::string data_key);
+  bool analyze();
+
+  bool buildContourTree(std::string key);
+  bool simplifyContourTree(std::string key);
+  bool flowOpacity(std::string key);
+  bool buildAlphaMap(std::string key);
 
 protected:
   virtual void initializeGL();

@@ -56,7 +56,7 @@ void VisWidget::stopTimer()
   m_timer->stop();
 }
 
-bool VisWidget::loadMetafile(std::string path, DatasetType tp)
+bool VisWidget::loadMetafile(std::string path)
 {
   std::string new_path = path + std::string("/");
 
@@ -108,12 +108,39 @@ bool VisWidget::saveAlphaTF(std::string key, std::string data_key)
   return false;
 }
 
+bool VisWidget::analyze()
+{
+  ((GLSLRenderer*) RendererManager::getInstance()->getCurrent())->setUsingAlphaMap(true);
+  return true;
+}
+
+bool VisWidget::buildContourTree(std::string key)
+{
+  return false;
+}
+
+bool VisWidget::simplifyContourTree(std::string key)
+{
+  return false;
+}
+
+bool VisWidget::flowOpacity(std::string key)
+{
+  return false;
+}
+
+bool VisWidget::buildAlphaMap(std::string key)
+{
+  return false;
+}
+
 bool VisWidget::loadDataset(std::string key)
 {
   if(!isMetafileLoaded()) {
     return false;
   }
 
+  ((GLSLRenderer*) RendererManager::getInstance()->getCurrent())->setUsingAlphaMap(false);
   dataLoaded(DatasetManager::getInstance()->setActive(key));
   return isDatasetLoaded();
 }

@@ -41,14 +41,14 @@ VisWindow::VisWindow(QWidget* parent, int w, int h, std::string path) :
                                                       QDir::home().absolutePath());
 
     path = qpath.toStdString();
-    m_renderWidget->loadMetafile(path, DATASET);
+    m_renderWidget->loadMetafile(path);
   }
 }
 
 void VisWindow::contextMenuEvent(QContextMenuEvent* e)
 {
   QMenu tmp(this);
-  tmp.addAction(m_analyzeAction);
+  tmp.addAction(m_buildCTAction);
   tmp.addAction(m_setNumSamplesAction);
   tmp.addAction(m_setFlowRateAction);
   //FIXME: Test if a valid alpha dataset was generated. If true, then add
@@ -141,6 +141,26 @@ void VisWindow::closeEvent(QCloseEvent* )
 void VisWindow::quit()
 {
   delete m_renderWidget;
+}
+
+void VisWindow::buildContourTree()
+{
+
+}
+
+void VisWindow::buildAlphaMap()
+{
+
+}
+
+void VisWindow::simplifyTree()
+{
+
+}
+
+void VisWindow::flowOpacity()
+{
+
 }
 
 void VisWindow::loadDataset()
@@ -236,6 +256,7 @@ void VisWindow::analyzeDataset()
 {
   TopAnalyzer::getInstance()->AnalyzeCurrDataset(m_renderWidget->getFlowRate(), DatasetManager::getInstance()->getCurrentKey());
   AlphaManager::getInstance()->setActive(DatasetManager::getInstance()->getCurrentKey(), GL_TEXTURE2);
+  m_renderWidget->analyze();
 }
 
 void VisWindow::setNumSamples()
@@ -253,7 +274,7 @@ void VisWindow::createInterface()
 void VisWindow::createMenus()
 {
   m_fileMenu = new QMenu("File", this);
-  m_editMenu = new QMenu("Edit", this);
+  m_analyzeMenu = new QMenu("Analyze", this);
   m_helpMenu = new QMenu("Help", this);
 
   m_loadDatasetAction = new QAction("Load dataset", this);
@@ -271,8 +292,17 @@ void VisWindow::createMenus()
   m_quitAction = new QAction("Exit", this);
   connect(m_quitAction, SIGNAL(triggered()), this, SLOT(quit()));
 
-  m_analyzeAction = new QAction("Analyze dataset", this);
-  connect(m_analyzeAction, SIGNAL(triggered()), this, SLOT(analyzeDataset()));
+  m_buildCTAction = new QAction("Build Contour Tree", this);
+  connect(m_buildCTAction, SIGNAL(triggered()), this, SLOT(analyzeDataset()));
+
+  m_simpCTAction = new QAction("Simplify Contour Tree", this);
+  connect(m_simpCTAction, SIGNAL(triggered()), this, SLOT(buildContourTree()));
+
+  m_flowOpAction = new QAction("Flow Opacity", this);
+  connect(m_flowOpAction, SIGNAL(triggered()), this, SLOT(flowOpacity()));
+
+  m_buildAlphaAction = new QAction("Build Alpha Map", this);
+  connect(m_buildAlphaAction, SIGNAL(triggered()), this, SLOT(flowOpacity()));
 
   m_setNumSamplesAction = new QAction("Edit sampling rate", this);
   connect(m_setNumSamplesAction, SIGNAL(triggered()), this, SLOT(setNumSamples()));
@@ -286,12 +316,13 @@ void VisWindow::createMenus()
   m_fileMenu->addAction(m_saveAlphaAction);
   m_fileMenu->addAction(m_quitAction);
 
-  m_editMenu->addAction(m_analyzeAction);
-  m_editMenu->addAction(m_setNumSamplesAction);
-  m_editMenu->addAction(m_setFlowRateAction);
+  m_analyzeMenu->addAction(m_buildCTAction);
+  m_analyzeMenu->addAction(m_simpCTAction);
+  m_analyzeMenu->addAction(m_flowOpAction);
+  m_analyzeMenu->addAction(m_buildAlphaAction);
 
   menuBar()->addMenu(m_fileMenu);
-  menuBar()->addMenu(m_editMenu);
+  menuBar()->addMenu(m_analyzeMenu);
   menuBar()->addMenu(m_helpMenu);
 }
 

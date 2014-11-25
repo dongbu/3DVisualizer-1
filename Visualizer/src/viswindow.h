@@ -44,6 +44,11 @@ protected slots:
 
   void quit();
 
+  void buildContourTree();
+  void simplifyTree();
+  void flowOpacity();
+  void buildAlphaMap();
+
   void analyzeDataset();
   void setNumSamples();
   void setFlowRate();
@@ -52,7 +57,7 @@ private:
   VisWidget* m_renderWidget;
 
   QMenu* m_fileMenu;
-  QMenu* m_editMenu;
+  QMenu* m_analyzeMenu;
   QMenu* m_helpMenu;
 
   QAction* m_loadMetafileAction;
@@ -62,7 +67,11 @@ private:
   QAction* m_loadColorAction;
   QAction* m_quitAction;
 
-  QAction* m_analyzeAction;
+  QAction* m_buildCTAction;
+  QAction* m_simpCTAction;
+  QAction* m_flowOpAction;
+  QAction* m_buildAlphaAction;
+
   QAction* m_setNumSamplesAction;
   QAction* m_setFlowRateAction;
 
