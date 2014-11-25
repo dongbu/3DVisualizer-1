@@ -15,6 +15,7 @@ public:
   bool init(std::string path);
   bool add(std::string key, std::string data_key, knl::Dataset* alpha_map);
   bool setActive(std::string key, GLenum tex_unit = GL_TEXTURE0);
+  bool saveCurrent();
   knl::Dataset* get(std::string key);
   knl::Dataset* getCurrent();
   void freeResources();

@@ -7,6 +7,122 @@
 
 using namespace knl;
 
+const unsigned int NUM_INDENTS_PER_SPACE=2;
+
+const char * getIndent( unsigned int numIndents )
+{
+  static const char * pINDENT="                                      + ";
+  static const unsigned int LENGTH=strlen( pINDENT );
+  unsigned int n=numIndents*NUM_INDENTS_PER_SPACE;
+  if ( n > LENGTH ) n = LENGTH;
+
+  return &pINDENT[ LENGTH-n ];
+}
+
+// same as getIndent but no "+" at the end
+const char * getIndentAlt( unsigned int numIndents )
+{
+  static const char * pINDENT="                                        ";
+  static const unsigned int LENGTH=strlen( pINDENT );
+  unsigned int n=numIndents*NUM_INDENTS_PER_SPACE;
+  if ( n > LENGTH ) n = LENGTH;
+
+  return &pINDENT[ LENGTH-n ];
+}
+
+int dump_attribs_to_stdout(TiXmlElement* pElement, unsigned int indent)
+{
+  if ( !pElement ) return 0;
+
+  TiXmlAttribute* pAttrib=pElement->FirstAttribute();
+  int i=0;
+  int ival;
+  double dval;
+  const char* pIndent=getIndent(indent);
+  printf("\n");
+  while (pAttrib)
+  {
+    printf( "%s%s: value=[%s]", pIndent, pAttrib->Name(), pAttrib->Value());
+
+    if (pAttrib->QueryIntValue(&ival)==TIXML_SUCCESS)    printf( " int=%d", ival);
+    if (pAttrib->QueryDoubleValue(&dval)==TIXML_SUCCESS) printf( " d=%1.1f", dval);
+    printf( "\n" );
+    i++;
+    pAttrib=pAttrib->Next();
+  }
+  return i;
+}
+
+void dump_to_stdout( TiXmlNode* pParent, unsigned int indent = 0 )
+{
+  if ( !pParent ) return;
+
+  TiXmlNode* pChild;
+  TiXmlText* pText;
+  int t = pParent->Type();
+  printf( "%s", getIndent(indent));
+  int num;
+
+  switch ( t )
+  {
+  case TiXmlNode::TINYXML_DOCUMENT:
+    printf( "Document" );
+    break;
+
+  case TiXmlNode::TINYXML_ELEMENT:
+    printf( "Element [%s]", pParent->Value() );
+    num=dump_attribs_to_stdout(pParent->ToElement(), indent+1);
+    switch(num)
+    {
+      case 0:  printf( " (No attributes)"); break;
+      case 1:  printf( "%s1 attribute", getIndentAlt(indent)); break;
+      default: printf( "%s%d attributes", getIndentAlt(indent), num); break;
+    }
+    break;
+
+  case TiXmlNode::TINYXML_COMMENT:
+    printf( "Comment: [%s]", pParent->Value());
+    break;
+
+  case TiXmlNode::TINYXML_UNKNOWN:
+    printf( "Unknown" );
+    break;
+
+  case TiXmlNode::TINYXML_TEXT:
+    pText = pParent->ToText();
+    printf( "Text: [%s]", pText->Value() );
+    break;
+
+  case TiXmlNode::TINYXML_DECLARATION:
+    printf( "Declaration" );
+    break;
+  default:
+    break;
+  }
+  printf( "\n" );
+  for ( pChild = pParent->FirstChild(); pChild != 0; pChild = pChild->NextSibling())
+  {
+    dump_to_stdout( pChild, indent+1 );
+  }
+}
+
+// load the named file and dump its structure to STDOUT
+void dump_to_stdout(const char* pFilename)
+{
+  TiXmlDocument doc(pFilename);
+  bool loadOkay = doc.LoadFile();
+  if (loadOkay)
+  {
+    printf("\n%s:\n", pFilename);
+    dump_to_stdout( &doc ); // defined later in the tutorial
+  }
+  else
+  {
+    printf("Failed to load file \"%s\"\n", pFilename);
+  }
+}
+
+
 bool AlphaManager::init(std::string path)
 {
   m_alphaPath = path;
@@ -15,6 +131,8 @@ bool AlphaManager::init(std::string path)
   bool load_ok = metafile.LoadFile();
 
   if(!load_ok) return false;
+
+  dump_to_stdout((path + std::string("metafile.xml")).c_str());
 
   TiXmlNode* node = NULL;
   TiXmlElement* data_elem = NULL;
@@ -79,10 +197,68 @@ bool AlphaManager::setActive(std::string key, GLenum tex_unit)
   return true;
 }
 
+bool AlphaManager::saveCurrent()
+{
+  if(!getCurrent())
+    return false;
+
+  TiXmlDocument metafile(m_alphaPath + std::string("metafile.xml"));
+  bool load_ok = metafile.LoadFile();
+  if(!load_ok) return false;
+
+  TiXmlElement* root = metafile.FirstChildElement("alpha-maps");
+
+  if(root) {
+    char buf[20];
+    knl::Dataset* alpha_map = getCurrent();
+
+    TiXmlElement* key = new TiXmlElement("name");
+    TiXmlText* tkey = new TiXmlText(getCurrentKey());
+    key->LinkEndChild(tkey);
+
+    TiXmlElement* data_key = new TiXmlElement("dataset");
+    TiXmlText* tdata_key = new TiXmlText(m_alphaDataMap.find(getCurrentKey())->second);
+    data_key->LinkEndChild(tdata_key);
+
+    TiXmlElement* width = new TiXmlElement("width");
+    sprintf(buf, "%d", alpha_map->width);
+    TiXmlText* twidth = new TiXmlText(buf);
+    width->LinkEndChild(twidth);
+
+    TiXmlElement* height = new TiXmlElement("height");
+    sprintf(buf, "%d", alpha_map->height);
+    TiXmlText* theight = new TiXmlText(buf);
+    height->LinkEndChild(theight);
+
+    TiXmlElement* slices = new TiXmlElement("slices");
+    sprintf(buf, "%d", alpha_map->slices);
+    TiXmlText* tslices = new TiXmlText(buf);
+    slices->LinkEndChild(tslices);
+
+    TiXmlElement* bytes_elem = new TiXmlElement("bytes_elem");
+    sprintf(buf, "%d", alpha_map->bytes_elem);
+    TiXmlText* tbytes_elem = new TiXmlText(buf);
+    bytes_elem->LinkEndChild(tbytes_elem);
+
+    TiXmlElement* data = new TiXmlElement("data");
+
+    data->LinkEndChild(key);
+    data->LinkEndChild(data_key);
+    data->LinkEndChild(width);
+    data->LinkEndChild(height);
+    data->LinkEndChild(slices);
+    data->LinkEndChild(bytes_elem);
+
+    root->LinkEndChild(data);
+  }
+
+  metafile.SaveFile();
+}
+
 Dataset* AlphaManager::get(std::string key)
 {
-  assert(!key.empty());
-  assert(m_alphaMap.find(key) != m_alphaMap.end());
+  if(key.empty() || m_alphaMap.find(key) == m_alphaMap.end())
+    return NULL;
   return m_alphaMap[key];
 }
 

@@ -99,8 +99,11 @@ bool VisWidget::saveAlphaTF(std::string key, std::string data_key)
 
   AlphaManager* ainstance = AlphaManager::getInstance();
   knl::Dataset* alpha = AlphaManager::getInstance()->get(key);
+  if(alpha == NULL) return false;
+
   std::string path = ainstance->getPath() + key + ".raw";
   alpha->save(path);
+  ainstance->saveCurrent();
 
   return false;
 }
