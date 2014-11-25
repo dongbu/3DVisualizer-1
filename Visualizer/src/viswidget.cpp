@@ -116,22 +116,25 @@ bool VisWidget::analyze()
 
 bool VisWidget::buildContourTree(std::string key)
 {
-  return false;
+  return TopAnalyzer::getInstance()->buildContourTree();
 }
 
 bool VisWidget::simplifyContourTree(std::string key)
 {
-  return false;
+  return TopAnalyzer::getInstance()->simplifyContourTree();
 }
 
 bool VisWidget::flowOpacity(std::string key)
 {
-  return false;
+  return TopAnalyzer::getInstance()->flowOpacity();
 }
 
 bool VisWidget::buildAlphaMap(std::string key)
 {
-  return false;
+  bool ret = TopAnalyzer::getInstance()->createAlphaMap();
+  ((GLSLRenderer*) RendererManager::getInstance()->getCurrent())->setUsingAlphaMap(ret);
+  alphaMapLoaded(ret);
+  return ret;
 }
 
 bool VisWidget::loadDataset(std::string key)

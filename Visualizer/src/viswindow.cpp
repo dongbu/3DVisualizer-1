@@ -65,8 +65,9 @@ void VisWindow::keyPressEvent(QKeyEvent* e)
     QApplication::instance()->quit();
     break;
   case Qt::Key_Space:
-    TopAnalyzer::getInstance()->AnalyzeCurrDataset(m_renderWidget->getFlowRate(), DatasetManager::getInstance()->getCurrentKey());
+    TopAnalyzer::getInstance()->analyzeCurrDataset(m_renderWidget->getFlowRate(), DatasetManager::getInstance()->getCurrentKey());
     AlphaManager::getInstance()->setActive(DatasetManager::getInstance()->getCurrentKey(), GL_TEXTURE2);
+    m_renderWidget->analyze();
     break;
   case Qt::Key_1:
     m_renderWidget->stopTimer();
@@ -145,22 +146,22 @@ void VisWindow::quit()
 
 void VisWindow::buildContourTree()
 {
-
+  m_renderWidget->buildContourTree(DatasetManager::getInstance()->getCurrentKey());
 }
 
 void VisWindow::buildAlphaMap()
 {
-
+  m_renderWidget->buildAlphaMap(DatasetManager::getInstance()->getCurrentKey());
 }
 
 void VisWindow::simplifyTree()
 {
-
+  m_renderWidget->simplifyContourTree(DatasetManager::getInstance()->getCurrentKey());
 }
 
 void VisWindow::flowOpacity()
 {
-
+  m_renderWidget->flowOpacity(DatasetManager::getInstance()->getCurrentKey());
 }
 
 void VisWindow::loadDataset()
@@ -254,7 +255,7 @@ void VisWindow::saveAlphaTF()
 
 void VisWindow::analyzeDataset()
 {
-  TopAnalyzer::getInstance()->AnalyzeCurrDataset(m_renderWidget->getFlowRate(), DatasetManager::getInstance()->getCurrentKey());
+  TopAnalyzer::getInstance()->analyzeCurrDataset(m_renderWidget->getFlowRate(), DatasetManager::getInstance()->getCurrentKey());
   AlphaManager::getInstance()->setActive(DatasetManager::getInstance()->getCurrentKey(), GL_TEXTURE2);
   m_renderWidget->analyze();
 }
@@ -293,16 +294,16 @@ void VisWindow::createMenus()
   connect(m_quitAction, SIGNAL(triggered()), this, SLOT(quit()));
 
   m_buildCTAction = new QAction("Build Contour Tree", this);
-  connect(m_buildCTAction, SIGNAL(triggered()), this, SLOT(analyzeDataset()));
+  connect(m_buildCTAction, SIGNAL(triggered()), this, SLOT(buildContourTree()));
 
   m_simpCTAction = new QAction("Simplify Contour Tree", this);
-  connect(m_simpCTAction, SIGNAL(triggered()), this, SLOT(buildContourTree()));
+  connect(m_simpCTAction, SIGNAL(triggered()), this, SLOT(simplifyTree()));
 
   m_flowOpAction = new QAction("Flow Opacity", this);
   connect(m_flowOpAction, SIGNAL(triggered()), this, SLOT(flowOpacity()));
 
   m_buildAlphaAction = new QAction("Build Alpha Map", this);
-  connect(m_buildAlphaAction, SIGNAL(triggered()), this, SLOT(flowOpacity()));
+  connect(m_buildAlphaAction, SIGNAL(triggered()), this, SLOT(buildAlphaMap()));
 
   m_setNumSamplesAction = new QAction("Edit sampling rate", this);
   connect(m_setNumSamplesAction, SIGNAL(triggered()), this, SLOT(setNumSamples()));
