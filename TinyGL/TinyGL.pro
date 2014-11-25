@@ -1,6 +1,6 @@
 TARGET = tinygl
 TEMPLATE = lib
-CONFIG += shared c++11
+CONFIG += static c++11
 
 INCLUDEPATH += ../Kernel/src
 DEPENDPATH += ../Kernel/src
@@ -25,11 +25,11 @@ unix {
     QMAKE_CXXFLAGS += -MMD
 
     CONFIG(release, debug|release) {
-      QMAKE_CXXFLAGS += -g0 -O2 -rdynamic
+      QMAKE_CXXFLAGS += -g0 -O2
     }
 
     CONFIG(debug, debug|release) {
-      QMAKE_CXXFLAGS += -g3 -O0 -pg -rdynamic
+      QMAKE_CXXFLAGS += -g3 -O0 -pg
     }
 }
 
