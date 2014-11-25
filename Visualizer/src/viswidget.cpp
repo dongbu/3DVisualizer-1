@@ -65,7 +65,6 @@ bool VisWidget::loadMetafile(std::string path, DatasetType tp)
   ret &= AlphaManager::getInstance()->init(new_path + "alpha-maps/");
 
   metafileLoaded(ret);
-  std::cout << "RET = " <<  ret << std::endl;
 
   return isMetafileLoaded();
 }

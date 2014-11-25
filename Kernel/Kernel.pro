@@ -1,6 +1,6 @@
 TARGET = viskernel
 TEMPLATE = lib
-CONFIG += static c++11
+CONFIG += shared c++11
 
 DESTDIR = $$OUT_PWD/../
 
@@ -23,11 +23,11 @@ unix {
     QMAKE_CXXFLAGS += -MMD
 
     CONFIG(release, debug|release) {
-      QMAKE_CXXFLAGS += -g0 -O2
+      QMAKE_CXXFLAGS += -g0 -O2 -rdynamic
     }
 
     CONFIG(debug, debug|release) {
-      QMAKE_CXXFLAGS += -g3 -O0 -pg
+      QMAKE_CXXFLAGS += -g3 -O0 -pg -rdynamic
     }
 }
 

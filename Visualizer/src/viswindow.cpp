@@ -80,7 +80,6 @@ void VisWindow::keyPressEvent(QKeyEvent* e)
     break;
   case Qt::Key_F1:
     m_renderWidget->stopTimer();
-    //DatasetManager::getInstance()->setActive("neghip");
     m_renderWidget->loadDataset("neghip");
     m_renderWidget->startTimer(16);
     break;
