@@ -104,7 +104,8 @@ vec4 composite_alpha(Ray ray, vec3 step)
 
 vec4 composite(Ray ray, vec3 step)
 {
-  vec4 colorAcc;
+  vec4 colorAcc = vec4(0);
+
   if(u_bHasAlphaMap && u_bHasColorMap)
     colorAcc = composite_both(ray, step);
   else if(u_bHasAlphaMap)
@@ -117,7 +118,8 @@ vec4 composite(Ray ray, vec3 step)
     float lenAcc = 0.f;
 
     for(int i = 0; i < u_fNumSamples; ++i, currPos += step, lenAcc += length(step)) {
-      vec4 colorSample = vec4(texture(u_sDensityMap, currPos).r);
+      float density = texture(u_sDensityMap, currPos).r;
+      vec4 colorSample = vec4(density);
 
       colorSample = abs(colorSample);
       colorSample.a = clamp(colorSample.a, 0.f, 1.f);
