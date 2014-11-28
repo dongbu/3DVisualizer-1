@@ -102,8 +102,8 @@ namespace knl
           type = GL_UNSIGNED_SHORT;
           format = GL_R16;
           break;
-        case sizeof(GLfloat):
-          type = GL_UNSIGNED_INT;
+        case sizeof(GLuint):
+          type = GL_FLOAT;
           format = GL_R32F;
           break;
         case sizeof(GLubyte):

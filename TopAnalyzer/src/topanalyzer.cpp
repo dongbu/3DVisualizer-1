@@ -187,7 +187,6 @@ bool TopAnalyzer::buildContourTree()
   calc_branch_depth(m_rootBranch, &m_treeDepth, 0);
 
   std::cout << "\t" << count_branches(m_rootBranch) << " branches before simplification." << std::endl;
-  //std::cout << "Tree depth = " << m_treeDepth << std::endl;
 
   a = tick_count::now();
   calc_branch_features(m_branchMap, m_currDataset);
@@ -240,7 +239,7 @@ bool TopAnalyzer::flowOpacity()
   tick_count b;
 
   a = tick_count::now();
-  calc_residue_flow(m_rootBranch, 1.f / static_cast<double>(m_treeDepth), 450.f, m_currDataset);
+  calc_residue_flow(m_rootBranch, 1.f / static_cast<double>(m_treeDepth), 1050.f, m_currDataset);
   b = tick_count::now();
   cout << "\tResidue flow in " << (b - a).seconds() << " seconds" << endl;
 
@@ -262,9 +261,12 @@ bool TopAnalyzer::createAlphaMap()
   b = tick_count::now();
   cout << "\tAlpha map in " << (b - a).seconds() << " seconds" << endl;
 
-  AlphaManager::getInstance()->add(DatasetManager::getInstance()->getCurrentKey(),
-                                   DatasetManager::getInstance()->getCurrentKey() + "01",
+  AlphaManager* ap = AlphaManager::getInstance();
+  ap->add(DatasetManager::getInstance()->getCurrentKey() + "01",
+                                   DatasetManager::getInstance()->getCurrentKey(),
                                    alpha_map);
+
+  ap->setActive(DatasetManager::getInstance()->getCurrentKey() + "01");
 
   return true;
 }
