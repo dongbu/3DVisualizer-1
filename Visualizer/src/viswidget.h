@@ -73,7 +73,7 @@ public slots:
 
   bool buildContourTree(std::string key);
   bool simplifyContourTree(std::string key);
-  bool flowOpacity(std::string key);
+  bool flowOpacity(double flow_rate);
   bool buildAlphaMap(std::string key);
 
 protected:

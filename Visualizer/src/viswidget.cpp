@@ -98,8 +98,9 @@ bool VisWidget::saveAlphaTF(std::string key, std::string data_key)
   }
 
   AlphaManager* ainstance = AlphaManager::getInstance();
-  knl::Dataset* alpha = AlphaManager::getInstance()->get(key);
-  if(alpha == NULL) return false;
+  knl::Dataset* alpha = ainstance->get(key);
+  if(alpha == NULL)
+    return false;
 
   std::string path = ainstance->getPath() + key + ".raw";
   alpha->save(path);
@@ -124,14 +125,17 @@ bool VisWidget::simplifyContourTree(std::string key)
   return TopAnalyzer::getInstance()->simplifyContourTree();
 }
 
-bool VisWidget::flowOpacity(std::string key)
+bool VisWidget::flowOpacity(double flow_rate)
 {
-  return TopAnalyzer::getInstance()->flowOpacity();
+  return TopAnalyzer::getInstance()->flowOpacity(flow_rate);
 }
 
 bool VisWidget::buildAlphaMap(std::string key)
 {
-  bool ret = TopAnalyzer::getInstance()->createAlphaMap();
+  if(key.empty())
+    return false;
+
+  bool ret = TopAnalyzer::getInstance()->createAlphaMap(key);
   ((GLSLRenderer*) RendererManager::getInstance()->getCurrent())->setUsingAlphaMap(ret);
   alphaMapLoaded(ret);
   return ret;
@@ -144,6 +148,7 @@ bool VisWidget::loadDataset(std::string key)
   }
 
   ((GLSLRenderer*) RendererManager::getInstance()->getCurrent())->setUsingAlphaMap(false);
+  ((GLSLRenderer*) RendererManager::getInstance()->getCurrent())->setUsingColorMap(false);
   dataLoaded(DatasetManager::getInstance()->setActive(key));
   return isDatasetLoaded();
 }

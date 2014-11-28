@@ -15,19 +15,35 @@ public:
   void init();
   bool buildContourTree();
   bool simplifyContourTree();
-  bool flowOpacity();
-  bool createAlphaMap();
+  bool flowOpacity(double flow_rate);
+  bool createAlphaMap(std::string alpha_key);
 
   void analyzeCurrDataset(double flow_rate, std::string key);
   void analyzeDataset(knl::Dataset* data, double flow_rate, std::string key, std::string data_key);
 
+  float flow_rate()
+  {
+    return m_flow_rate;
+  }
+
+  double avg_importance()
+  {
+    return m_avg_importance;
+  }
+
+  size_t tree_depth()
+  {
+    return m_tree_depth;
+  }
+
 private:
-  ctContext* m_ctx;
-  ctBranch* m_rootBranch;
-  ctBranch** m_branchMap;
-  top::Dataset* m_currDataset;
-  double m_avgImp;
-  size_t m_treeDepth;
+  ctContext* m_tourtre_ctx;
+  ctBranch* m_root_branch;
+  ctBranch** m_branch_map;
+  top::Dataset* m_curr_dataset;
+  float m_flow_rate;
+  double m_avg_importance;
+  size_t m_tree_depth;
 };
 
 #endif // TOPANALYZER_H

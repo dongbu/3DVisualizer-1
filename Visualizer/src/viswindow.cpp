@@ -151,7 +151,11 @@ void VisWindow::buildContourTree()
 
 void VisWindow::buildAlphaMap()
 {
-  m_renderWidget->buildAlphaMap(DatasetManager::getInstance()->getCurrentKey());
+  bool ok;
+  QString qkey = QInputDialog::getText(this, tr("Build Alpha Map"), tr("Map name:"), QLineEdit::Normal, QString(), &ok);
+
+  if(ok && !qkey.isEmpty())
+    m_renderWidget->buildAlphaMap(qkey.toStdString());
 }
 
 void VisWindow::simplifyTree()
@@ -161,7 +165,11 @@ void VisWindow::simplifyTree()
 
 void VisWindow::flowOpacity()
 {
-  m_renderWidget->flowOpacity(DatasetManager::getInstance()->getCurrentKey());
+  bool ok;
+  double flow_rate = QInputDialog::getDouble(this, "Flow rate", "Rate:", 300.0, 0.0, 2000.0, 1, &ok);
+
+  if(ok && flow_rate > 0.0)
+    m_renderWidget->flowOpacity(flow_rate);
 }
 
 void VisWindow::loadDataset()
@@ -237,20 +245,8 @@ void VisWindow::loadColorTF()
 
 void VisWindow::saveAlphaTF()
 {
-  using std::string;
-  using std::vector;
-  using std::cout;
-  using std::endl;
-
   m_renderWidget->saveAlphaTF(AlphaManager::getInstance()->getCurrentKey(),
                               DatasetManager::getInstance()->getCurrentKey());
-
-//  bool ok;
-//  QString key = QInputDialog::getText(this, tr("Save alpha map"),
-//                                       tr("Name:"), QLineEdit::Normal,
-//                                       QDir::home().dirName(), &ok);
-//  if (ok && !key.isEmpty())
-//    cout << key.toStdString() << endl;
 }
 
 void VisWindow::analyzeDataset()
