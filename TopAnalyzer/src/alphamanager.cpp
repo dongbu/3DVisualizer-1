@@ -17,12 +17,9 @@ bool AlphaManager::init(std::string path)
   if(!load_ok) return false;
 
   TiXmlNode* node = NULL;
-  TiXmlElement* data_elem = NULL;
 
   node = metafile.FirstChild("alpha-maps");
-  if(node == NULL) return true;
-
-  data_elem = node->ToElement();
+  if(node == NULL) return false;
 
   for(TiXmlNode* data_child = node->FirstChild(); data_child != NULL; data_child = data_child->NextSibling()) {
     Dataset* d = new Dataset;
@@ -134,7 +131,7 @@ bool AlphaManager::saveCurrent()
     root->LinkEndChild(data);
   }
 
-  metafile.SaveFile();
+  return metafile.SaveFile();
 }
 
 Dataset* AlphaManager::get(std::string key)
