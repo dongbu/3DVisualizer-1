@@ -338,9 +338,10 @@ double half_std_avg_importance_normalized(ctBranch* b)
   return 0.5 * sqrt(pow(ptr->norm_hv * ptr->norm_p, 2) + pow(ptr->norm_v * ptr->norm_p, 2) + pow(ptr->norm_hv * ptr->norm_v, 2));
 }
 
-void calc_residue_flow(ctBranch* root_branch, double alpha_d, double rate_Q, top::Dataset* data)
+bool calc_residue_flow(ctBranch* root_branch, double alpha_d, double rate_Q, top::Dataset* data)
 {
-  if(root_branch == NULL) return;
+  if(root_branch == NULL)
+    return false;
 
   if(root_branch->data == NULL)
     root_branch->data = (FeatureSet*) calloc(1, sizeof(FeatureSet));
@@ -377,11 +378,7 @@ void calc_residue_flow(ctBranch* root_branch, double alpha_d, double rate_Q, top
         branch_data->delta_alpha_i = 0.0;
       }
       branch_data->alpha_i_j = branch_data->alpha_i*(half_std_avg_importance_normalized(curr_branch))*calc_gsd(curr_branch,data);
-      //std::cout << "["<< branch_data->depth << "] Dh: " << branch_data->delta_h << " Ai: " << branch_data->alpha_i << " r: "
-      //  << branch_data->delta_alpha_i << " Aij: " << branch_data->alpha_i_j << std::endl;
-      //std::cout << branch_data->depth << " - " << branch_data->num_children << ", ";
       branch_data->alpha_lo = clamp<double>(calc_alpha_sum(curr_branch), 0.0, 1.0);
-
       branch_data->alpha_hi = clamp<double>(calc_alpha_sum(curr_branch) + branch_data->alpha_i_j, 0.0, 1.0);
 
       branch_data->alpha = (double*) calloc(256, sizeof(double));
@@ -389,12 +386,6 @@ void calc_residue_flow(ctBranch* root_branch, double alpha_d, double rate_Q, top
       memcpy(branch_data->alpha, tf, 256 * sizeof(double));
       free(tf);
       tf = NULL;
-      //std::cout << "     Alo: " << branch_data->alpha_lo << " Ahi: " << branch_data->alpha_hi << /* " Imp: " << std_avg_importance(curr_branch) << */ std::endl;
-      //std::cout << "     Min scalar: " << branch_data->min_intensity << " Max scalar: " << branch_data->max_intensity << std::endl;
-      //std::cout << " Opacity: ";
-      //for(int i = 0; i < 256; i++)
-      //  std::cout << branch_data->alpha[i] << " ";
-      //std::cout << "\n\n";
     }
 
     for(ctBranch* c = curr_branch->children.head; c != NULL; c = c->nextChild) {
@@ -405,6 +396,8 @@ void calc_residue_flow(ctBranch* root_branch, double alpha_d, double rate_Q, top
     }
 
   } while(!branch_queue.empty());
+
+  return true;
 }
 
 double* calc_final_alpha(ctBranch* b, TFShape shape)

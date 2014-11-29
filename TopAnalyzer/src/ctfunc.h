@@ -43,7 +43,7 @@ void calc_vertices_branch(ctBranch**, size_t);
 void rebuild_branch_map(ctBranch*, ctBranch**);
 
 //Functions - @Netto
-void calc_residue_flow(ctBranch* root_branch, double alpha_d, double rate_Q, top::Dataset* data);
+bool calc_residue_flow(ctBranch* root_branch, double alpha_d, double rate_Q, top::Dataset* data);
 void calc_saddle_min_max(ctBranch* root_branch, top::Dataset* data);
 double calc_gsd(ctBranch* b, top::Dataset* data);
 double half_std_avg_importance_normalized(ctBranch*);
