@@ -20,7 +20,7 @@ void simplify_tree_dfs(ctContext*, ctBranch*, ctBranch**, size_t, double (*impor
 
 DEPRECATED void simplify_from_branchmap(ctBranch**, size_t, double(*importance_measure)(ctBranch*), double);
 
-void topSimplifyTree(ctContext*, ctBranch*, ctBranch**, top::Dataset&, double(*importance_cb)(ctBranch*), double);
+void topSimplifyTree(ctContext*, ctBranch*, top::Dataset&, double(*importance_cb)(ctBranch*), double);
 
 void topSimplifyTreeZhou(ctContext*, ctBranch*, ctBranch**, top::Dataset&, double(*importance_cb)(ctBranch*), double);
 

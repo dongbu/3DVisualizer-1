@@ -104,8 +104,7 @@ public:
 };
 
 void topSimplifyTree(ctContext* ctx,
-		     ctBranch* root_branch,
-		     ctBranch** branch_map,
+         ctBranch* root_branch,
 		     top::Dataset& topd,
 		     double(*importance_cb)(ctBranch*),
 		     double thresh)
