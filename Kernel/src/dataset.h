@@ -13,7 +13,7 @@ namespace knl
 
    This class holds the information about a single 3D dataset. It's width,
    height, number of slices, type of element (byte, short, int), the data itself
-   and the texture name given by the OpenGL context.
+   (as a void* pointer) and the texture name given by the OpenGL context.
 
    The data can be loaded from a file or saved to one. Also, the data may be
    uploaded as a 3D texture to the OpenGL device and manipulated as such. Upon
