@@ -75,8 +75,10 @@ bool DatasetManager::setActive(std::string key, GLenum tex_unit)
 
 Dataset* DatasetManager::get(std::string key)
 {
-  assert(!key.empty());
-  assert(m_datasetMap.find(key) != m_datasetMap.end());
+  if(key.empty() || m_datasetMap.find(key) == m_datasetMap.end()) {
+    Logger::getInstance()->error("DatasetManager::get invalid key.");
+    return NULL;
+  }
   return m_datasetMap[key];
 }
 

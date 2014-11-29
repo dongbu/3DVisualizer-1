@@ -15,11 +15,8 @@ bool TFManager::init(std::string path)
   if(!load_ok) return false;
 
   TiXmlNode* node = NULL;
-  //TiXmlElement* elem = NULL;
-  //TiXmlElement* data_elem = NULL;
 
   node = metafile.FirstChild("transfer-functions");
-  //data_elem = node->ToElement();
 
   for(TiXmlNode* data_child = node->FirstChildElement();
       data_child != NULL;
@@ -85,8 +82,10 @@ bool TFManager::setActive(std::string key, GLenum tex_unit)
 
 TFunction* TFManager::get(std::string key)
 {
-  assert(!key.empty());
-  assert(m_funcMap.find(key) != m_funcMap.end());
+  if(key.empty() || m_funcMap.find(key) == m_funcMap.end()) {
+    Logger::getInstance()->error("TFManager::get invalid key.");
+    return NULL;
+  }
   return m_funcMap[key];
 }
 
