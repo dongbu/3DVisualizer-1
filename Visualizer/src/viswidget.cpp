@@ -115,12 +115,12 @@ bool VisWidget::analyze()
   return true;
 }
 
-bool VisWidget::buildContourTree(std::string key)
+bool VisWidget::buildContourTree()
 {
   return TopAnalyzer::getInstance()->buildContourTree();
 }
 
-bool VisWidget::simplifyContourTree(std::string key)
+bool VisWidget::simplifyContourTree()
 {
   return TopAnalyzer::getInstance()->simplifyContourTree();
 }
@@ -184,6 +184,10 @@ void VisWidget::initializeGL()
   RendererManager::getInstance()->add("glslrenderer", rend);
   RendererManager::getInstance()->setActive("glslrenderer");
   initialized(true);
+
+//  GLint max_size;
+//  glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_size);
+//  printf("%d\n", max_size);
 }
 
 void VisWidget::paintGL()

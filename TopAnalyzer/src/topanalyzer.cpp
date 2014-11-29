@@ -153,6 +153,8 @@ bool TopAnalyzer::buildContourTree()
   using std::cout;
   using std::endl;
 
+  reset();
+
   tick_count a;
   tick_count b;
 
@@ -196,7 +198,8 @@ bool TopAnalyzer::buildContourTree()
   m_avg_importance = calc_avg_importance(m_root_branch, &std_avg_importance);
   calc_vertices_branch(m_branch_map, m_curr_dataset->size);
 
-  return m_root_branch != NULL;
+  treeBuilt(m_root_branch != NULL);
+  return isContourTreeBuilt();
 }
 
 bool TopAnalyzer::simplifyContourTree()

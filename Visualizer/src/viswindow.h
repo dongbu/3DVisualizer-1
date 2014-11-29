@@ -49,10 +49,6 @@ protected slots:
   void flowOpacity();
   void buildAlphaMap();
 
-  void analyzeDataset();
-  void setNumSamples();
-  void setFlowRate();
-
 private:
   VisWidget* m_renderWidget;
 

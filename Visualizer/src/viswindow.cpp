@@ -18,6 +18,14 @@
 #include <QStatusBar>
 #include <QFileDialog>
 #include <QInputDialog>
+#include <QMessageBox>
+
+static void show_error_msg(const char* error_msg)
+{
+  QMessageBox error_box;
+  error_box.setText(error_msg);
+  error_box.exec();
+}
 
 VisWindow::VisWindow(QWidget* parent, int w, int h, std::string path) :
   QMainWindow(parent)
@@ -146,7 +154,13 @@ void VisWindow::quit()
 
 void VisWindow::buildContourTree()
 {
-  m_renderWidget->buildContourTree(DatasetManager::getInstance()->getCurrentKey());
+  std::string key = DatasetManager::getInstance()->getCurrentKey();
+  if(key.empty()) {
+    show_error_msg("Error: No valid dataset loaded. Unable to build the contour tree.");
+    return;
+  }
+
+  m_renderWidget->buildContourTree();
 }
 
 void VisWindow::buildAlphaMap()
@@ -160,7 +174,13 @@ void VisWindow::buildAlphaMap()
 
 void VisWindow::simplifyTree()
 {
-  m_renderWidget->simplifyContourTree(DatasetManager::getInstance()->getCurrentKey());
+  std::string key = DatasetManager::getInstance()->getCurrentKey();
+  if(key.empty()) {
+    show_error_msg("Error: No valid dataset loaded. Unable to simplify the contour tree.");
+    return;
+  }
+
+  m_renderWidget->simplifyContourTree();
 }
 
 void VisWindow::flowOpacity()
@@ -221,6 +241,12 @@ void VisWindow::loadColorTF()
   using std::string;
 
   knl::Dataset* data = DatasetManager::getInstance()->getCurrent();
+
+  if(!data) {
+    show_error_msg("Error: No dataset loaded. Cannot load a color map.");
+    return;
+  }
+
   TFManager* tfinstance = TFManager::getInstance();
 
   vector<string> vkeys = tfinstance->getKeys();
@@ -245,22 +271,16 @@ void VisWindow::loadColorTF()
 
 void VisWindow::saveAlphaTF()
 {
-  m_renderWidget->saveAlphaTF(AlphaManager::getInstance()->getCurrentKey(),
-                              DatasetManager::getInstance()->getCurrentKey());
+  std::string data_key = DatasetManager::getInstance()->getCurrentKey();
+  std::string alpha_key = AlphaManager::getInstance()->getCurrentKey();
+
+  if(data_key.empty() || alpha_key.empty()) {
+    show_error_msg("Error: No dataset/alpha map loaded. Cannot save the alpha map.");
+    return;
+  }
+
+  m_renderWidget->saveAlphaTF(alpha_key, data_key);
 }
-
-void VisWindow::analyzeDataset()
-{
-  TopAnalyzer::getInstance()->analyzeCurrDataset(m_renderWidget->getFlowRate(), DatasetManager::getInstance()->getCurrentKey());
-  AlphaManager::getInstance()->setActive(DatasetManager::getInstance()->getCurrentKey(), GL_TEXTURE2);
-  m_renderWidget->analyze();
-}
-
-void VisWindow::setNumSamples()
-{}
-
-void VisWindow::setFlowRate()
-{}
 
 void VisWindow::createInterface()
 {
@@ -300,12 +320,6 @@ void VisWindow::createMenus()
 
   m_buildAlphaAction = new QAction("Build Alpha Map", this);
   connect(m_buildAlphaAction, SIGNAL(triggered()), this, SLOT(buildAlphaMap()));
-
-  m_setNumSamplesAction = new QAction("Edit sampling rate", this);
-  connect(m_setNumSamplesAction, SIGNAL(triggered()), this, SLOT(setNumSamples()));
-
-  m_setFlowRateAction = new QAction("Edit flow rate", this);
-  connect(m_setFlowRateAction, SIGNAL(triggered()), this, SLOT(setFlowRate()));
 
   m_fileMenu->addAction(m_loadDatasetAction);
   m_fileMenu->addAction(m_loadColorAction);
