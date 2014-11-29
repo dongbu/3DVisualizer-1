@@ -212,8 +212,11 @@ bool TopAnalyzer::simplifyContourTree()
   tick_count a;
   tick_count b;
 
+  if(!isContourTreeBuilt())
+    return false;
+
   a = tick_count::now();
-  topSimplifyTree(m_tourtre_ctx, m_root_branch, m_branch_map, *m_curr_dataset, &std_avg_importance, m_avg_importance / 10);
+  topSimplifyTree(m_tourtre_ctx, m_root_branch, *m_curr_dataset, &std_avg_importance, m_avg_importance / 10);
   //  topSimplifyTreeZhou(ctx, root_branch, branch_map, topd, &std_avg_importance, avg_importance / 1000);
   b = tick_count::now();
   cout << "\tSimplification in " << (b - a).seconds() << " seconds" << std::endl;
@@ -228,7 +231,9 @@ bool TopAnalyzer::simplifyContourTree()
   calc_branch_depth(m_root_branch, &m_tree_depth, 0);
   normalize_features(m_root_branch);
 
-  return true;
+  treeSimplified(true);
+
+  return isContourTreeSimplified();
 }
 
 bool TopAnalyzer::flowOpacity(double flow_rate)
@@ -238,19 +243,20 @@ bool TopAnalyzer::flowOpacity(double flow_rate)
   using std::cout;
   using std::endl;
 
-  m_flow_rate = static_cast<float>(flow_rate);
+  if(!isContourTreeBuilt())
+    return false;
 
-  Logger::getInstance()->log("TopAnalyzer::flowOpacity " + std::to_string(m_flow_rate));
+  m_flow_rate = static_cast<float>(flow_rate);
 
   tick_count a;
   tick_count b;
 
   a = tick_count::now();
-  calc_residue_flow(m_root_branch, 1.f / static_cast<double>(m_tree_depth), m_flow_rate, m_curr_dataset);
+  opacityFlowed(calc_residue_flow(m_root_branch, 1.f / static_cast<double>(m_tree_depth), m_flow_rate, m_curr_dataset));
   b = tick_count::now();
   cout << "\tResidue flow in " << (b - a).seconds() << " seconds" << endl;
 
-  return true;
+  return isOpacityFlowed();
 }
 
 bool TopAnalyzer::createAlphaMap(std::string alpha_key)
@@ -259,6 +265,9 @@ bool TopAnalyzer::createAlphaMap(std::string alpha_key)
   using std::vector;
   using std::cout;
   using std::endl;
+
+  if(!isContourTreeBuilt() || !isOpacityFlowed())
+    return false;
 
   tick_count a;
   tick_count b;
@@ -269,23 +278,23 @@ bool TopAnalyzer::createAlphaMap(std::string alpha_key)
   cout << "\tAlpha map in " << (b - a).seconds() << " seconds" << endl;
 
   AlphaManager* ap = AlphaManager::getInstance();
-  ap->add(alpha_key,
-          DatasetManager::getInstance()->getCurrentKey(),
-          alpha_map);
+  bool added = ap->add(alpha_key,
+                       DatasetManager::getInstance()->getCurrentKey(),
+                       alpha_map);
 
-  ap->setActive(alpha_key);
+  bool active = ap->setActive(alpha_key);
 
-  return true;
+  return added && active;
 }
 
-void TopAnalyzer::analyzeCurrDataset(double flow_rate, std::string key)
+DEPRECATED void TopAnalyzer::analyzeCurrDataset(double flow_rate, std::string key)
 {
   knl::Dataset* data = DatasetManager::getInstance()->getCurrent();
   std::string data_key = DatasetManager::getInstance()->getCurrentKey();
   analyzeDataset(data, flow_rate, key, data_key);
 }
 
-void TopAnalyzer::analyzeDataset(knl::Dataset* data, double flow_rate, std::string key, std::string data_key)
+DEPRECATED void TopAnalyzer::analyzeDataset(knl::Dataset* data, double flow_rate, std::string key, std::string data_key)
 {
   assert(data != NULL);
   tbb::tick_count a;
@@ -329,7 +338,7 @@ void TopAnalyzer::analyzeDataset(knl::Dataset* data, double flow_rate, std::stri
   calc_vertices_branch(branch_map, topd.size);
   //////////////////////////////////////////////////
   a = tbb::tick_count::now();
-  topSimplifyTree(ctx, root_branch, branch_map, topd, &std_avg_importance, avg_importance / 10);
+  topSimplifyTree(ctx, root_branch, topd, &std_avg_importance, avg_importance / 10);
   //  topSimplifyTreeZhou(ctx, root_branch, branch_map, topd, &std_avg_importance, avg_importance / 1000);
   b = tbb::tick_count::now();
   std::cout << "\tSimplification in " << (b - a).seconds() << " seconds" << std::endl;
