@@ -41,6 +41,7 @@ protected slots:
   void loadColorTF();
   void loadAlphaTF();
   void saveAlphaTF();
+  void createPyroclasticVol();
 
   void quit();
 
@@ -61,6 +62,7 @@ private:
   QAction* m_saveAlphaAction;
   QAction* m_loadAlphaAction;
   QAction* m_loadColorAction;
+  QAction* m_createPyroVolAction;
   QAction* m_quitAction;
 
   QAction* m_buildCTAction;

@@ -150,6 +150,18 @@ void VisWindow::closeEvent(QCloseEvent* )
 void VisWindow::quit()
 {
   delete m_renderWidget;
+
+  DatasetManager::getInstance()->freeResources();
+  TFManager::getInstance()->freeResources();
+  AlphaManager::getInstance()->freeResources();
+  TinyGL::getInstance()->freeResources();
+
+  DatasetManager::destroy();
+  TFManager::destroy();
+  AlphaManager::destroy();
+  TinyGL::destroy();
+
+  QApplication::instance()->quit();
 }
 
 void VisWindow::buildContourTree()
@@ -220,9 +232,18 @@ void VisWindow::loadAlphaTF()
   using std::vector;
   using std::string;
 
+  std::string data_key = DatasetManager::getInstance()->getCurrentKey();
+
+  if(data_key.empty()) {
+    show_error_msg("Error: No dataset loaded. Cannot load a alpha map.");
+    return;
+  }
+
   vector<string> vkeys = AlphaManager::getInstance()->getKeys();
   QStringList keys;
   for(auto it : vkeys) {
+
+    //if(data_key == )
     keys << QString(it.c_str());
   }
 
@@ -282,6 +303,18 @@ void VisWindow::saveAlphaTF()
   m_renderWidget->saveAlphaTF(alpha_key, data_key);
 }
 
+void VisWindow::createPyroclasticVol()
+{
+  bool ok;
+  QString qkey = QInputDialog::getText(this, tr("Create Pyroclastic Volume"), tr("Volume name:"), QLineEdit::Normal, QString(), &ok);
+
+  if(ok && !qkey.isEmpty()) {
+    m_renderWidget->stopTimer();
+    m_renderWidget->createPyroVol(qkey.toStdString());
+    m_renderWidget->startTimer(16);
+  }
+}
+
 void VisWindow::createInterface()
 {
   createMenus();
@@ -306,6 +339,9 @@ void VisWindow::createMenus()
   m_saveAlphaAction = new QAction("Save alpha map", this);
   connect(m_saveAlphaAction, SIGNAL(triggered()), this, SLOT(saveAlphaTF()));
 
+  m_createPyroVolAction = new QAction("Create synthetic volume", this);
+  connect(m_createPyroVolAction, SIGNAL(triggered()), this, SLOT(createPyroclasticVol()));
+
   m_quitAction = new QAction("Exit", this);
   connect(m_quitAction, SIGNAL(triggered()), this, SLOT(quit()));
 
@@ -321,6 +357,7 @@ void VisWindow::createMenus()
   m_buildAlphaAction = new QAction("Build Alpha Map", this);
   connect(m_buildAlphaAction, SIGNAL(triggered()), this, SLOT(buildAlphaMap()));
 
+  m_fileMenu->addAction(m_createPyroVolAction);
   m_fileMenu->addAction(m_loadDatasetAction);
   m_fileMenu->addAction(m_loadColorAction);
   m_fileMenu->addAction(m_loadAlphaAction);

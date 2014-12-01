@@ -63,6 +63,7 @@ public slots:
   void startTimer(int msec);
   void stopTimer();
 
+  bool createPyroVol(std::string key);
   bool loadMetafile(std::string path);
   bool loadDataset(std::string key);
   bool loadColorTF(std::string key);

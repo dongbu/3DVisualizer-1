@@ -56,6 +56,20 @@ void VisWidget::stopTimer()
   m_timer->stop();
 }
 
+bool VisWidget::createPyroVol(std::string key)
+{
+  if(!isMetafileLoaded()) {
+    return false;
+  }
+
+  knl::Dataset* pyro = knl::Dataset::createPyroclasticVolume(128);
+
+  if(DatasetManager::getInstance()->add(key, pyro))
+    dataLoaded(DatasetManager::getInstance()->setActive(key));
+
+  return isDatasetLoaded();
+}
+
 bool VisWidget::loadMetafile(std::string path)
 {
   std::string new_path = path + std::string("/");
