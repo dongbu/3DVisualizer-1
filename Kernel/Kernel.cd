@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="knl::Dataset">
+    <Position X="6.75" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAIKAEEQBUAQASAAAAAAoQAAAgIAVAAAAAAA=</HashCode>
+      <FileName>src\dataset.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DatasetManager">
+    <Position X="0.5" Y="3.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>ggAAAAAAiAAAQAAAAAAAQAIAABAAAAIAAAAACAACgAA=</HashCode>
+      <FileName>src\datasetmanager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logger">
+    <Position X="4.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAIAAAAAAAEACAAAgAAAAAAAAAABAABACAA=</HashCode>
+      <FileName>src\logger.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Singleton&lt;T&gt;">
+    <Position X="2.5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAACAAEAAAAAAAAUIAAAgAAAAAAA=</HashCode>
+      <FileName>src\singleton.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TFManager">
+    <Position X="2.75" Y="3.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>ggAAAAAACAAAQAAQAAAAQgIAAAAAAAIAAAAAAAACgAA=</HashCode>
+      <FileName>src\tfmanager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TFunction">
+    <Position X="9" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAICAAEABQABASAAEAIAoAAAAgAARQCAAAAA=</HashCode>
+      <FileName>src\tfunction.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Axis">
+    <Position X="4" Y="5.5" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\axis.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BufferObject">
+    <Position X="3.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAgAAAAIEAAAgAIgAAAAAAAAAAAQQAAAAAAAKABAA=</HashCode>
+      <FileName>src\bufferobject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Cube">
+    <Position X="9" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAA=</HashCode>
+      <FileName>src\cube.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FramebufferObject">
+    <Position X="5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAIACgABAAAAAAAAAAAAAAQQAAAEAAAACBAA=</HashCode>
+      <FileName>src\framebufferobject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Grid">
+    <Position X="5.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQA=</HashCode>
+      <FileName>src\grid.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Light">
+    <Position X="9" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAACAAAACAAAAAAgACAAAAAAAAAAAAgAgIAAA=</HashCode>
+      <FileName>src\light.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Mesh">
+    <Position X="7.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEgAAAQIAIEAAAAAAgIQAAAAEAAABAAAQUAAAAAEAAI=</HashCode>
+      <FileName>src\mesh.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Quad">
+    <Position X="10.75" Y="5.5" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAEAAAA=</HashCode>
+      <FileName>src\quad.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Shader">
+    <Position X="0.5" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>QAEAQIIBQICAAQAAEgAhABZACApAAAAIBAIEIAIAAAA=</HashCode>
+      <FileName>src\shader.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sphere">
+    <Position X="7.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAIAAA=</HashCode>
+      <FileName>src\sphere.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TinyGL">
+    <Position X="11" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>BgIAAAAAAAAAAAAAAwIEAAAAIAACAAAAAAAAAQAEQBg=</HashCode>
+      <FileName>src\tinygl.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="resource_type">
+    <Position X="13.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAAAAAQAAAQAAAAAACAAAAAAAAABAAEAAA=</HashCode>
+      <FileName>src\tinygl.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
