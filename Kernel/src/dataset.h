@@ -8,18 +8,19 @@
 namespace knl
 {
 
-  /*!
-   \brief This class represents a single 3D dataset.
-
-   This class holds the information about a single 3D dataset. It's width,
-   height, number of slices, type of element (byte, short, int), the data itself
-   (as a void* pointer) and the texture name given by the OpenGL context.
-
-   The data can be loaded from a file or saved to one. Also, the data may be
-   uploaded as a 3D texture to the OpenGL device and manipulated as such. Upon
-   uploading, the data pointer in the host memory is not deleted or altered in
-   any way.
-  */
+  /**
+   * @brief This class represents a 3D dataset.
+   *
+   * This class holds the information about a single 3D dataset. It's width,
+   * height, number of slices, type of element (byte, short, int), the data
+   * itself (as a void* pointer) and the texture name given by the OpenGL
+   * context.
+   *
+   * The data can be loaded from a file or saved to one. Also, the data may be
+   * uploaded as a 3D texture to the OpenGL device and manipulated as such. Upon
+   * uploading, the data pointer in the host memory is not deleted or altered in
+   * any way.
+   */
   class Dataset
   {
   public:
@@ -46,7 +47,14 @@ namespace knl
 
     virtual void bind(GLenum tex_unit = GL_TEXTURE0);
 
-    static Dataset* createPyroclasticVolume(size_t sz, float r);
+    /**
+     * @brief createPyroclasticVolume Use perlin noise to create a synthetic volume.
+     * @param sz The size of the volume in a single dimension. The volume will
+     * have sz * sz * sz voxels.
+     * @param r Threshold to fill a voxel.
+     * @return A pointer to the newly created Dataset
+     */
+    static Dataset* createPyroclasticVolume(size_t sz, float r = 0.125f);
 
     virtual size_t get(size_t idx)
     {

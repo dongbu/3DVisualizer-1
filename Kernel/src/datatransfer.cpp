@@ -37,7 +37,7 @@ namespace knl
           break;
         }
 
-        glTexImage1D(GL_TEXTURE_1D, 0, int_format, w, 0, format, GL_UNSIGNED_BYTE, NULL);
+        //glTexImage1D(GL_TEXTURE_1D, 0, int_format, w, 0, format, GL_UNSIGNED_BYTE, NULL);
         glBindTexture(GL_TEXTURE_1D, 0);
 
         return tex;
@@ -74,7 +74,7 @@ namespace knl
           break;
         }
 
-        glTexImage2D(GL_TEXTURE_2D, 0, int_format, w, h, 0, format, GL_UNSIGNED_BYTE, NULL);
+        //glTexImage2D(GL_TEXTURE_2D, 0, int_format, w, h, 0, format, GL_UNSIGNED_BYTE, NULL);
         glBindTexture(GL_TEXTURE_2D, 0);
 
         return tex;
@@ -113,7 +113,7 @@ namespace knl
           break;
         }
 
-        glTexImage3D(GL_TEXTURE_3D, 0, format, w, h, slices, 0, GL_RED, type, NULL);
+        //glTexImage3D(GL_TEXTURE_3D, 0, format, w, h, slices, 0, GL_RED, type, NULL);
         glBindTexture(GL_TEXTURE_3D, 0);
         return tex;
       }

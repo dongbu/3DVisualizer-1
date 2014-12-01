@@ -4,6 +4,10 @@
 #include <cstdlib>
 #include <assert.h>
 
+
+/**
+ * @brief The Singleton class.
+ */
 template <class T>
 class Singleton
 {

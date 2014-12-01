@@ -8,6 +8,23 @@
 #include "singleton.h"
 #include "dataset.h"
 
+/**
+ * @brief The DatasetManager class
+ * This class is responsible to manage the avaliable datasets.
+ *
+ * The class instance holds a map, where each Dataset is referenced by a key
+ * string. The init method loads a XML metafile containing information about the
+ * available datasets, such as it's name, dimensions and number of bytes of each
+ * element. These Datasets are then created and given this information. This
+ * process facilitates the loading of the dataset from the disk.
+ *
+ * To visualize a dataset, one must be set as current by using the setActive
+ * method. If the dataset is not loaded yet, this method loads and sends it's
+ * data to the OpenGL device before finishing.
+ *
+ * Any datasets added to the manager are freed by calling the freeResources
+ * method.
+ */
 class DatasetManager : public Singleton<DatasetManager>
 {
   friend class Singleton<DatasetManager>;

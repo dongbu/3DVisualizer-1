@@ -4,26 +4,26 @@
 #include "datahandler.h"
 #include "datatransfer.h"
 
-/*!
- \brief This class represents a single transfer function.
-
- A transfer function is a lookup table, or color map to give a visual
- representation of intensity values that are not necessarily in our visual
- range. In our case, this transfer function is used to render 3D datasets
- usually created by MRI scans.
-
- The class holds the number of color channels, the size in bytes of each
- intensity value (byte, short, int, etc), a pointer to the function itself
- and the texture name given by the OpenGL context.
-
- The function data can be loaded from a file or saved to one. The data can also
- be uploaded as a 1D texture to the OpenGL device an manipulated as such. Upon
- uploading, the data pointer in the host memory is not altered or deleted in any
- way.
-
- There is a basic support for multidimensional transfer functions, but it is not
- used in the project.
-*/
+/**
+ * @brief This class represents a single transfer function.
+ *
+ * A transfer function is a lookup table, or color map to give a visual
+ * representation of intensity values that are not necessarily in our visual
+ * range. In our case, this transfer function is used to render 3D datasets
+ * usually created by MRI scans.
+ *
+ * The class holds the number of color channels, the size in bytes of each
+ * intensity value (byte, short, int, etc), a pointer to the function itself
+ * and the texture name given by the OpenGL context.
+ *
+ * The function data can be loaded from a file or saved to one. The data can also
+ * be uploaded as a 1D texture to the OpenGL device an manipulated as such. Upon
+ * uploading, the data pointer in the host memory is not altered or deleted in any
+ * way.
+ *
+ * There is a basic support for multidimensional transfer functions, but it is not
+ * used in the project.
+ */
 class TFunction
 {
 public:
@@ -50,11 +50,11 @@ public:
   bool save(std::string path);
   bool upload();
 
-  /*!
-   \brief Indicates if this is a single or multi dimentional transfer function.
-
-   \return true for a single dimensional function, false for multi dimensional.
-  */
+  /**
+   * @brief Indicates if this is a single or multi dimentional transfer function.
+   *
+   * @return true for a single dimensional function, false for multi dimensional.
+   */
   bool is1D() { return rows == 1; }
 
   size_t width()

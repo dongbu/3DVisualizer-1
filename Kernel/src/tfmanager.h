@@ -8,6 +8,24 @@
 #include "singleton.h"
 #include "tfunction.h"
 
+/**
+ * @brief The TFManager class
+ * This class is responsible for managing the available transfer functions.
+ *
+ * This class instance holds a map where each TFunction is referenced by a key
+ * string. The init method laods a XML metafile containing information about the
+ * available functions, such as it's name and number of bytes addressed. After
+ * loading the metafile, these functions are created with the parameters read,
+ * this way, when the user wants to load one of them, the process knows how much
+ * space must be allocated beforehand.
+ *
+ * To use a transfer function, one must be set as current by using the setActive
+ * method. If the transfer function was not loaded before, this method loads it
+ * and sends it's data to the OpenGL device.
+ *
+ * Any transfer functions added to the manager are freed by calling the
+ * freeResources method.
+ */
 class TFManager : public Singleton<TFManager>
 {
   friend class Singleton<TFManager>;
