@@ -18,8 +18,7 @@
 
 VisWidget::VisWidget(const QGLFormat& format, QWidget *parent) :
   QGLWidget(format, parent),
-  m_numSamples(512),
-  m_flowRate(450.f)
+  m_numSamples(512)
 {
   m_timer = new QTimer(this);
   connect(m_timer, SIGNAL(timeout()), this, SLOT(update()));
@@ -123,12 +122,6 @@ bool VisWidget::saveAlphaTF(std::string key, std::string data_key)
   return false;
 }
 
-bool VisWidget::analyze()
-{
-  ((GLSLRenderer*) RendererManager::getInstance()->getCurrent())->setUsingAlphaMap(true);
-  return true;
-}
-
 bool VisWidget::buildContourTree()
 {
   return TopAnalyzer::getInstance()->buildContourTree();
@@ -218,21 +211,10 @@ void VisWidget::resizeEvent(QResizeEvent*)
     RendererManager::getInstance()->getCurrent()->resize(width(), height());
 }
 
-void VisWidget::closeEvent(QCloseEvent*)
-{}
-
-void VisWidget::moveEvent(QMoveEvent*)
-{}
-
-void VisWidget::keyPressEvent(QKeyEvent*)
-{}
-
-void VisWidget::keyReleaseEvent(QKeyEvent*)
-{}
-
 void VisWidget::mousePressEvent(QMouseEvent* e)
 {
   if(e->button() == Qt::LeftButton) {
+    setNumSamples(128);
     GLSLRenderer* rend = (GLSLRenderer*) RendererManager::getInstance()->getCurrent();
     rend->setNumSamples(128);
     rend->mousebutton(e->button(), 1, e->x(), e->y());
@@ -244,12 +226,10 @@ void VisWidget::mouseReleaseEvent(QMouseEvent* e)
   GLSLRenderer* rend = (GLSLRenderer*) RendererManager::getInstance()->getCurrent();
   rend->setNumSamples(256);
   rend->mousebutton(e->button(), 0, e->x(), e->y());
+  setNumSamples(512);
 }
 
 void VisWidget::mouseMoveEvent(QMouseEvent* e)
 {
   RendererManager::getInstance()->getCurrent()->mousemove(e->x(), e->y());
 }
-
-void VisWidget::wheelEvent(QWheelEvent*)
-{}

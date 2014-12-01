@@ -66,4 +66,7 @@
       <UniqueIdentifier>{46dac8b1-dd32-4e64-8c85-d59cd879926f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Kernel.cd" />
+  </ItemGroup>
 </Project>

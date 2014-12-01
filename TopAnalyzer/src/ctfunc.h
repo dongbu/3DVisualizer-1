@@ -14,7 +14,7 @@ extern "C"
 extern "C" {
 #endif
 
-typedef enum
+typedef enum transfer_func_shape
 {
     LINEAR,     // y = ax + b.
     HAT,        //0.45 to 0.55 is different than 0. Max at 0.5.

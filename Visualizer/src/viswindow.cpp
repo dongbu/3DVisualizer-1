@@ -5,6 +5,7 @@
 #include "alphamanager.h"
 #include "topanalyzer.h"
 #include "datasetmanager.h"
+#include "renderermanager.h"
 
 #include <iostream>
 #include <GL/glew.h>
@@ -70,66 +71,6 @@ void VisWindow::keyPressEvent(QKeyEvent* e)
   case Qt::Key_Escape:
     QApplication::instance()->quit();
     break;
-  case Qt::Key_Space:
-    TopAnalyzer::getInstance()->analyzeCurrDataset(m_renderWidget->getFlowRate(), DatasetManager::getInstance()->getCurrentKey());
-    AlphaManager::getInstance()->setActive(DatasetManager::getInstance()->getCurrentKey(), GL_TEXTURE2);
-    m_renderWidget->analyze();
-    break;
-  case Qt::Key_1:
-    m_renderWidget->stopTimer();
-    m_renderWidget->loadColorTF("tff1");
-    m_renderWidget->startTimer(16);
-    break;
-  case Qt::Key_2:
-    m_renderWidget->stopTimer();
-    m_renderWidget->loadColorTF("tff2");
-    m_renderWidget->startTimer(16);
-    break;
-  case Qt::Key_F1:
-    m_renderWidget->stopTimer();
-    m_renderWidget->loadDataset("neghip");
-    m_renderWidget->startTimer(16);
-    break;
-  case Qt::Key_F2:
-    m_renderWidget->stopTimer();
-    m_renderWidget->loadDataset("bonsai");
-    m_renderWidget->startTimer(16);
-    break;
-  case Qt::Key_F3:
-    m_renderWidget->stopTimer();
-    m_renderWidget->loadDataset("nucleon");
-    m_renderWidget->startTimer(16);
-    break;
-  case Qt::Key_F4:
-    m_renderWidget->stopTimer();
-    m_renderWidget->loadDataset("silicium");
-    m_renderWidget->startTimer(16);
-    break;
-  case Qt::Key_F5:
-    m_renderWidget->stopTimer();
-    m_renderWidget->loadDataset("fuel");
-    m_renderWidget->startTimer(16);
-    break;
-  case Qt::Key_F6:
-    m_renderWidget->stopTimer();
-    m_renderWidget->loadDataset("BostonTeapot");
-    m_renderWidget->startTimer(16);
-    break;
-  case Qt::Key_F7:
-    m_renderWidget->stopTimer();
-    m_renderWidget->loadDataset("lobster");
-    m_renderWidget->startTimer(16);
-    break;
-  case Qt::Key_F8:
-    m_renderWidget->stopTimer();
-    m_renderWidget->loadDataset("foot");
-    m_renderWidget->startTimer(16);
-    break;
-  case Qt::Key_F9:
-    m_renderWidget->stopTimer();
-    m_renderWidget->loadDataset("CT-Knee");
-    m_renderWidget->startTimer(16);
-    break;
   }
 }
 
@@ -147,17 +88,20 @@ void VisWindow::closeEvent(QCloseEvent* )
 
 void VisWindow::quit()
 {
+  m_renderWidget->stopTimer();
   delete m_renderWidget;
 
   DatasetManager::getInstance()->freeResources();
   TFManager::getInstance()->freeResources();
   AlphaManager::getInstance()->freeResources();
   TinyGL::getInstance()->freeResources();
+  RendererManager::getInstance()->freeResources();
 
   DatasetManager::destroy();
   TFManager::destroy();
   AlphaManager::destroy();
   TinyGL::destroy();
+  RendererManager::destroy();
 
   QApplication::instance()->quit();
 }

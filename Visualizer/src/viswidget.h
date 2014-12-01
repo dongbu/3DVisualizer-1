@@ -49,16 +49,6 @@ public:
     m_numSamples = num;
   }
 
-  float getFlowRate()
-  {
-    return m_flowRate;
-  }
-
-  void setFlowRate(float flow)
-  {
-    m_flowRate = flow;
-  }
-
 public slots:
   void startTimer(int msec);
   void stopTimer();
@@ -70,7 +60,6 @@ public slots:
   bool loadAlphaTF(std::string key);
 
   bool saveAlphaTF(std::string key, std::string data_key);
-  bool analyze();
 
   bool buildContourTree();
   bool simplifyContourTree();
@@ -84,14 +73,7 @@ protected:
   virtual void mousePressEvent(QMouseEvent *);
   virtual void mouseReleaseEvent(QMouseEvent *);
   virtual void mouseMoveEvent(QMouseEvent *);
-  virtual void wheelEvent(QWheelEvent *);
-
-  virtual void keyPressEvent(QKeyEvent *);
-  virtual void keyReleaseEvent(QKeyEvent *);
-
-  virtual void moveEvent(QMoveEvent *); // reduce sampling.
   virtual void resizeEvent(QResizeEvent *); //stop animation.
-  virtual void closeEvent(QCloseEvent *); //free everything.
 
 protected slots:
   virtual void update();
@@ -99,7 +81,6 @@ protected slots:
 private:
   QTimer* m_timer;
   size_t m_numSamples;
-  float m_flowRate;
 
   bool m_initCalled;
   bool m_metafileLoaded;

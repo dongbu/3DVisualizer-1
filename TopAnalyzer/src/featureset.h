@@ -4,7 +4,7 @@
 #include <cstdlib>
 #include <vector>
 
-typedef struct
+typedef struct feature_set
 {
   size_t v;
   size_t p;

@@ -12,10 +12,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\viswidget.cpp" />
     <ClCompile Include="src\viswindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\config.h" />
+    <ClInclude Include="src\viswidget.h" />
     <ClInclude Include="src\viswindow.h" />
   </ItemGroup>
   <ItemGroup>
@@ -24,6 +26,7 @@
     <None Include="..\Resources\shaders\SPass.fs" />
     <None Include="..\Resources\shaders\SPass.vs" />
     <None Include="..\Resources\shaders\SPassMultiOp.fs" />
+    <None Include="Visualizer.cd" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{9D344314-71FC-42BF-B049-1423B2200B57}</ProjectGuid>
@@ -33,13 +36,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -64,14 +67,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../Kernel/src;../TinyGL/src;../TopAnalyzer/src;../Renderer/src;../../Bolt/include;../../tbb/include;../../glfw/include;../../glm;../../glew/include;../../tinyxml;C:\Qt\5.3\msvc2012_opengl\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Qt\5.3\msvc2013_opengl\include\QtCore;C:\Qt\5.3\msvc2013_opengl\include\QtOpenGL;C:\Qt\5.3\msvc2013_opengl\include\QtGui;C:\Qt\5.3\msvc2013_opengl\include\QtWidgets;../Kernel/src;../TinyGL/src;../Renderer/src;../TopAnalyzer/src;../../Bolt/include;../../tbb/include;../../glfw/include;../../glm;../../glew/include;../../libtourtre/include;../../tinyxml;C:\Qt\5.3\msvc2012_opengl\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PreprocessorDefinitions>WIN32;_MBCS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../../iup;../../Bolt/lib;../../tbb/lib/ia32/vc12;../../libtourtre/Debug;../../tinyxml/DebugtinyxmlSTL;../../glew/lib;../Debug;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Renderer.lib;TopAnalyzer.lib;Kernel.lib;TinyGL.lib;Tourtre.lib;tinyxmlSTL.lib;iup.lib;iupgl.lib;tbb_debug.lib;tbbmalloc_debug.lib;glew32d.lib;opengl32.lib;gdi32.lib;comctl32.lib;kernel32.lib;user32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../Bolt/lib;../../tbb/lib/ia32/vc12;../../libtourtre/Debug;../../tinyxml/vis12/DebugtinyxmlSTL;../../glew/lib;../Debug;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Renderer.lib;TopAnalyzer.lib;Kernel.lib;TinyGL.lib;Tourtre.lib;tinyxmlSTL.lib;tbb_debug.lib;tbbmalloc_debug.lib;glew32d.lib;opengl32.lib;gdi32.lib;comctl32.lib;kernel32.lib;user32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>
       </IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>
@@ -85,19 +88,23 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../Kernel/src;../TinyGL/src;../TopAnalyzer/src;../Renderer/src;../../Bolt/include;../../tbb/include;../../glfw/include;../../glm;../../glew/include;../../tinyxml;C:\Qt\5.3\msvc2012_opengl\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Qt\5.3\msvc2013_opengl\include\QtCore;C:\Qt\5.3\msvc2013_opengl\include\QtOpenGL;C:\Qt\5.3\msvc2013_opengl\include\QtGui;C:\Qt\5.3\msvc2013_opengl\include\QtWidgets;../Kernel/src;../TinyGL/src;../Renderer/src;../TopAnalyzer/src;../../Bolt/include;../../tbb/include;../../glfw/include;../../glm;../../glew/include;../../libtourtre/include;../../tinyxml;C:\Qt\5.3\msvc2012_opengl\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PreprocessorDefinitions>WIN32;_MBCS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BrowseInformation>true</BrowseInformation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>../../iup;../../Bolt/lib;../../tbb/lib/ia32/vc12;../../libtourtre/Release;../../tinyxml/ReleasetinyxmlSTL;../../glew/lib;../Release;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Renderer.lib;TopAnalyzer.lib;Kernel.lib;TinyGL.lib;Tourtre.lib;tinyxmlSTL.lib;iup.lib;iupgl.lib;tbb.lib;tbbmalloc.lib;glew32.lib;opengl32.lib;gdi32.lib;comctl32.lib;kernel32.lib;user32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../Bolt/lib;../../tbb/lib/ia32/vc12;../../libtourtre/Release;../../tinyxml/vc12/ReleasetinyxmlSTL;../../glew/lib;../Release;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Renderer.lib;TopAnalyzer.lib;Kernel.lib;TinyGL.lib;Tourtre.lib;tinyxmlSTL.lib;tbb.lib;tbbmalloc.lib;glew32.lib;opengl32.lib;gdi32.lib;comctl32.lib;kernel32.lib;user32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
     </Link>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

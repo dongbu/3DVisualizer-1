@@ -7,6 +7,9 @@
     <ClCompile Include="src\viswindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\viswidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -26,6 +29,9 @@
     <ClInclude Include="src\viswindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\viswidget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Resources\shaders\SPass.fs">
@@ -43,5 +49,6 @@
     <None Include="..\Resources\shaders\SPassMultiOp.fs">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Visualizer.cd" />
   </ItemGroup>
 </Project>
