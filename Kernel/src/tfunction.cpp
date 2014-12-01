@@ -89,9 +89,9 @@ bool TFunction::upload()
   assert(rows != 0 && num_channels != 0 && bytes_elem != 0 && data != NULL);
   if(tex_id == 0) {
     if(is1D()) {
-      tex_id = io::transfer::Alloc1DTex(width(), num_channels);
+      tex_id = io::transfer::Alloc1DTex(num_channels);
     } else {
-      tex_id = io::transfer::Alloc2DTex(width(), rows, num_channels);
+      tex_id = io::transfer::Alloc2DTex(num_channels);
     }
   }
 

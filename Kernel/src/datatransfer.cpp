@@ -7,9 +7,9 @@ namespace knl
   {
     namespace transfer
     {
-      GLuint Alloc1DTex(size_t w, size_t num_channels)
+      GLuint Alloc1DTex(size_t num_channels)
       {
-        assert(w > 0 && num_channels > 0);
+        assert(num_channels > 0);
 
         GLuint tex;
         glGenTextures(1, &tex);
@@ -37,15 +37,14 @@ namespace knl
           break;
         }
 
-        //glTexImage1D(GL_TEXTURE_1D, 0, int_format, w, 0, format, GL_UNSIGNED_BYTE, NULL);
         glBindTexture(GL_TEXTURE_1D, 0);
 
         return tex;
       }
 
-      GLuint Alloc2DTex(size_t w, size_t h, size_t num_channels)
+      GLuint Alloc2DTex(size_t num_channels)
       {
-        assert(w > 0 && h > 0 && num_channels > 0);
+        assert(num_channels > 0);
 
         GLuint tex;
         glGenTextures(1, &tex);
@@ -74,15 +73,14 @@ namespace knl
           break;
         }
 
-        //glTexImage2D(GL_TEXTURE_2D, 0, int_format, w, h, 0, format, GL_UNSIGNED_BYTE, NULL);
         glBindTexture(GL_TEXTURE_2D, 0);
 
         return tex;
       }
 
-      GLuint Alloc3DTex(size_t w, size_t h, size_t slices, size_t bytes_elem)
+      GLuint Alloc3DTex(size_t bytes_elem)
       {
-        assert(w > 0 && h > 0 && slices > 0 && bytes_elem > 0);
+        assert( bytes_elem > 0);
 
         //TODO: Get the currently bound texture and restore the state before the return.
         GLuint tex;
@@ -113,17 +111,17 @@ namespace knl
           break;
         }
 
-        //glTexImage3D(GL_TEXTURE_3D, 0, format, w, h, slices, 0, GL_RED, type, NULL);
         glBindTexture(GL_TEXTURE_3D, 0);
         return tex;
       }
 
-      bool Upload1DData(size_t w, size_t num_channels, void* data, GLuint tex_id)
+      bool Upload1DData(size_t w, size_t num_channels, void* data, GLuint tex_id, bool signal)
       {
         assert(w > 0 && num_channels > 0 && data != NULL && tex_id != 0);
 
         GLenum int_format;
         GLenum format;
+        GLenum type = signal == true ? GL_BYTE : GL_UNSIGNED_BYTE;
 
         switch(num_channels) {
         case 1:
@@ -141,18 +139,19 @@ namespace knl
         }
 
         glBindTexture(GL_TEXTURE_1D, tex_id);
-        glTexImage1D(GL_TEXTURE_1D, 0, int_format, w, 0, format, GL_UNSIGNED_BYTE, data);
+        glTexImage1D(GL_TEXTURE_1D, 0, int_format, w, 0, format, type, data);
         glBindTexture(GL_TEXTURE_1D, 0);
 
         return true;
       }
 
-      bool Upload2DData(size_t w, size_t h, size_t num_channels, void* data, GLuint tex_id)
+      bool Upload2DData(size_t w, size_t h, size_t num_channels, void* data, GLuint tex_id, bool signal)
       {
         assert(w > 0 && h > 0 && num_channels > 0 && data != NULL && tex_id != 0);
 
         GLenum int_format;
         GLenum format;
+        GLenum type = signal == true ? GL_BYTE : GL_UNSIGNED_BYTE;
 
         switch(num_channels) {
         case 1:
@@ -170,30 +169,31 @@ namespace knl
         }
 
         glBindTexture(GL_TEXTURE_2D, tex_id);
-        glTexImage2D(GL_TEXTURE_2D, 0, int_format, w, h, 0, format, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, int_format, w, h, 0, format, type, data);
         glBindTexture(GL_TEXTURE_2D, 0);
 
         return true;
       }
 
-      bool Upload3DData(size_t w, size_t h, size_t slices, size_t bytes_elem, void* data, GLuint tex_id)
+      bool Upload3DData(size_t w, size_t h, size_t slices, size_t bytes_elem, void* data, GLuint tex_id, bool signal)
       {
         assert(w > 0 && h > 0 && slices > 0 && bytes_elem > 0 && data != NULL && tex_id != 0);
 
         GLenum type;
         GLenum format;
+
         switch(bytes_elem) {
         case sizeof(GLushort):
-          type = GL_UNSIGNED_SHORT;
+          type = signal == true ? GL_SHORT : GL_UNSIGNED_SHORT;
           format = GL_R16;
           break;
-        case sizeof(GLuint):
+        case sizeof(GLfloat):
           type = GL_FLOAT;
           format = GL_R32F;
           break;
-        case sizeof(GLubyte):
         default:
-          type = GL_UNSIGNED_BYTE;
+        case sizeof(GLubyte):
+          type = signal == true ? GL_BYTE : GL_UNSIGNED_BYTE;
           format = GL_R8;
           break;
         }

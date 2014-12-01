@@ -9,7 +9,8 @@ namespace knl
 {
 
   /**
-   * @brief This class represents a 3D dataset.
+   * @brief The Dataset class
+   * This class represents a 3D dataset.
    *
    * This class holds the information about a single 3D dataset. It's width,
    * height, number of slices, type of element (byte, short, int), the data

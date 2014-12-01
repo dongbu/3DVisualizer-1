@@ -125,7 +125,7 @@ namespace knl
   {
     assert(width != 0 && height != 0 && slices != 0 && bytes_elem != 0 && data != NULL);
     if(tex_id == 0)
-      tex_id = knl::io::transfer::Alloc3DTex(width, height, slices, bytes_elem);
+      tex_id = knl::io::transfer::Alloc3DTex(bytes_elem);
 
     assert(tex_id != 0);
     uploaded(knl::io::transfer::Upload3DData(width, height, slices, bytes_elem, data, tex_id));

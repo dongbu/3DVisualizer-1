@@ -22,15 +22,14 @@ namespace knl
        * MAG filters and WRAP_S mode). The format and internal format used in the
        * glTexImage1D function are calculated using the number of channels given.
        *
-       * The texture data is always GL_UNSIGNED_BYTE. This function is used mainly
-       * to allocate transfer function data.
+       * The texture data is always GL_(SIGNED,UNSIGNED)_BYTE. This function is
+       * used mainly to allocate transfer function data.
        *
-       * @param w Width of the texture.
        * @param num_channels Number o channels used.
        * @return GLuint The texture id given by the OpenGL context (glGenTextures
        *         function).
        */
-      GLuint Alloc1DTex(size_t w, size_t num_channels);
+      GLuint Alloc1DTex(size_t num_channels);
 
       /**
        * @brief Allocates a 2D texture.
@@ -39,15 +38,14 @@ namespace knl
        * glGenTextures function. The space is allocated and parameters (MIN, MAG,
        * WRAP_*) set in the same ways as the Alloc1DTex function.
        *
-       * The texture data is always GL_UNSIGNED_BYTE, as this function was also
-       * intended to be used to allocate multidimensional transfer function data.
+       * The texture data is always GL_(SIGNED,UNSIGNED)_BYTE, as this function
+       * was also intended to be used to allocate multidimensional transfer
+       * function data.
        *
-       * @param w The width of the image.
-       * @param h The height of the image
        * @param num_channels The number of channels
        * @return GLuint The texture id given by the OpenGL context.
        */
-      GLuint Alloc2DTex(size_t w, size_t h, size_t num_channels);
+      GLuint Alloc2DTex(size_t num_channels);
 
       /**
        * @brief Allocates a 3D texture.
@@ -56,20 +54,17 @@ namespace knl
        * by getting a name from the context, setting the texture parameters (MIN,
        * MAG filters and WRAP_*) and calling the glTexImage3D with a NULL pointer.
        * The format and type of the data is determined using the bytes_elem
-       * parameter. The type may be GL_UNSIGNED_(BYTE,SHORT,INT) and ther format
-       * may be GL_R8, GL_R16 and GL_R32F respectively.
+       * parameter. The type may be GL_(SIGNED,UNSIGNED)_(BYTE,SHORT,INT) and
+       * their format may be GL_R8, GL_R16 and GL_R32F respectively.
        *
        * This function was intended to be used to allocate the space for a dataset
        * in the GPU.
        *
-       * @param w The width of the volume
-       * @param h The height of the volume
-       * @param slices The number of slices of the volume
        * @param bytes_elem The size in bytes of each voxel.
        *        Possible values are sizeof(GLubyte/GLushort/GLfloat).
        * @return GLuint The texture id given by the OpenGL context.
        */
-      GLuint Alloc3DTex(size_t w, size_t h, size_t slices, size_t bytes_elem);
+      GLuint Alloc3DTex(size_t bytes_elem);
 
       /**
        * @brief Uploads a 1D texture to the OpenGL device.
@@ -86,10 +81,11 @@ namespace knl
        * @param num_channels The number of channels (1 for GL_RED, 4 for GL_RGBA)
        * @param data Pointer to the data
        * @param tex_id The texture name
+       * @param signal True for signed type, false for unsigned
        * @return bool True if the texture was uploaded successfully, false
        *         otherwise
        */
-      bool Upload1DData(size_t w, size_t num_channels, void* data, GLuint tex_id);
+      bool Upload1DData(size_t w, size_t num_channels, void* data, GLuint tex_id, bool signal = false);
 
       /**
        * @brief Uploads a 2D texture to the OpenGL device.
@@ -107,10 +103,11 @@ namespace knl
        * @param num_channels Number of channels (1 for GL_RED, 4 for GL_RGBA)
        * @param data Pointer to the texture data
        * @param tex_id Texture name given by the OpenGL context
+       * @param signal True for signed type, false for unsigned
        * @return bool True if the texture was uploaded successfully,
        *         false otherwise.
        */
-      bool Upload2DData(size_t w, size_t h, size_t num_channels, void* data, GLuint tex_id);
+      bool Upload2DData(size_t w, size_t h, size_t num_channels, void* data, GLuint tex_id, bool signal = false);
 
       /**
        * @brief Uploads a 3D texture to the OpenGL device.
@@ -131,10 +128,11 @@ namespace knl
        *       GL_UNSIGNED_SHORT and 4 for GL_FLOAT)
        * @param data The pointer to the data
        * @param tex_id Texture name given by the OpenGL context
+       * @param signal True for signed type, false for unsigned
        * @return bool True if the texture was uploaded successfully,
        *         false otherwise
        */
-      bool Upload3DData(size_t w, size_t h, size_t slices, size_t bytes_elem, void* data, GLuint tex_id);
+      bool Upload3DData(size_t w, size_t h, size_t slices, size_t bytes_elem, void* data, GLuint tex_id, bool signal = false);
     }
   }
 }
