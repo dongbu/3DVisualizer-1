@@ -57,8 +57,6 @@ void VisWindow::contextMenuEvent(QContextMenuEvent* e)
 {
   QMenu tmp(this);
   tmp.addAction(m_buildCTAction);
-  tmp.addAction(m_setNumSamplesAction);
-  tmp.addAction(m_setFlowRateAction);
   //FIXME: Test if a valid alpha dataset was generated. If true, then add
   // the options below.
   tmp.addAction(m_saveAlphaAction);
