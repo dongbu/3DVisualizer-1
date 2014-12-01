@@ -20,15 +20,19 @@
 //};
 
 /**
- * class Mesh
- * This class is an abstraction of an mesh. It holds only the basic information
- * needed to draw one. The draw function is passed as a callback since this makes
- * the control easier. Ideally any simple mesh should inherit from this one and
- * define its own draw function.
- * The class also holds a series of buffers that store the information about it.
- * They may be buffers of any kind (vertex, color, normals, texture coordinates,
- * temparature, density, generation, cost, etc). All buffers are deleted and the
- * vector holding them is purged when the destructor is called.
+ * @brief The Mesh class.
+ *
+ * This class abstracts the creation of a Mesh.
+ *
+ * It holds only the basic information needed to draw a mesh. The draw function
+ * is passed as a callback since this makes the control easier. Ideally any
+ * simple mesh should inherit from this one and define its own draw function.
+ *
+ * The class also holds a series of buffers that store the information about a
+ * mesh. They may be buffers of any kind (vertex, color, normals, texture
+ * coordinates, temparature, density, generation, cost, etc). All buffers are
+ * deleted and the vector holding them is purged when the destructor is called.
+ *
  * The mesh also hold a material color, such attribute defines the material of the
  * mesh by holding an RGBA color.
  */

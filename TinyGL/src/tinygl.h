@@ -21,16 +21,22 @@ enum resource_type
 };
 
 /**
- * class TinyGL
+ * @brief The TinyGL class
+ *
+ * This class is a Singleton to manage the shaders, meshes, light sources,
+ * buffers and framebuffers.
+ *
  * A simple manager class that holds the resources to be used
  * in an OpenGL application. To free the resources just call the method
  * "freeResources" declared bellow. To draw the meshes, the class calls each
- * mesh's draw callback, so one must be defined or some error will happen. Since
- * this class doesn't  check for errors it will call an invalid method an unpleasant
- * things may happen.
- * The resources are stored as maps on this class. They may be added and
- * retrived by their names. These resources are all destroyed when the freeResources
- * method is called, so make copies if you wish to keep them after calling this method.
+ * mesh's draw callback, so one must be defined or some error will happen.
+ * Since this class doesn't check for errors it will call an invalid method and
+ * this will lead to a segmentation fault.
+ *
+ * The resources are stored in maps in this class' instance. They may be added
+ * and retrived by their names. These resources are all destroyed when the
+ * freeResources method is called, so make copies if you wish to keep them
+ * after calling this method.
  */
 class TinyGL : public Singleton<TinyGL>
 {

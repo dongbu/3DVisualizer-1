@@ -6,9 +6,12 @@
 #include <string>
 
 /**
- * class Shader
+ * @brief The Shader class
+ * This class abstracts the creation and management of GLSL shader programs.
+ *
  * This class encapsulates all calls needed to create, destroy and manage
  * shader programs, including sending and getting variables to and from them.
+ *
  * The shader paths are stored for debuging reasons. When an error occurs they
  * may be printed to provide a hint of the location of the error for the user.
  */
