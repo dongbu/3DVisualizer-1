@@ -178,6 +178,10 @@ bool TopAnalyzer::buildContourTree()
   ct_priorityFunc(m_tourtre_ctx, &arc_priority_proc);
   ct_branchAllocator(m_tourtre_ctx, &BranchAlloc, &BranchFree);
 
+  size_t valence = (size_t)pow(2, data->bytes_elem * 8);
+
+  ct_maxValence(m_tourtre_ctx, valence );
+
   a = tbb::tick_count::now();
   ct_sweepAndMerge(m_tourtre_ctx);
   m_root_branch = ct_decompose(m_tourtre_ctx);

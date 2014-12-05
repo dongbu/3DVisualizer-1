@@ -1,84 +1,84 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="Axis">
-    <Position X="4" Y="5.5" Width="1.25" />
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="Axis" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAQAAIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>src\axis.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="BufferObject">
-    <Position X="3.25" Y="0.5" Width="1.5" />
+  <Class Name="BufferObject" Collapsed="true">
+    <Position X="5" Y="3" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AgAAgAAAAIEAAAgAIgAAAAAAAAAAAQQAAAAAAAKABAA=</HashCode>
       <FileName>src\bufferobject.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Cube">
-    <Position X="9" Y="5.5" Width="1.5" />
+  <Class Name="Cube" Collapsed="true">
+    <Position X="5" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAgAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAA=</HashCode>
       <FileName>src\cube.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="FramebufferObject">
-    <Position X="5" Y="0.5" Width="1.75" />
+  <Class Name="FramebufferObject" Collapsed="true">
+    <Position X="5" Y="4" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAIAAAAAIACgABAAAAAAAAAAAAAAQQAAAEAAAACBAA=</HashCode>
       <FileName>src\framebufferobject.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Grid">
-    <Position X="5.5" Y="5.5" Width="1.5" />
+  <Class Name="Grid" Collapsed="true">
+    <Position X="2.75" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQA=</HashCode>
       <FileName>src\grid.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Light">
-    <Position X="9" Y="0.5" Width="1.75" />
+  <Class Name="Light" Collapsed="true">
+    <Position X="6.75" Y="3" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAIAAAACAAAACAAAAAAgACAAAAAAAAAAAAgAgIAAA=</HashCode>
       <FileName>src\light.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Mesh">
-    <Position X="7.25" Y="0.5" Width="1.5" />
+  <Class Name="Mesh" Collapsed="true">
+    <Position X="4.5" Y="0.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AEgAAAQIAIEAAAAAAgIQAAAAEAAABAAAQUAAAAAEAAI=</HashCode>
       <FileName>src\mesh.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Quad">
-    <Position X="10.75" Y="5.5" Width="1.25" />
+  <Class Name="Quad" Collapsed="true">
+    <Position X="7.25" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAEAAAA=</HashCode>
       <FileName>src\quad.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Shader">
-    <Position X="0.5" Y="0.5" Width="2.5" />
+  <Class Name="Shader" Collapsed="true">
+    <Position X="3.25" Y="4" Width="1.5" />
     <TypeIdentifier>
       <HashCode>QAEAQIIBQICAAQAAEgAhABZACApAAAAIBAIEIAIAAAA=</HashCode>
       <FileName>src\shader.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Sphere">
-    <Position X="7.25" Y="5.5" Width="1.5" />
+  <Class Name="Sphere" Collapsed="true">
+    <Position X="9.5" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAIAAA=</HashCode>
       <FileName>src\sphere.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="TinyGL">
-    <Position X="11" Y="0.5" Width="2" />
+  <Class Name="TinyGL" Collapsed="true">
+    <Position X="3.25" Y="3" Width="1.5" />
     <TypeIdentifier>
       <HashCode>BgIAAAAAAAAAAAAAAwIEAAAAIAACAAAAAAAAAQAEQBg=</HashCode>
       <FileName>src\tinygl.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Enum Name="resource_type">
-    <Position X="13.25" Y="0.5" Width="1.5" />
+  <Enum Name="resource_type" Collapsed="true">
+    <Position X="6.75" Y="4" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AQAAAAAAAAAAAAAQAAAQAAAAAACAAAAAAAAABAAEAAA=</HashCode>
       <FileName>src\tinygl.h</FileName>
