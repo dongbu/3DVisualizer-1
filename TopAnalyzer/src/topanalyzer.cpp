@@ -158,7 +158,7 @@ bool TopAnalyzer::buildContourTree()
   tick_count a;
   tick_count b;
 
-  cout << "  Building contour tree: " << DatasetManager::getInstance()->getCurrentKey() << endl;
+  Logger::getInstance()->log("Building contour tree: " + DatasetManager::getInstance()->getCurrentKey());
 
   knl::Dataset* data = DatasetManager::getInstance()->getCurrent();
   assert(data != NULL);
@@ -170,7 +170,7 @@ bool TopAnalyzer::buildContourTree()
   vector<size_t> order;
   mesh.createGraph(order);
   b = tick_count::now();
-  cout << "\tGraph created in " << (b - a).seconds() << " seconds" << endl;
+  Logger::getInstance()->log("\tGraph created in " + std::to_string((b - a).seconds()) + " seconds");
 
   m_tourtre_ctx = ct_init(m_curr_dataset->size, &(order.front()), std_value, std_neighbors, &mesh);
   ct_vertexFunc(m_tourtre_ctx, &vertex_proc);
@@ -187,17 +187,18 @@ bool TopAnalyzer::buildContourTree()
   m_root_branch = ct_decompose(m_tourtre_ctx);
   m_branch_map = ct_branchMap(m_tourtre_ctx);
   b = tbb::tick_count::now();
-  cout << "\tSweep and merge + decompose + branch map in " << (b - a).seconds() << " seconds" << endl;
+
+  Logger::getInstance()->log("\tSweep and merge + decompose + branch map in " + std::to_string((b - a).seconds()) + " seconds");
 
   m_tree_depth = 0;
   calc_branch_depth(m_root_branch, &m_tree_depth, 0);
 
-  std::cout << "\t" << count_branches(m_root_branch) << " branches before simplification." << std::endl;
+  Logger::getInstance()->log("\t" + std::to_string(count_branches(m_root_branch)) + " branches in the tree");
 
   a = tick_count::now();
   calc_branch_features(m_branch_map, m_curr_dataset);
   b = tick_count::now();
-  std::cout << "\tFeatures calculated in " << (b - a).seconds() << " seconds" << std::endl;
+  Logger::getInstance()->log("\tFeatures calculated in " + std::to_string((b - a).seconds()) + " seconds");
 
   m_avg_importance = calc_avg_importance(m_root_branch, &std_avg_importance);
   calc_vertices_branch(m_branch_map, m_curr_dataset->size);
@@ -221,10 +222,10 @@ bool TopAnalyzer::simplifyContourTree()
 
   a = tick_count::now();
   topSimplifyTree(m_tourtre_ctx, m_root_branch, *m_curr_dataset, &std_avg_importance, m_avg_importance / 10);
-  //  topSimplifyTreeZhou(ctx, root_branch, branch_map, topd, &std_avg_importance, avg_importance / 1000);
   b = tick_count::now();
-  cout << "\tSimplification in " << (b - a).seconds() << " seconds" << std::endl;
-  cout << "\t" << count_branches(m_root_branch) << " branches after the simplification." << std::endl;
+
+  Logger::getInstance()->log("\tSimplification in " + std::to_string((b - a).seconds()) + " seconds");
+  Logger::getInstance()->log("\t" + std::to_string(count_branches(m_root_branch)) + " branches in the tree");
 
   rebuild_branch_map(m_root_branch, m_branch_map);
   calc_branch_features(m_branch_map, m_curr_dataset);
@@ -258,7 +259,7 @@ bool TopAnalyzer::flowOpacity(double flow_rate)
   a = tick_count::now();
   opacityFlowed(calc_residue_flow(m_root_branch, 1.f / static_cast<double>(m_tree_depth), m_flow_rate, m_curr_dataset));
   b = tick_count::now();
-  cout << "\tResidue flow in " << (b - a).seconds() << " seconds" << endl;
+  Logger::getInstance()->log("\tResidue flow in " + std::to_string((b - a).seconds()) + " seconds");
 
   return isOpacityFlowed();
 }
@@ -279,7 +280,7 @@ bool TopAnalyzer::createAlphaMap(std::string alpha_key)
   a = tick_count::now();
   knl::Dataset* alpha_map = CreateAlphaDataset(*m_curr_dataset->data, m_branch_map);
   b = tick_count::now();
-  cout << "\tAlpha map in " << (b - a).seconds() << " seconds" << endl;
+  Logger::getInstance()->log("\tAlpha map in " + std::to_string((b - a).seconds()) + " seconds");
 
   AlphaManager* ap = AlphaManager::getInstance();
   bool added = ap->add(alpha_key,
@@ -291,30 +292,33 @@ bool TopAnalyzer::createAlphaMap(std::string alpha_key)
   return added && active;
 }
 
-DEPRECATED void TopAnalyzer::analyzeCurrDataset(double flow_rate, std::string key)
+void TopAnalyzer::testRun(double flow_rate, float avg_mult)
 {
+  using tbb::tick_count;
+  using std::vector;
+  using std::cout;
+  using std::endl;
+
+  tick_count a;
+  tick_count b;
+
+  //Logger::getInstance()->log("Building contour tree: " + DatasetManager::getInstance()->getCurrentKey());
+  cout << DatasetManager::getInstance()->getCurrentKey() + ",";
+
   knl::Dataset* data = DatasetManager::getInstance()->getCurrent();
-  std::string data_key = DatasetManager::getInstance()->getCurrentKey();
-  analyzeDataset(data, flow_rate, key, data_key);
-}
-
-DEPRECATED void TopAnalyzer::analyzeDataset(knl::Dataset* data, double flow_rate, std::string key, std::string data_key)
-{
   assert(data != NULL);
-  tbb::tick_count a;
-  tbb::tick_count b;
 
-  top::Dataset topd(*data);
-  top::Mesh mesh(topd);
-  std::cout << "    Analyzing " << key << std::endl;
+  top::Dataset* topd = new top::Dataset(*data);
+  top::Mesh* mesh = new top::Mesh(*topd);
 
-  a = tbb::tick_count::now();
-  std::vector<size_t> order;
-  mesh.createGraph(order);
-  b = tbb::tick_count::now();
-  std::cout << "\tGraph created in " << (b - a).seconds() << " seconds" << std::endl;
+  a = tick_count::now();
+  vector<size_t> order;
+  mesh->createGraph(order);
+  b = tick_count::now();
+//  Logger::getInstance()->log("\tGraph created in " + std::to_string((b - a).seconds()) + " seconds");
+  cout << std::to_string((b - a).seconds()) + ",";
 
-  ctContext* ctx = ct_init(topd.size, &(order.front()), std_value, std_neighbors, &mesh);
+  ctContext* ctx = ct_init(topd->size, &(order.front()), std_value, std_neighbors, mesh);
   ct_vertexFunc(ctx, &vertex_proc);
   ct_arcMergeFunc(ctx, &arc_merge_proc);
   ct_priorityFunc(ctx, &arc_priority_proc);
@@ -325,52 +329,72 @@ DEPRECATED void TopAnalyzer::analyzeDataset(knl::Dataset* data, double flow_rate
   ctBranch* root_branch = ct_decompose(ctx);
   ctBranch** branch_map = ct_branchMap(ctx);
   b = tbb::tick_count::now();
-  std::cout << "\tSweep and merge + decompose + branch map in " << (b - a).seconds() << " seconds" << std::endl;
+
+//  Logger::getInstance()->log("\tSweep and merge + decompose + branch map in " + std::to_string((b - a).seconds()) + " seconds");
+  cout << std::to_string((b - a).seconds()) + ",";
+
+  size_t tree_depth = 0;
+  calc_branch_depth(root_branch, &tree_depth, 0);
+
+//  Logger::getInstance()->log("\t" + std::to_string(count_branches(root_branch)) + " branches in the tree");
+  cout << std::to_string(count_branches(root_branch)) + ",";
+
+  a = tick_count::now();
+  calc_branch_features(branch_map, topd);
+  b = tick_count::now();
+//  Logger::getInstance()->log("\tFeatures calculated in " + std::to_string((b - a).seconds()) + " seconds");
+  cout << std::to_string((b - a).seconds()) + ",";
+
+  double avg_imp = calc_avg_importance(root_branch, &std_avg_importance);
+  calc_vertices_branch(branch_map, topd->size);
+
+//  Logger::getInstance()->log("\tAverage importance = " + std::to_string(avg_imp));
+  cout << std::to_string(avg_imp * avg_mult) + ",";
+
   //////////////////////////////////////////////////
-  size_t max_depth = 0;
-  calc_branch_depth(root_branch, &max_depth, 0);
+  a = tick_count::now();
+  topSimplifyTree(ctx, root_branch, *topd, &std_avg_importance, avg_imp * avg_mult);
+  b = tick_count::now();
 
-  std::cout << "\t" << count_branches(root_branch) << " branches before simplification." << std::endl;
-  //std::cout << "Tree depth = " << max_depth << std::endl;
+//  Logger::getInstance()->log("\tSimplification in " + std::to_string((b - a).seconds()) + " seconds");
+//  Logger::getInstance()->log("\t" + std::to_string(count_branches(root_branch)) + " branches in the tree");
 
-  a = tbb::tick_count::now();
-  calc_branch_features(branch_map, &topd);
-  b = tbb::tick_count::now();
-  std::cout << "\tFeatures calculated in " << (b - a).seconds() << " seconds" << std::endl;
-
-  double avg_importance = calc_avg_importance(root_branch, &std_avg_importance);
-  calc_vertices_branch(branch_map, topd.size);
-  //////////////////////////////////////////////////
-  a = tbb::tick_count::now();
-  topSimplifyTree(ctx, root_branch, topd, &std_avg_importance, avg_importance / 10);
-  //  topSimplifyTreeZhou(ctx, root_branch, branch_map, topd, &std_avg_importance, avg_importance / 1000);
-  b = tbb::tick_count::now();
-  std::cout << "\tSimplification in " << (b - a).seconds() << " seconds" << std::endl;
-  std::cout << "\t" << count_branches(root_branch) << " branches after the simplification." << std::endl;
+  cout << std::to_string((b - a).seconds()) + ",";
+  cout << std::to_string(count_branches(root_branch)) + ",";
 
   rebuild_branch_map(root_branch, branch_map);
-  calc_branch_features(branch_map, &topd);
+  calc_branch_features(branch_map, topd);
   label_branches(root_branch);
   calc_branch_num_children(root_branch);
 
-  max_depth = 0;
-  calc_branch_depth(root_branch, &max_depth, 0);
+  tree_depth = 0;
+  calc_branch_depth(root_branch, &tree_depth, 0);
   normalize_features(root_branch);
   //////////////////////////////////////////////////
-  a = tbb::tick_count::now();
-  calc_residue_flow(root_branch, 1.f / static_cast<double>(max_depth), flow_rate, &topd);
-  b = tbb::tick_count::now();
-  std::cout << "\tResidue flow in " << (b - a).seconds() << " seconds" << std::endl;
-  //////////////////////////////////////////////////
-  a = tbb::tick_count::now();
-  knl::Dataset* alpha_map = CreateAlphaDataset(*data, branch_map);
-  b = tbb::tick_count::now();
-  std::cout << "\tAlpha map in " << (b - a).seconds() << " seconds" << std::endl;
 
-  AlphaManager::getInstance()->add(key, data_key, alpha_map);
+  m_flow_rate = static_cast<float>(flow_rate);
+
+  a = tick_count::now();
+  opacityFlowed(calc_residue_flow(root_branch, 1.f / static_cast<double>(tree_depth), m_flow_rate, topd));
+  b = tick_count::now();
+//  Logger::getInstance()->log("\tResidue flow in " + std::to_string((b - a).seconds()) + " seconds");
+  cout << std::to_string((b - a).seconds()) + ",";
+
+
   //////////////////////////////////////////////////
+
+  a = tick_count::now();
+  knl::Dataset* alpha_map = CreateAlphaDataset(*topd->data, branch_map);
+  b = tick_count::now();
+//  Logger::getInstance()->log("\tAlpha map in " + std::to_string((b - a).seconds()) + " seconds");
+  cout << std::to_string((b - a).seconds()) << endl;
+
+  //////////////////////////////////////////////////
+  //////////////////////////////////////////////////
+
   delete alpha_map;
-
+  delete topd;
+  delete mesh;
   ct_cleanup(ctx);
   free(root_branch);
   free(branch_map);

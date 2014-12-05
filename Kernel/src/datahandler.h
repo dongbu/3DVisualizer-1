@@ -3,11 +3,15 @@
 
 #include <string>
 
+/**
+ * @brief This namespace encompases some of the classes defined by the Kernel
+ * module.
+ */
 namespace knl
 {
   /**
-  * This namespace contains functions related to loading/saving data from/to
-  * the disk.
+  * @brief This namespace contains functions related to loading/saving data from
+  * or to the disk.
   */
   namespace io
   {
@@ -24,7 +28,7 @@ namespace knl
      * @param data The buffer to hold the data. This buffer must be pre allocated.
      * @return bool true if the data was successfully loaded, false otherwise.
      */
-    bool LoadBinary(std::string path, size_t num_elem, size_t bytes_elem, void* io);
+    bool LoadBinary(std::string path, size_t num_elem, size_t bytes_elem, void* data);
 
     /**
      * @brief Save binary data to the disk.
@@ -38,7 +42,7 @@ namespace knl
      * @param data The pointer to the data.
      * @return bool true if the data was successfully saved, false otherwise.
      */
-    bool SaveBinary(std::string path, size_t num_elem, size_t bytes_elem, void* io);
+    bool SaveBinary(std::string path, size_t num_elem, size_t bytes_elem, void* data);
   }
 
 }

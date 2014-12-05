@@ -13,7 +13,7 @@ namespace top
   {
     top::Dataset* data;
   public:
-    AscendingOrder(top::Dataset* d ) : data(d) {}
+    AscendingOrder(top::Dataset* d) : data(d) {}
 
     bool operator()(const size_t & a, const size_t & b) const {
       if(data->data->get(a) == data->data->get(b))
