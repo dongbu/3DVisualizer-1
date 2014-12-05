@@ -61,6 +61,9 @@ bool VisWidget::createPyroVol(std::string key)
     return false;
   }
 
+  ((GLSLRenderer*) RendererManager::getInstance()->getCurrent())->setUsingAlphaMap(false);
+  ((GLSLRenderer*) RendererManager::getInstance()->getCurrent())->setUsingColorMap(false);
+
   knl::Dataset* pyro = knl::Dataset::createPyroclasticVolume(128);
 
   if(DatasetManager::getInstance()->add(key, pyro))

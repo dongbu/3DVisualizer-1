@@ -9,13 +9,13 @@ namespace knl
   namespace io
   {
     /**
-     * This namespace contains the functions that allocate/transfer the data to
-     * the OpenGL context. The data is always allocated as a texture.
+     * @brief This namespace contains the functions that allocate/transfer the
+     * data to the OpenGL context. The data is always allocated as a texture.
      */
     namespace transfer
     {
       /**
-       * @brief Allocates an one dimensional texture.
+       * @brief Allocates a 1D texture.
        *
        * This function request a texture name to the OpenGL context using the
        * glGenTextures function, allocates the space and sets the parameters (MIN,

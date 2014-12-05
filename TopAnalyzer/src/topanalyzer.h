@@ -18,8 +18,7 @@ public:
   bool flowOpacity(double flow_rate);
   bool createAlphaMap(std::string alpha_key);
 
-  void analyzeCurrDataset(double flow_rate, std::string key);
-  void analyzeDataset(knl::Dataset* data, double flow_rate, std::string key, std::string data_key);
+  void testRun(double flow_rate, float avg_mult);
 
   bool isContourTreeBuilt()
   {
@@ -35,7 +34,6 @@ public:
   {
     return m_op_flowed;
   }
-
 
   float getFlowRate()
   {

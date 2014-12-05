@@ -19,7 +19,7 @@ namespace top
   {
     size = rhs.width * rhs.height * rhs.slices;
     minValue = maxValue = rhs.get(0);
-    data = new knl::Dataset(rhs);
+    data = &rhs;
 
     for(size_t i = 0; i < size; i++) {
       size_t val = rhs.get(i);
@@ -34,6 +34,7 @@ namespace top
   {
     size = 0;
     saddles.clear();
+    data = NULL;
   }
 
 }
