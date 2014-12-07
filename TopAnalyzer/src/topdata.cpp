@@ -32,7 +32,8 @@ namespace top
 
   Dataset::~Dataset()
   {
-    size = 0;
+    size = maxValue = 0;
+    minValue = 0xffffffff;
     saddles.clear();
     data = NULL;
   }

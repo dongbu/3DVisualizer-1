@@ -7,9 +7,22 @@
 
 #include "knlconfig.h"
 
+/**
+ * @brief The top namespace encompases some of the classes and structures of the
+ * TopAnalyzer module.
+ */
 namespace top
 {
 
+  /**
+   * @brief The Dataset struct
+   * This structure represents a dataset to be fed to the topological analyzer
+   * for processing.
+   *
+   * The structure holds the dataset's minimum and maximum values as well as the
+   * saddle points found by the analyzer. It also provides access to the
+   * knl::Dataset structure underneath.
+   */
   struct Dataset 
   {
     knl::Dataset* data;
@@ -57,8 +70,8 @@ namespace top
       return Get(idx);
     }
 
-    bool greater(size_t a, size_t b);
-    bool less(size_t a, size_t b);
+    //bool greater(size_t a, size_t b);
+    //bool less(size_t a, size_t b);
   };
 
 }

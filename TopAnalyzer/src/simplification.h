@@ -11,16 +11,6 @@ extern "C"
 }
 
 /**
- * Depth first search simplification. The algorithm follows the tree until it hits a leaf branch.
- * When a leaf branch is found, its importance is calculated via the "importance_measure" callback
- * and if the calculated importance is lesser than a given threshold, the branch is marked for
- * removal.
-*/
-//void simplify_tree_dfs(ctContext*, ctBranch*, ctBranch**, size_t, double (*importance_measure)(ctBranch*), double)
-
-//DEPRECATED void simplify_from_branchmap(ctBranch**, size_t, double(*importance_measure)(ctBranch*), double);
-
-/**
  * @brief topSimplifyTree
  * This function applies the simplification operation on the contour tree.
  * 
@@ -34,6 +24,12 @@ extern "C"
  *     delete the branch from the tree.
  *   mark the other leaves as visited.
  * } while there are unvisited leaves.
+ *
+ * @param ctx The libtourtre context. Allows access to the branches' delete function.
+ * @param root_branch The branch to start the simplification. Usually the root of the tree.
+ * @param dataset A reference to the dataset. Allows access to the voxels.
+ * @param importance_cb The importance calculation callback.
+ * @param threshold The simplifcation threshold.
  */
 void topSimplifyTree(ctContext*, ctBranch*, top::Dataset&, double(*importance_cb)(ctBranch*), double);
 
