@@ -33,6 +33,6 @@ extern "C"
  */
 void topSimplifyTree(ctContext*, ctBranch*, top::Dataset&, double(*importance_cb)(ctBranch*), double);
 
-DEPRECATED void topSimplifyTreeZhou(ctContext*, ctBranch*, ctBranch**, top::Dataset&, double(*importance_cb)(ctBranch*), double);
+void topSimplifyTreeZhou(ctContext*, ctBranch*, ctBranch**, top::Dataset&, double(*importance_cb)(ctBranch*), double);
 
 #endif // SIMPLIFICATION_H

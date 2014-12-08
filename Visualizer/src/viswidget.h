@@ -62,7 +62,7 @@ public slots:
   bool saveAlphaTF(std::string key, std::string data_key);
 
   bool buildContourTree();
-  bool simplifyContourTree();
+  bool simplifyContourTree(double threshold);
   bool flowOpacity(double flow_rate);
   bool buildAlphaMap(std::string key);
 

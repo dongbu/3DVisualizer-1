@@ -130,9 +130,9 @@ bool VisWidget::buildContourTree()
   return TopAnalyzer::getInstance()->buildContourTree();
 }
 
-bool VisWidget::simplifyContourTree()
+bool VisWidget::simplifyContourTree(double threshold)
 {
-  return TopAnalyzer::getInstance()->simplifyContourTree();
+  return TopAnalyzer::getInstance()->simplifyContourTree(threshold);
 }
 
 bool VisWidget::flowOpacity(double flow_rate)

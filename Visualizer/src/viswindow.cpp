@@ -134,13 +134,18 @@ void VisWindow::simplifyTree()
     return;
   }
 
-  m_renderWidget->simplifyContourTree();
+  double avg_imp = TopAnalyzer::getInstance()->getAvgImportance();
+  bool ok;
+  double imp = QInputDialog::getDouble(this, tr("Simplification threshold"), tr("Threshold:"), avg_imp, 0.0, 2147483647.0, 1, &ok);
+
+  if(ok)
+    m_renderWidget->simplifyContourTree(imp);
 }
 
 void VisWindow::flowOpacity()
 {
   bool ok;
-  double flow_rate = QInputDialog::getDouble(this, "Flow rate", "Rate:", 300.0, 0.0, 2000.0, 1, &ok);
+  double flow_rate = QInputDialog::getDouble(this, tr("Flow rate"), tr("Rate:"), 300.0, 0.0, 2000.0, 1, &ok);
 
   if(ok && flow_rate > 0.0)
     m_renderWidget->flowOpacity(flow_rate);

@@ -6,6 +6,12 @@
 namespace top
 {
 
+  /**
+   * @brief The Mesh class
+   * This class creates the connectivity information between the voxels. This is
+   * needed by the libtourtre's functions. The only information stored is a
+   * reference to the dataset being analyzed.
+   */
   class Mesh 
   {
   public:

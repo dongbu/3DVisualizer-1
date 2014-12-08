@@ -207,7 +207,7 @@ bool TopAnalyzer::buildContourTree()
   return isContourTreeBuilt();
 }
 
-bool TopAnalyzer::simplifyContourTree()
+bool TopAnalyzer::simplifyContourTree(double threshold, bool reduce_saddle)
 {
   using tbb::tick_count;
   using std::vector;
@@ -220,8 +220,12 @@ bool TopAnalyzer::simplifyContourTree()
   if(!isContourTreeBuilt())
     return false;
 
+  m_threshold = threshold;
   a = tick_count::now();
-  topSimplifyTree(m_tourtre_ctx, m_root_branch, *m_curr_dataset, &std_avg_importance, m_avg_importance / 10);
+  if(reduce_saddle)
+    topSimplifyTreeZhou(m_tourtre_ctx, m_root_branch, m_branch_map, *m_curr_dataset, &std_avg_importance, m_threshold);
+  else
+    topSimplifyTree(m_tourtre_ctx, m_root_branch, *m_curr_dataset, &std_avg_importance, m_threshold);
   b = tick_count::now();
 
   Logger::getInstance()->log("\tSimplification in " + std::to_string((b - a).seconds()) + " seconds");
@@ -315,7 +319,7 @@ void TopAnalyzer::testRun(double flow_rate, float avg_mult)
   vector<size_t> order;
   mesh->createGraph(order);
   b = tick_count::now();
-//  Logger::getInstance()->log("\tGraph created in " + std::to_string((b - a).seconds()) + " seconds");
+  //  Logger::getInstance()->log("\tGraph created in " + std::to_string((b - a).seconds()) + " seconds");
   cout << std::to_string((b - a).seconds()) + ",";
 
   ctContext* ctx = ct_init(topd->size, &(order.front()), std_value, std_neighbors, mesh);
@@ -330,25 +334,25 @@ void TopAnalyzer::testRun(double flow_rate, float avg_mult)
   ctBranch** branch_map = ct_branchMap(ctx);
   b = tbb::tick_count::now();
 
-//  Logger::getInstance()->log("\tSweep and merge + decompose + branch map in " + std::to_string((b - a).seconds()) + " seconds");
+  //  Logger::getInstance()->log("\tSweep and merge + decompose + branch map in " + std::to_string((b - a).seconds()) + " seconds");
   cout << std::to_string((b - a).seconds()) + ",";
 
   size_t tree_depth = 0;
   calc_branch_depth(root_branch, &tree_depth, 0);
 
-//  Logger::getInstance()->log("\t" + std::to_string(count_branches(root_branch)) + " branches in the tree");
+  //  Logger::getInstance()->log("\t" + std::to_string(count_branches(root_branch)) + " branches in the tree");
   cout << std::to_string(count_branches(root_branch)) + ",";
 
   a = tick_count::now();
   calc_branch_features(branch_map, topd);
   b = tick_count::now();
-//  Logger::getInstance()->log("\tFeatures calculated in " + std::to_string((b - a).seconds()) + " seconds");
+  //  Logger::getInstance()->log("\tFeatures calculated in " + std::to_string((b - a).seconds()) + " seconds");
   cout << std::to_string((b - a).seconds()) + ",";
 
   double avg_imp = calc_avg_importance(root_branch, &std_avg_importance);
   calc_vertices_branch(branch_map, topd->size);
 
-//  Logger::getInstance()->log("\tAverage importance = " + std::to_string(avg_imp));
+  //  Logger::getInstance()->log("\tAverage importance = " + std::to_string(avg_imp));
   cout << std::to_string(avg_imp * avg_mult) + ",";
 
   //////////////////////////////////////////////////
@@ -356,8 +360,8 @@ void TopAnalyzer::testRun(double flow_rate, float avg_mult)
   topSimplifyTree(ctx, root_branch, *topd, &std_avg_importance, avg_imp * avg_mult);
   b = tick_count::now();
 
-//  Logger::getInstance()->log("\tSimplification in " + std::to_string((b - a).seconds()) + " seconds");
-//  Logger::getInstance()->log("\t" + std::to_string(count_branches(root_branch)) + " branches in the tree");
+  //  Logger::getInstance()->log("\tSimplification in " + std::to_string((b - a).seconds()) + " seconds");
+  //  Logger::getInstance()->log("\t" + std::to_string(count_branches(root_branch)) + " branches in the tree");
 
   cout << std::to_string((b - a).seconds()) + ",";
   cout << std::to_string(count_branches(root_branch)) + ",";
@@ -377,7 +381,7 @@ void TopAnalyzer::testRun(double flow_rate, float avg_mult)
   a = tick_count::now();
   opacityFlowed(calc_residue_flow(root_branch, 1.f / static_cast<double>(tree_depth), m_flow_rate, topd));
   b = tick_count::now();
-//  Logger::getInstance()->log("\tResidue flow in " + std::to_string((b - a).seconds()) + " seconds");
+  //  Logger::getInstance()->log("\tResidue flow in " + std::to_string((b - a).seconds()) + " seconds");
   cout << std::to_string((b - a).seconds()) + ",";
 
 
@@ -386,7 +390,7 @@ void TopAnalyzer::testRun(double flow_rate, float avg_mult)
   a = tick_count::now();
   knl::Dataset* alpha_map = CreateAlphaDataset(*topd->data, branch_map);
   b = tick_count::now();
-//  Logger::getInstance()->log("\tAlpha map in " + std::to_string((b - a).seconds()) + " seconds");
+  //  Logger::getInstance()->log("\tAlpha map in " + std::to_string((b - a).seconds()) + " seconds");
   cout << std::to_string((b - a).seconds()) << endl;
 
   //////////////////////////////////////////////////

@@ -190,39 +190,40 @@ public:
   }
 };
 
-DEPRECATED static void reduce_to_saddle(ctBranch* to_remove, ctBranch** branch_map, top::Dataset& top_data)
+static void reduce_to_saddle(ctBranch* to_remove, ctBranch** branch_map, top::Dataset& top_data)
 {
   //FeatureSet* rem_data = (FeatureSet*) to_remove->data;
 
   tbb::parallel_for(tbb::blocked_range<size_t>(0, top_data.size), ReduceToSaddle(branch_map, to_remove, top_data));
 }
 
-DEPRECATED void topSimplifyTreeZhou(ctContext* ctx, ctBranch* root_branch, ctBranch** branch_map, top::Dataset& top_data, double(*importance_cb)(ctBranch*), double thresh)
+void topSimplifyTreeZhou(ctContext* ctx, ctBranch* root_branch, ctBranch** branch_map, top::Dataset& top_data, double(*importance_cb)(ctBranch*), double thresh)
 {
   using namespace std;
 
   if(count_branches(root_branch) == 1)
     return;
 
-  bool changed = false;
+  size_t idx;
+  vector<ctBranch*> leaves;
 
   do {
-    vector<ctBranch*> leaves = queue_leaves(root_branch);
-    changed = false;
+    leaves.clear();
+    leaves = queue_leaves(root_branch);
+    std::sort(leaves.begin(), leaves.end(), leaf_comp(importance_cb));
 
-    for(size_t i = 0; i < leaves.size(); i++) {
-      if(leaves[i] == NULL)
-        continue;
-
-      if(importance_cb(leaves[i]) < thresh) {
-        reduce_to_saddle(leaves[i], branch_map, top_data);
-        point_parent(leaves[i], branch_map, top_data.size);
-        ctBranch_delete(leaves[i], ctx);
-        changed = true;
-      }
+    for(idx = 0; idx < leaves.size(); ++idx) {
+      if(leaves[idx] == NULL)  continue;
+      if(importance_cb(leaves[idx]) < thresh) break;
+      ((FeatureSet*) leaves[idx]->data)->visited = true;
     }
 
-    leaves.clear();
-
-  } while(changed);
+    size_t i = idx;
+    while(i < leaves.size()){
+      reduce_to_saddle(leaves[i], branch_map, top_data);
+      point_parent(leaves[i], branch_map, top_data.size);
+      ctBranch_delete(leaves[i], ctx);
+      ++i;
+    }
+  } while(idx != leaves.size());
 }

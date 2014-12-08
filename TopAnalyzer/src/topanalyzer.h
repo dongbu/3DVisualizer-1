@@ -7,6 +7,19 @@
 #include "topmesh.h"
 #include "ctfunc.h"
 
+/**
+ * @brief The TopAnalyzer class
+ * This class manages the data structures needed to perform the topological
+ * analysis of the dataset.
+ *
+ * This class instance holds the libtourtre's context, the root branch and
+ * branch map produced during the analysis. There is also a pointer to the
+ * dataset being analyzed.
+ *
+ * The parameters needed for the analysis, namely the flow rate and
+ * simplification threshold are set during the corresponding steps (opacity flow
+ * and simplification).
+ */
 class TopAnalyzer : public Singleton<TopAnalyzer>
 {
   friend class Singleton<TopAnalyzer>;
@@ -14,7 +27,7 @@ class TopAnalyzer : public Singleton<TopAnalyzer>
 public:
   void init();
   bool buildContourTree();
-  bool simplifyContourTree();
+  bool simplifyContourTree(double threshold, bool reduce_saddle = false);
   bool flowOpacity(double flow_rate);
   bool createAlphaMap(std::string alpha_key);
 
@@ -73,6 +86,7 @@ protected:
     opacityFlowed(false);
     m_flow_rate = 300.f;
     m_avg_importance = 0.0;
+    m_threshold = 0.0;
     m_tree_depth = 0;
   }
 
@@ -84,6 +98,7 @@ private:
 
   float m_flow_rate;
   double m_avg_importance;
+  double m_threshold;
   size_t m_tree_depth;
 
   bool m_tree_built;

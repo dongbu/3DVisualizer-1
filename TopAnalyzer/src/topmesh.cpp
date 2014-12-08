@@ -8,7 +8,11 @@
 
 namespace top
 {
-  //functor for sorting
+  /**
+   * @brief The AscendingOrder class
+   * This class acts as a functor for sorting the voxels' indices in ascending
+   * order of the voxel values.
+   */
   class AscendingOrder
   {
     top::Dataset* data;
