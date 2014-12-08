@@ -3,12 +3,17 @@
 
 #include <glm/glm.hpp>
 
+/**
+ * @brief The Light class
+ *
+ * The Light class abstracts the creation of a light source to be used for
+ * rendering. The light source only has a color and a position in space.
+ */
 class Light
 {
 public:
   Light();
-  Light(glm::vec3 pos);
-  Light(glm::vec3 pos, glm::vec3 color);
+  Light(glm::vec3 pos, glm::vec3 color = glm::vec3(1, 1, 1));
 
   ~Light();
 

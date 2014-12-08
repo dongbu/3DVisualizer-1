@@ -14,12 +14,12 @@
  *
  * The class instance holds a map, where each Dataset is referenced by a key
  * string. The init method loads a XML metafile containing information about the
- * available datasets, such as it's name, dimensions and number of bytes of each
+ * available datasets, such as its name, dimensions and number of bytes of each
  * element. These Datasets are then created and given this information. This
  * process facilitates the loading of the dataset from the disk.
  *
  * To visualize a dataset, one must be set as current by using the setActive
- * method. If the dataset is not loaded yet, this method loads and sends it's
+ * method. If the dataset is not loaded yet, this method loads and sends its
  * data to the OpenGL device before finishing.
  *
  * Any datasets added to the manager are freed by calling the freeResources

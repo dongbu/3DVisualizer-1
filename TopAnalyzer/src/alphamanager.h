@@ -7,6 +7,31 @@
 #include "singleton.h"
 #include "dataset.h"
 
+/**
+ * @brief The AlphaManager class
+ * This class is responsible to manage the avaliable alpha maps.
+ *
+ * The class instance two maps. The first map holds every alpha dataset loaded
+ * or created by the topological analyzer. This map's key values are strings.
+ * The second map holds the alpha,data association, where each alpha dataset is
+ * linked to its original dataset.
+ *
+ * The second map's function is to avoid that an alpha dataset is used to
+ * visualize a different volume.
+ *
+ * The init method loads a XML metafile containing information about the alpha
+ * datasets saved, such as its name, original dataset name, dimensions and
+ * data type. This allows for a pre-allocation of the resources before actually
+ * loading them.
+ *
+ * To use an alpha dataset to visualize a dataset, one must be set as current by
+ * using the setActive method. If the chosen alpha dataset is not loaded, then
+ * the setActive method loads it from the file and sends its data to the OpenGL
+ * device.
+ *
+ * Any datasets added to the manager are freed by calling the freeResources
+ * method.
+ */
 class AlphaManager : public Singleton<AlphaManager>
 {
   friend class Singleton<AlphaManager>;

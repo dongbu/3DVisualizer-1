@@ -8,6 +8,15 @@
 #include <algorithm>
 #include <tbb/parallel_for.h>
 
+/**
+ * @brief merge_branches Merges to contour tree branches and accumulates their
+ * features.
+ * @param a The first branch. This branch is the one that will remain on the
+ * tree.
+ * @param b The second branch. This is the branch that is supposed to be deleted
+ *  in the simplification process.
+ * @param data A pointer to the dataset.
+ */
 static void merge_branches(ctBranch* a, ctBranch* b, top::Dataset* data)
 {
   if(!a || ! b || !data)
@@ -27,14 +36,19 @@ static void merge_branches(ctBranch* a, ctBranch* b, top::Dataset* data)
   }
 }
 
-class PointToParent
+/**
+ * @brief The point_to_parent class
+ * This class is used as a functor to the tbb::parallel_for function. When a
+ * branch is marked for removal by the simplification process, it's vertices
+ * must be pointed to another branch. In this case, the parent branch.
+ */
+class point_to_parent
 {
   ctBranch** branch_map;
   ctBranch* to_remove;
 
 public:
-
-  PointToParent(ctBranch** a, ctBranch* to_rem) : branch_map(a), to_remove(to_rem)
+  point_to_parent(ctBranch** a, ctBranch* to_rem) : branch_map(a), to_remove(to_rem)
   {}
 
   void operator()(const tbb::blocked_range<size_t>& range) const {
@@ -50,6 +64,12 @@ public:
   }
 };
 
+/**
+ * @brief queue_leaves This function finds all of the tree's leaves and insert
+ * them in a queue.
+ * @param root_branch The tree's root branch.
+ * @return A vector containing the tree's leaves.
+ */
 static std::vector<ctBranch*> queue_leaves(ctBranch* root_branch)
 {
   std::vector<ctBranch*> leaves;
@@ -77,7 +97,7 @@ static std::vector<ctBranch*> queue_leaves(ctBranch* root_branch)
   return leaves;
 }
 
-static void point_to_parent(ctBranch* to_remove, ctBranch** branch_map, size_t map_size)
+static void point_parent(ctBranch* to_remove, ctBranch** branch_map, size_t map_size)
 {
   FeatureSet* rem_data = (FeatureSet*) to_remove->data;
   FeatureSet* par_data = (FeatureSet*) to_remove->parent->data;
@@ -88,9 +108,14 @@ static void point_to_parent(ctBranch* to_remove, ctBranch** branch_map, size_t m
    	     new_vertices.begin());
 
    par_data->vertices = new_vertices;
-   tbb::parallel_for(tbb::blocked_range<size_t>(0, map_size), PointToParent(branch_map, to_remove));
+   tbb::parallel_for(tbb::blocked_range<size_t>(0, map_size), point_to_parent(branch_map, to_remove));
 }
 
+/**
+ * @brief The leaf_comp class
+ * This class is a functor to help sorting the contour tree's leaves by their
+ * importance.
+ */
 class leaf_comp
 {
   double(*imp_cb)(ctBranch*);
@@ -155,7 +180,7 @@ public:
 
     FeatureSet* rem_data = (FeatureSet*) to_remove->data;
 
-    for(int i = range.begin(); i != range.end(); i++) {
+    for(size_t i = range.begin(); i != range.end(); i++) {
       FeatureSet* bmap_data = (FeatureSet*) branch_map[i]->data;
       if(bmap_data->label == rem_data->label) {
         size_t saddle = top_data.data->get(to_remove->saddle);
@@ -165,14 +190,14 @@ public:
   }
 };
 
-static void reduce_to_saddle(ctBranch* to_remove, ctBranch** branch_map, top::Dataset& top_data) 
+DEPRECATED static void reduce_to_saddle(ctBranch* to_remove, ctBranch** branch_map, top::Dataset& top_data)
 {
-  FeatureSet* rem_data = (FeatureSet*) to_remove->data;
+  //FeatureSet* rem_data = (FeatureSet*) to_remove->data;
 
   tbb::parallel_for(tbb::blocked_range<size_t>(0, top_data.size), ReduceToSaddle(branch_map, to_remove, top_data));
 }
 
-void topSimplifyTreeZhou(ctContext* ctx, ctBranch* root_branch, ctBranch** branch_map, top::Dataset& top_data, double(*importance_cb)(ctBranch*), double thresh)
+DEPRECATED void topSimplifyTreeZhou(ctContext* ctx, ctBranch* root_branch, ctBranch** branch_map, top::Dataset& top_data, double(*importance_cb)(ctBranch*), double thresh)
 {
   using namespace std;
 
@@ -191,7 +216,7 @@ void topSimplifyTreeZhou(ctContext* ctx, ctBranch* root_branch, ctBranch** branc
 
       if(importance_cb(leaves[i]) < thresh) {
         reduce_to_saddle(leaves[i], branch_map, top_data);
-	      point_to_parent(leaves[i], branch_map, top_data.size);
+        point_parent(leaves[i], branch_map, top_data.size);
         ctBranch_delete(leaves[i], ctx);
         changed = true;
       }

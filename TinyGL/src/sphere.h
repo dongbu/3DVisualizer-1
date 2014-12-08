@@ -4,7 +4,10 @@
 #include "mesh.h"
 
 /**
-* Class Sphere, inherits from Mesh
+* @brief The Sphere class
+*
+* This class creates a spherical Mesh or radius 1.
+*
 * This class builds a sphere of radius 1 centered at (0,0,0), given the number
 * of horizontal and vertical subdivisions. The draw function is given as a
 * callback to the Mesh.
