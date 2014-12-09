@@ -11,6 +11,11 @@
 
 class VisWidget;
 
+/**
+ * @brief The VisWindow class
+ * This class creates the user interface and implements the slots to dispatch
+ * any commands to the OpenGL widget.
+ */
 class VisWindow : public QMainWindow
 {
   Q_OBJECT

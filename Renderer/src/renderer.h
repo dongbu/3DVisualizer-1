@@ -1,6 +1,11 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
+/**
+ * @brief The RendererType enum
+ * This enumeration lists the possible renderer types. For now, only the GLSL
+ * renderer is implemented. This renderer serves as a proof of concept.
+ */
 enum RendererType
 {
   GLSL,
@@ -8,6 +13,14 @@ enum RendererType
   CUDA
 };
 
+/**
+ * @brief The Renderer class defines the basic interface that all renderer
+ * subclasses must follow. Each subclass is responsible for initializing the
+ * resources needed for their objectives, this includes any framebuffers,
+ * shaders, meshes, OpenCL/CUDA kernels (future), etc. Most of these resources
+ * must be added to some manager (TinyGL instance) and may be retrived by the
+ * renderer subclass when needed.
+ */
 class Renderer
 {
 public:
@@ -24,7 +37,7 @@ public:
   }
 
   /**
-   * Pure virtual methods. Theses methods may be implemented to handle actions
+   * Pure virtual methods. Theses methods must be implemented to handle actions
    * that are local to each renderer.
    */
   virtual int init() = 0;

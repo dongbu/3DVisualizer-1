@@ -9,12 +9,12 @@
 
 /**
  * @brief The AlphaManager class
- * This class is responsible to manage the avaliable alpha maps.
+ * This class is responsible to manage the available alpha maps.
  *
- * The class instance two maps. The first map holds every alpha dataset loaded
- * or created by the topological analyzer. This map's key values are strings.
- * The second map holds the alpha,data association, where each alpha dataset is
- * linked to its original dataset.
+ * The class instance has two maps. The first map holds every alpha dataset
+ * loaded or created by the topological analyzer. This map's key values are
+ * strings. The second map holds the alpha,data association, where each alpha
+ * dataset is linked to its original dataset.
  *
  * The second map's function is to avoid that an alpha dataset is used to
  * visualize a different volume.

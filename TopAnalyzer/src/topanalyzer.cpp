@@ -191,7 +191,7 @@ bool TopAnalyzer::buildContourTree()
   Logger::getInstance()->log("\tSweep and merge + decompose + branch map in " + std::to_string((b - a).seconds()) + " seconds");
 
   m_tree_depth = 0;
-  calc_branch_depth(m_root_branch, &m_tree_depth, 0);
+  calc_branch_depth(m_root_branch, m_tree_depth, 0);
 
   Logger::getInstance()->log("\t" + std::to_string(count_branches(m_root_branch)) + " branches in the tree");
 
@@ -237,7 +237,7 @@ bool TopAnalyzer::simplifyContourTree(double threshold, bool reduce_saddle)
   calc_branch_num_children(m_root_branch);
 
   m_tree_depth = 0;
-  calc_branch_depth(m_root_branch, &m_tree_depth, 0);
+  calc_branch_depth(m_root_branch, m_tree_depth, 0);
   normalize_features(m_root_branch);
 
   treeSimplified(true);
@@ -338,7 +338,7 @@ void TopAnalyzer::testRun(double flow_rate, float avg_mult)
   cout << std::to_string((b - a).seconds()) + ",";
 
   size_t tree_depth = 0;
-  calc_branch_depth(root_branch, &tree_depth, 0);
+  calc_branch_depth(root_branch, tree_depth, 0);
 
   //  Logger::getInstance()->log("\t" + std::to_string(count_branches(root_branch)) + " branches in the tree");
   cout << std::to_string(count_branches(root_branch)) + ",";
@@ -372,7 +372,7 @@ void TopAnalyzer::testRun(double flow_rate, float avg_mult)
   calc_branch_num_children(root_branch);
 
   tree_depth = 0;
-  calc_branch_depth(root_branch, &tree_depth, 0);
+  calc_branch_depth(root_branch, tree_depth, 0);
   normalize_features(root_branch);
   //////////////////////////////////////////////////
 

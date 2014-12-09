@@ -34,7 +34,7 @@ size_t calc_persistence_branch(ctBranch* b, top::Dataset* data)
   return std::abs((long) (data->data->get(b->extremum) - data->data->get(b->saddle)));
 }
 
-void calc_branch_depth(ctBranch* b, size_t* max_depth, size_t depth)
+void calc_branch_depth(ctBranch* b, size_t& max_depth, size_t depth)
 {
   if(b == NULL) return;
 
@@ -44,8 +44,8 @@ void calc_branch_depth(ctBranch* b, size_t* max_depth, size_t depth)
   FeatureSet* branch_data = (FeatureSet*) b->data;
   if(!branch_data->remove) {
     branch_data->depth = depth;
-    if(depth > *max_depth)
-      *max_depth = depth;
+    if(depth > max_depth)
+      max_depth = depth;
   }
 
   for(ctBranch* c = b->children.head; c != NULL; c = c->nextChild)
@@ -280,7 +280,7 @@ size_t std_neighbors(size_t v, size_t* nbrs, void* d)
 void vertex_proc(size_t v, ctArc* a, void* cb_data)
 {
   if(a->data == NULL)
-    a->data = (FeatureSet*) calloc(1, sizeof(FeatureSet));//FeatureSet_new();
+    a->data = (FeatureSet*) calloc(1, sizeof(FeatureSet));
 
   top::Mesh* mesh_ptr = (top::Mesh*) cb_data;
   FeatureSet* data_a = (FeatureSet*) a->data;
@@ -416,9 +416,6 @@ double* calc_final_alpha(ctBranch* b, TFShape shape)
     break;
   case TRAPEZOID:
     std::cout << "TRAPEZOID shape chosen.\n";
-    break;
-  case HTRAPEZOID:
-    std::cout << "HTRAPEZOID shape chosen.\n";
     break;
   case LINEAR:
   default:

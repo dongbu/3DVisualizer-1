@@ -7,6 +7,13 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 
+/**
+ * @brief The VisWidget class
+ * This class implements the central widget used for rendering with OpenGL.
+ *
+ * This widget has a series of slots and signals to receive commands from the
+ * parent window and pass them to the corresponding classes
+ */
 class VisWidget : public QGLWidget
 {
   Q_OBJECT

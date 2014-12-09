@@ -6,6 +6,16 @@
 #include "renderer.h"
 #include "arcball.h"
 
+/**
+ * @brief The GLSLRenderer class
+ * This class inherits from the Renderer class. This implements a renderer that
+ * uses GLSL shaders to apply the Direct Volume Rendering using Volume
+ * Raycasting techinique.
+ *
+ * This class' instance is responsible for initializing the Framebuffer objects,
+ * shaders and meshes needed to render on the screen. All of these objects are
+ * stored in the TinyGL instance and retrieved when needed, on the draw method.
+ */
 class GLSLRenderer : public Renderer
 {
 public:
